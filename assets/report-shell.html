@@ -88,3 +88,93 @@ svg{display:block;width:100%;height:auto;overflow:visible}
 .lab-s{fill:var(--text-secondary);font-size:10.5px;font-variant-numeric:tabular-nums}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:680px){.two{grid-template-columns:1fr}}
+ul,ol{padding-left:22px;margin:12px 0}
+li{margin:7px 0}
+.flag{border-left:3px solid var(--border-strong);padding:4px 0 4px 16px;margin:18px 0;color:var(--text-secondary)}
+.flag.red{border-color:var(--critical)}
+.flag.amber{border-color:var(--warn)}
+.flag.green{border-color:var(--good)}
+.flag b{color:var(--text-primary)}
+.pill{display:inline-block;font-size:11px;font-weight:650;padding:2px 9px;border-radius:99px;border:1px solid var(--border-strong);color:var(--text-secondary);margin-right:6px;vertical-align:2px}
+.pill.g{border-color:var(--good);color:var(--good)}
+.pill.r{border-color:var(--critical);color:var(--critical)}
+.pill.a{border-color:var(--warn);color:var(--warn)}
+details{border:1px solid var(--border);border-radius:12px;padding:0;margin:14px 0;background:var(--surface-1)}
+details summary{cursor:pointer;padding:13px 18px;font-weight:600;font-size:14.5px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸ ";color:var(--text-muted)}
+details[open] summary::before{content:"▾ "}
+details .body{padding:0 18px 16px}
+.toc{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:16px 22px;margin:26px 0;font-size:14px}
+.toc ol{columns:2;column-gap:30px;margin:6px 0 0}
+@media(max-width:600px){.toc ol{columns:1}}
+.toc a{text-decoration:none;color:var(--text-secondary)}
+.toc a:hover{color:var(--series-1)}
+#tt{position:fixed;pointer-events:none;opacity:0;transition:opacity .09s;background:var(--surface-1);border:1px solid var(--border-strong);
+   border-radius:9px;padding:8px 11px;font-size:12.5px;box-shadow:0 6px 22px rgba(0,0,0,.16);z-index:99;max-width:250px;line-height:1.5}
+#tt b{display:block;margin-bottom:3px;font-size:12px}
+.themebtn{position:fixed;top:14px;right:14px;z-index:50;background:var(--surface-1);border:1px solid var(--border);
+  border-radius:99px;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--text-secondary);font-family:inherit}
+.q{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0}
+.q .why{font-size:13px;color:var(--text-secondary);margin-top:6px}
+.q .qt{font-weight:600}
+.src{font-size:13px;color:var(--text-secondary)}
+.src li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--border);margin:40px 0}
+.verdict{background:var(--surface-1);border:1px solid var(--border-strong);border-radius:16px;padding:26px 28px;margin:26px 0}
+.scorebar{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13.5px}
+.scorebar .nm{width:120px;color:var(--text-secondary);flex:none}
+.scorebar .track{flex:1;height:9px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.scorebar .fillb{height:100%;border-radius:99px;background:var(--series-1)}
+.scorebar .sc{width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:650;flex:none}
+</style>
+</head>
+<body>
+<button class="themebtn" id="tbtn">◐ 深／淺色</button>
+<div id="tt"></div>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">Reverse Due Diligence · 求職者視角</div>
+  <h1>{{公司名}}（{{代號}}）<br>反向盡職調查</h1>
+  <p class="sub">為評估 <b>{{職缺}}</b> 職缺而做的公司調查：{{涵蓋範圍一句話}}。</p>
+  <p class="meta">資料截止：{{日期}} ｜ {{關鍵即時數字}} ｜ 全部數字來自公開財報、法說會紀要與媒體報導，來源列於文末</p>
+</header>
+
+<nav class="toc">
+  <b style="font-size:13px;color:var(--text-muted);letter-spacing:.05em">目錄</b>
+  <ol>
+    <li><a href="#s1">一分鐘結論</a></li>
+    <li><a href="#s2">公司是什麼、怎麼賺錢</a></li>
+    <!-- 依 references/report-template.md 的 17 節骨架續列 -->
+  </ol>
+</nav>
+
+<h2 id="s1"><span class="num">01</span>一分鐘結論</h2>
+
+<!-- stat tiles：一分鐘結論放 4–6 個。note 的 class：up=綠、down=紅、留空=中性 -->
+<div class="tiles">
+  <div class="tile"><div class="lab">標籤</div><div class="val">數值</div><div class="note up">附註</div></div>
+</div>
+
+<p class="lead">定調段落。先講結論，不要鋪陳。</p>
+
+<!-- 旗標：green 好消息／red 壞消息／amber 需留意／無 class 為中性 -->
+<div class="flag green"><b>好消息：</b>…</div>
+<div class="flag red"><b>壞消息：</b>…</div>
+<div class="flag amber"><b>需留意：</b>…</div>
+<div class="flag"><b>中性提示：</b>…</div>
+
+<h2 id="s2"><span class="num">02</span>章節標題</h2>
+
+<!-- 圖表：容器 id 對應 drawAll() 裡的呼叫 -->
+<figure class="fig">
+  <div class="ftitle">圖表標題</div>
+  <div class="fsub">副標：說明口徑與期間</div>
+  <div class="legend" id="leg-demo"></div>
+  <div id="c-demo"></div>
+  <figcaption>資料來源與限制。<b>推估值一定要在這裡標明。</b></figcaption>
+</figure>
+
+<!-- 小倍數：兩張並排 -->
+<figure class="fig">

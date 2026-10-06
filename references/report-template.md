@@ -40,7 +40,7 @@
 
 ## HTML 實作
 
-用 `assets/report-shell.html` 當起點。它已包含：
+用 `templates/report-shell.html` 當起點。它已包含：
 
 - 深淺色雙模式（OS 偏好 + 手動切換，兩者都要能覆蓋）
 - 目錄、卡片、旗標（紅／黃／綠／中性）、pill 標籤、stat tile、評分條、可摺疊 details、面試題卡片

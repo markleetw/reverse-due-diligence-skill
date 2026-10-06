@@ -184,7 +184,7 @@ Step 2 只會產出一份普通的公司簡介。真正的價值在下面四件�
 預設交付一份**自包含的單檔 HTML**（CSS 與 JS 全部 inline，無外部相依），使用者可本機開、可自行 host。
 
 - 動手畫任何圖表前先讀 **dataviz** skill
-- `assets/report-shell.html` 是可直接沿用的樣板：深淺色模式、tooltip、目錄、卡片與旗標樣式、以及長條圖／區間圖／堆疊圖／折線圖的繪製函式都已備妥。改資料陣列即可
+- `templates/report-shell.html` 是可直接沿用的樣板：深淺色模式、tooltip、目錄、卡片與旗標樣式、以及長條圖／區間圖／堆疊圖／折線圖的繪製函式都已備妥。改資料陣列即可
 - 章節骨架與撰寫要點見 `references/report-template.md`
 - 產出後用 Playwright 截圖檢查排版與標籤碰撞（`/opt/pw-browsers/chromium-*/chrome-linux/chrome`），確認 console 無錯誤
 - 用 SendUserFile 交付；若判斷使用者會反覆回來看（通常會），再用 create_artifact 存進側欄
@@ -246,4 +246,4 @@ Step 2 只會產出一份普通的公司簡介。真正的價值在下面四件�
 - `references/global-sources.md` — 外商與海外實體的對應管道
 - `references/analysis-playbook.md` — Step 3 四個深挖動作的詳細作法與實例
 - `references/report-template.md` — HTML 報告章節骨架與各節撰寫要點
-- `assets/report-shell.html` — 可直接沿用的報告樣板（樣式 + 圖表函式）
+- `templates/report-shell.html` — 可直接沿用的報告樣板（樣式 + 圖表函式）

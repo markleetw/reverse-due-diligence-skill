@@ -268,3 +268,93 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
+     繪圖函式庫 — 改資料陣列即可，不要重寫樣式。畫圖前先讀 dataviz skill。
+
+       drawBars(id, data, o)       直條圖         data:[{y,v,est?,note?}]
+       drawSignedBars(id, data, o) 正負值直條圖   data:[{y,v,note?}]
+       drawNodeLine(id, pts, o)    節點折線圖     pts:[{t,v,l,key?}]
+       drawGrouped(id, data, o)    分組直條圖     data:[{n,a,b}]  o.labels:[A,B]
+       drawStacked(id, rows, ser)  百分比堆疊橫條 rows:[{y,v:[..]}] ser:[{n,k}]
+       drawMini(id, data, o)       小倍數圖（改進 .two 並排）
+       drawScores(id, data, o)     橫條評分圖     data:[{n,v}]  o.max, o.lowBelow
+       drawRanges(id, data, o)     區間橫條圖     data:[{n,lo,hi,c,t}]
+
+     共通 o：max 上限、unit 單位字串、fmt 格式化函式、ticks 格線數
+     所有 mark 自動綁 tooltip；深淺色切換自動重繪。
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  const F = v => v.toLocaleString();
+  function axisY(s,ml,mr,W,mt,ph,max,ticks,fmt,unit){
+    for(let i=0;i<=ticks;i++){
+      const g=max*i/ticks, y=mt+ph-(g/max)*ph;
+      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line'}));
+      txt(s,ml-9,y+4,fmt(g),'axis-t','end');
+    }
+    if(unit) txt(s,ml-9,mt-16,unit,'axis-t','end');
+  }
+
+  function drawBars(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const fmt=o.fmt||F, max=o.max||Math.max(...data.map(d=>d.v))*1.25, ticks=o.ticks||4;
+    const W=780,H=o.height||290,ml=o.ml||52,mr=14,mt=26,mb=40, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s); const c1=V('--series-1');
+    axisY(s,ml,mr,W,mt,ph,max,ticks,fmt,o.unit);
+    const bw=pw/data.length, iw=Math.min(60,bw*0.6);
+    data.forEach((d,i)=>{
+      const x=ml+i*bw+(bw-iw)/2, h=(d.v/max)*ph, y=mt+ph-h;
+      const p=rrect(s,x,y,iw,h,4, d.est?'none':c1,
+                    d.est?{stroke:c1,'stroke-width':2,'stroke-dasharray':'5 4'}:{});
+      bind(p,`<b>${d.y}　${fmt(d.v)}${o.unit||''}</b>${d.note||(d.est?'推估值，非公司財測':'')}`);
+      txt(s,x+iw/2,y-8,fmt(d.v),'lab-t','middle');
+      txt(s,x+iw/2,H-14,d.y,'axis-t','middle');
+    });
+  }
+
+  function drawSignedBars(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const fmt=o.fmt||(v=>v.toFixed(2));
+    const vs=data.map(d=>d.v), min=o.min!==undefined?o.min:Math.min(0,...vs)*1.4, max=o.max||Math.max(...vs)*1.25;
+    const W=780,H=o.height||270,ml=52,mr=14,mt=26,mb=40, pw=W-ml-mr, ph=H-mt-mb, span=max-min;
+    const s=svg(W,H); host.appendChild(s);
+    const pos=V('--series-1'), neg=V('--critical'), zero=mt+ph-((0-min)/span)*ph;
+    const step=(max-min)/(o.ticks||6);
+    for(let g=min; g<=max+1e-9; g+=step){
+      const y=mt+ph-((g-min)/span)*ph, isZero=Math.abs(g)<1e-9;
+      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line',
+        'stroke-width':isZero?1.6:1, stroke:isZero?V('--border-strong'):undefined}));
+      txt(s,ml-9,y+4,g.toFixed(0),'axis-t','end');
+    }
+    if(o.unit) txt(s,ml-9,mt-16,o.unit,'axis-t','end');
+    const bw=pw/data.length, iw=Math.min(66,bw*0.5), rr=4;
+    data.forEach((d,i)=>{
+      const x=ml+i*bw+(bw-iw)/2, hv=Math.abs(d.v)/span*ph;
+      let p;
+      if(d.v>=0){ p=rrect(s,x,zero-hv,iw,hv,rr,pos); }
+      else{ const y=zero,w=iw,h=hv;
+        p=E('path',{d:`M${x},${y} L${x},${y+h-rr} Q${x},${y+h} ${x+rr},${y+h} L${x+w-rr},${y+h} Q${x+w},${y+h} ${x+w},${y+h-rr} L${x+w},${y} Z`,fill:neg});
+        s.appendChild(p); }
+      bind(p,`<b>${d.y}　${d.v>0?'+':''}${fmt(d.v)}${o.unit||''}</b>${d.note||''}`);
+      txt(s,x+iw/2, d.v>=0?zero-hv-8:zero+hv+16, (d.v>0?'+':'')+fmt(d.v),'lab-t','middle');
+      txt(s,x+iw/2,H-14,d.y,'axis-t','middle');
+    });
+  }
+
+  function drawNodeLine(id,pts,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const max=o.max||Math.max(...pts.map(p=>p.v))*1.12, ticks=o.ticks||4;
+    const W=780,H=o.height||300,ml=52,mr=o.mr||90,mt=30,mb=44, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s);
+    const c1=V('--series-1'), surf=V('--surface-1');
+    axisY(s,ml,mr,W,mt,ph,max,ticks,o.fmt||(v=>Math.round(v)),null);
+    const X=i=>ml+(i/(pts.length-1))*pw, Y=v=>mt+ph-(v/max)*ph;
+    let d=''; pts.forEach((p,i)=>{ d+=(i?' L':'M')+X(i)+','+Y(p.v); });
+    s.appendChild(E('path',{d,fill:'none',stroke:c1,'stroke-width':2,
+      'stroke-linejoin':'round','stroke-dasharray': o.solid?null:'6 5', opacity:o.solid?1:.55}));
+    pts.forEach((p,i)=>{
+      const cx=X(i), cy=Y(p.v);
+      const c=E('circle',{cx,cy,r:p.key?6:5,fill:c1,stroke:surf,'stroke-width':2});
+      s.appendChild(c); bind(c,`<b>${p.t} · ${o.prefix||''}${p.v}</b>${p.l||''}`);
+      if(p.key) txt(s, i===0?cx+10:cx, cy-14, (o.prefix||'')+p.v, 'lab-t', i===0?'start':'middle');
+      txt(s,cx,H-24,p.t,'axis-t','middle');
+    });
+    (o.notes||[]).forEach(n=>txt(s,W-mr+8,Y(n.at)+4,n.text,'lab-s','start'));

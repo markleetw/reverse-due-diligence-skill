@@ -107,3 +107,38 @@ The audit checks **internal consistency**, not whether the underlying external f
 ## Status
 
 The project is evolving from a working personal skill into a reusable, maintainable RDD workflow. The current focus is preserving the proven research method while reducing duplicated rules and report-specific hard-coding.
+
+
+## Packaging & releases
+
+The Git repository is the source of truth. The distributable `.skill` file is a **release artifact** and is not committed back into the repository.
+
+A release package contains only the files required at runtime:
+
+```text
+rdd/
+├── SKILL.md
+├── references/
+├── templates/
+└── scripts/
+    └── audit.py
+```
+
+Development-only files such as `README.md`, `.github/`, `examples/`, and `scripts/check_repo.py` are excluded.
+
+To build locally:
+
+```bash
+python scripts/package.py --output dist/reverse-due-diligence.skill
+```
+
+To publish a release:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+Pushing a `v*` tag runs CI, creates the `.skill` package, generates a SHA-256 checksum, and creates or updates the matching GitHub Release. Publishing a Release manually from GitHub also rebuilds and uploads the package for that Release tag.
+
+The package is built deterministically: file order, ZIP timestamps, and permissions are normalized so the same source tree produces the same `.skill` bytes.

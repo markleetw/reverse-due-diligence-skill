@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Resolve release ref
+        id: ref
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "ref=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+            echo "tag=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+            echo "tag=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check out release source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ref.outputs.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run repository checks
+        run: python scripts/check_repo.py
+
+      - name: Build .skill
+        run: |
+          mkdir -p dist
+          python scripts/package.py --output dist/reverse-due-diligence.skill
+          cd dist
+          sha256sum reverse-due-diligence.skill > reverse-due-diligence.skill.sha256
+
+      - name: Inspect package
+        run: |
+          python - <<'PY'
+          import zipfile
+          p = "dist/reverse-due-diligence.skill"
+          expected = {
+              "rdd/SKILL.md",
+              "rdd/references/analysis-playbook.md",
+              "rdd/references/global-sources.md",
+              "rdd/references/report-template.md",
+              "rdd/references/taiwan-sources.md",
+              "rdd/templates/report-shell.html",
+              "rdd/scripts/audit.py",
+          }
+          with zipfile.ZipFile(p) as z:
+              actual = set(z.namelist())
+          if actual != expected:
+              raise SystemExit(f"package contents mismatch\nexpected={sorted(expected)}\nactual={sorted(actual)}")
+          print("Package contents verified.")
+          PY
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: reverse-due-diligence-skill
+          path: |
+            dist/reverse-due-diligence.skill
+            dist/reverse-due-diligence.skill.sha256
+          if-no-files-found: error
+
+      - name: Create or update GitHub Release
+        if: steps.ref.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.ref.outputs.tag }}
+        shell: bash
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.skill.sha256               --clobber
+          else
+            gh release create "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.skill.sha256               --verify-tag               --generate-notes               --title "$TAG"
+          fi

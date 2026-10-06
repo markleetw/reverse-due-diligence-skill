@@ -63,7 +63,7 @@ def check_template() -> None:
 
 
 def check_python() -> None:
-    for rel in ("scripts/audit.py", "scripts/check_repo.py"):
+    for rel in ("scripts/audit.py", "scripts/check_repo.py", "scripts/package.py"):
         try:
             py_compile.compile(str(ROOT / rel), doraise=True)
             ok(f"Python compile: {rel}")

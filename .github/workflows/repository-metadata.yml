@@ -1,0 +1,27 @@
+name: Sync Repository Metadata
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/repository.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Sync repository description
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          DESCRIPTION="$(sed -n 's/^description:[[:space:]]*//p' .github/repository.yml)"
+          gh api --method PATCH "repos/$REPO" -f description="$DESCRIPTION"

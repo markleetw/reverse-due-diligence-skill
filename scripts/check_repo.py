@@ -8,6 +8,8 @@ import re
 import subprocess
 import sys
 import tempfile
+import zipfile
+import hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -96,7 +98,7 @@ def check_generic_files() -> None:
     # Examples in the analysis playbook may name real companies. Reusable runtime
     # files must not carry report-specific state.
     terms = re.compile(r"\b(?:Gogolook|JUJI|Whoscall|ScamAdviser)\b", re.I)
-    for rel in ("scripts/audit.py", "templates/report-shell.html"):
+    for rel in ("scripts/audit.py", "scripts/package.py", "templates/report-shell.html"):
         text = (ROOT / rel).read_text(encoding="utf-8")
         match = terms.search(text)
         if match:
@@ -139,6 +141,55 @@ def check_example_spec_and_audit() -> None:
             ok("generic audit smoke test")
 
 
+
+def file_sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def check_package() -> None:
+    expected = {
+        "rdd/SKILL.md",
+        "rdd/references/analysis-playbook.md",
+        "rdd/references/global-sources.md",
+        "rdd/references/report-template.md",
+        "rdd/references/taiwan-sources.md",
+        "rdd/templates/report-shell.html",
+        "rdd/scripts/audit.py",
+    }
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out1 = Path(temp_dir) / "a.skill"
+        out2 = Path(temp_dir) / "b.skill"
+
+        for out in (out1, out2):
+            proc = subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "package.py"), "--output", str(out)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+            if proc.returncode != 0:
+                fail("package build failed:\n" + proc.stdout + proc.stderr)
+                return
+
+        with zipfile.ZipFile(out1) as archive:
+            actual = set(archive.namelist())
+        if actual != expected:
+            fail(
+                "package contents mismatch: "
+                f"expected={sorted(expected)}, actual={sorted(actual)}"
+            )
+            return
+
+        if file_sha256(out1) != file_sha256(out2):
+            fail("package build is not deterministic")
+            return
+
+        ok("package build, contents and reproducibility")
+
 def main() -> int:
     check_frontmatter()
     check_references()
@@ -148,6 +199,7 @@ def main() -> int:
     check_generic_files()
     check_old_layout_references()
     check_example_spec_and_audit()
+    check_package()
 
     if ERRORS:
         print(f"\n{len(ERRORS)} check(s) failed.")

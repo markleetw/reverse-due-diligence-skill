@@ -178,3 +178,93 @@ hr{border:0;border-top:1px solid var(--border);margin:40px 0}
 
 <!-- 小倍數：兩張並排 -->
 <figure class="fig">
+  <div class="two">
+    <div><div class="ftitle">左圖標題</div><div class="fsub">副標</div><div id="c-mini-a"></div></div>
+    <div><div class="ftitle">右圖標題</div><div class="fsub">副標</div><div id="c-mini-b"></div></div>
+  </div>
+  <figcaption>資料來源。</figcaption>
+</figure>
+
+<!-- 表格：tfoot 放口徑與推估標註 -->
+<table>
+<thead><tr><th>欄位</th><th>數值</th></tr></thead>
+<tbody><tr><td>項目</td><td>123</td></tr></tbody>
+<tfoot><tr><td colspan="2">口徑說明、資料來源、推估標註</td></tr></tfoot>
+</table>
+
+<!-- 雙欄對照：正反兩種讀法 -->
+<div class="two">
+  <div class="card"><b>正面讀法</b><p style="margin-bottom:0">…</p></div>
+  <div class="card" style="border-color:var(--warn)"><b>負面讀法</b><p style="margin-bottom:0">…</p></div>
+</div>
+
+<!-- pill：g 綠／r 紅／a 黃／無 中性 -->
+<p><span class="pill g">低調</span><span class="pill r">非常高調</span><span class="pill a">中高</span><span class="pill">28% 營收</span></p>
+
+<!-- 值不值得接：評分條 -->
+<div class="verdict">
+  <h3 style="margin-top:0">整體判斷</h3>
+  <p class="lead">一句話定調。</p>
+  <div class="scorebar"><span class="nm">公司財務體質</span><span class="track"><span class="fillb" style="width:85%"></span></span><span class="sc">8.5</span></div>
+  <div class="scorebar"><span class="nm">角色實權</span><span class="track"><span class="fillb" style="width:60%"></span></span><span class="sc">6.0</span></div>
+  <p><small>分數為依公開資料的主觀評估，非公司官方或第三方評等。</small></p>
+</div>
+
+<!-- 面試題卡片 -->
+<div class="q"><div class="qt">1. 具體到數字的提問，不是通用題庫。</div>
+<div class="why">為什麼問這個、什麼答案是紅旗。</div></div>
+
+<!-- 摺疊區塊（附錄、算式明細） -->
+<details><summary>算式明細</summary><div class="body"><p>…</p></div></details>
+
+<h2 id="sN"><span class="num">17</span>資料來源與方法說明</h2>
+<div class="flag"><b>方法：</b>全部依據公開資料。匿名評論平台樣本小且自願填答，存在選擇偏誤，已在引用處標註。查不到的項目已標明「公開來源查不到」並註明可去哪裡找。</div>
+<h3>分組標題</h3>
+<ul class="src">
+<li><a href="#">來源名稱</a>｜<a href="#">另一個來源</a></li>
+</ul>
+
+<p style="margin-top:40px"><small>本報告依 {{日期}} 前之公開資訊彙整，僅供求職決策參考，不構成投資或法律建議。</small></p>
+</div>
+
+<script>
+(function(){
+const root=document.documentElement, btn=document.getElementById('tbtn');
+  btn.addEventListener('click',()=>{
+    const cur=root.getAttribute('data-theme');
+    const dark=cur?cur==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme',dark?'light':'dark');
+    setTimeout(drawAll,30);
+  });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>setTimeout(drawAll,30));
+
+  const tt=document.getElementById('tt');
+  function showTT(e,html){tt.innerHTML=html;tt.style.opacity=1;moveTT(e);}
+  function moveTT(e){
+    const p=12; let x=e.clientX+p, y=e.clientY+p;
+    const r=tt.getBoundingClientRect();
+    if(x+r.width>window.innerWidth-8) x=e.clientX-r.width-p;
+    if(y+r.height>window.innerHeight-8) y=e.clientY-r.height-p;
+    tt.style.left=x+'px'; tt.style.top=y+'px';
+  }
+  function hideTT(){tt.style.opacity=0;}
+  function bind(el,html){
+    el.style.cursor='default';
+    el.addEventListener('mouseenter',e=>showTT(e,html));
+    el.addEventListener('mousemove',moveTT);
+    el.addEventListener('mouseleave',hideTT);
+  }
+  const cs=()=>getComputedStyle(document.body);
+  const V=n=>cs().getPropertyValue(n).trim();
+  const NS='http://www.w3.org/2000/svg';
+  function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+  function svg(w,h){const s=E('svg',{viewBox:`0 0 ${w} ${h}`,role:'img'});return s;}
+  function txt(s,x,y,t,cls,anchor){const e=E('text',{x,y,class:cls||'axis-t'});if(anchor)e.setAttribute('text-anchor',anchor);e.textContent=t;s.appendChild(e);return e;}
+  function rrect(s,x,y,w,h,r,fill,extra){
+    // rounded top only (data end), anchored to baseline
+    r=Math.min(r,w/2,h);
+    const d=`M${x},${y+h} L${x},${y+r} Q${x},${y} ${x+r},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h} Z`;
+    const p=E('path',Object.assign({d,fill},extra||{})); s.appendChild(p); return p;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════

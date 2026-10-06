@@ -141,14 +141,23 @@ Git repo 是 source of truth；可安裝的 Skill 是 release artifact，不回�
 python scripts/package.py --output dist/reverse-due-diligence.skill
 ```
 
-正式發布：
+正式發布有兩種方式：
 
 ```bash
+# 方式一：更新 VERSION 後 push 到 main
+echo 0.1.0 > VERSION
+git add VERSION
+git commit -m "release: v0.1.0"
+git push
+
+# 方式二：直接建立 tag
 git tag v0.1.0
 git push origin v0.1.0
 ```
 
-當 `v*` tag 被 push 後，GitHub Actions 會：
+`VERSION` 變更時，Publish workflow 會先跑 repo checks，再自動建立對應的 `vX.Y.Z` tag；正式 Release 仍以 tag 為版本識別。
+
+當 `v*` tag 被建立後，GitHub Actions 會：
 
 1. 跑完整 CI
 2. 建立 reproducible package

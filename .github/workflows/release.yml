@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "要發布的既有 tag，例如 v0.1.0；留空則只建立 workflow artifact"
+        description: "要發布的既有 tag，例如 v0.1.0"
         required: false
         type: string
 
@@ -31,7 +31,7 @@ jobs:
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
             echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.tag }}" ]]; then
+          elif [[ -n "${{ inputs.tag }}" ]]; then
             echo "ref=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
             echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
           else
@@ -53,20 +53,16 @@ jobs:
       - name: Run repository checks
         run: python scripts/check_repo.py
 
-      - name: Build release packages
+      - name: Build ZIP
         run: |
           mkdir -p dist
-          python scripts/package.py --output dist/reverse-due-diligence.skill
-          cp dist/reverse-due-diligence.skill dist/reverse-due-diligence.zip
-          cmp dist/reverse-due-diligence.skill dist/reverse-due-diligence.zip
-          cd dist
-          sha256sum reverse-due-diligence.skill reverse-due-diligence.zip > SHA256SUMS.txt
+          python scripts/package.py --output dist/reverse-due-diligence.zip
 
       - name: Inspect package
         run: |
           python - <<'PY'
           import zipfile
-          p = "dist/reverse-due-diligence.skill"
+          p = "dist/reverse-due-diligence.zip"
           expected = {
               "rdd/SKILL.md",
               "rdd/references/analysis-playbook.md",
@@ -91,32 +87,26 @@ jobs:
           TAG: ${{ steps.ref.outputs.tag }}
         shell: bash
         run: |
-          PREVIOUS_TAG="$(git describe --tags --abbrev=0 "$TAG^" --match 'v*' 2>/dev/null || true)"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            git fetch origin main
+            git show origin/main:docs/install.md > dist/install.md
+          else
+            cp docs/install.md dist/install.md
+          fi
 
           {
-            echo "Reverse Due Diligence Skill **$TAG**"
+            echo "# Reverse Due Diligence Skill $TAG"
             echo
-            echo "本版本的安裝檔由 GitHub Actions 從對應 tag 自動打包並通過 CI 驗證。"
+            echo "下載 **reverse-due-diligence.zip**，依下方步驟安裝。"
             echo
-            cat docs/install.md
-            echo
-            echo "## 版本變更"
-            echo
-            if [[ -n "$PREVIOUS_TAG" ]]; then
-              git log --pretty='- %s (`%h`)' "$PREVIOUS_TAG..$TAG"
-            else
-              git log --pretty='- %s (`%h`)' "$TAG"
-            fi
+            cat dist/install.md
           } > dist/release-notes.md
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: reverse-due-diligence-skill
-          path: |
-            dist/reverse-due-diligence.skill
-            dist/reverse-due-diligence.zip
-            dist/SHA256SUMS.txt
+          path: dist/reverse-due-diligence.zip
           if-no-files-found: error
 
       - name: Create or update GitHub Release
@@ -127,8 +117,10 @@ jobs:
         shell: bash
         run: |
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.zip               dist/SHA256SUMS.txt               --clobber
+            gh release delete-asset "$TAG" reverse-due-diligence.skill -y >/dev/null 2>&1 || true
+            gh release delete-asset "$TAG" SHA256SUMS.txt -y >/dev/null 2>&1 || true
+            gh release upload "$TAG" dist/reverse-due-diligence.zip --clobber
             gh release edit "$TAG"               --title "Reverse Due Diligence Skill $TAG"               --notes-file dist/release-notes.md
           else
-            gh release create "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.zip               dist/SHA256SUMS.txt               --verify-tag               --title "Reverse Due Diligence Skill $TAG"               --notes-file dist/release-notes.md
+            gh release create "$TAG"               dist/reverse-due-diligence.zip               --verify-tag               --title "Reverse Due Diligence Skill $TAG"               --notes-file dist/release-notes.md
           fi

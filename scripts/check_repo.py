@@ -155,13 +155,15 @@ def check_public_docs() -> None:
         return
 
     install = (ROOT / "docs" / "install.md").read_text(encoding="utf-8")
-    for marker in ("## Claude", "## ChatGPT", "SHA256SUMS.txt"):
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for marker in ("## Claude", "## ChatGPT", "reverse-due-diligence.zip"):
         if marker not in install:
             fail(f"installation guide missing section/marker: {marker}")
-    if "help.openai.com/en/articles/20001066-skills-in-chatgpt" not in install:
-        fail("installation guide missing official ChatGPT Skills documentation")
-    if "support.claude.com/zh-TW/articles/12512180" not in install:
-        fail("installation guide missing official Claude Skills documentation")
+
+    for path, text in ((ROOT / "README.md", readme), (ROOT / "docs" / "install.md", install)):
+        for noise in (".skill", "SHA256SUMS"):
+            if noise in text:
+                fail(f"user-facing documentation contains implementation noise {noise!r}: {path.relative_to(ROOT)}")
 
     banned = [
         "Gogo" + "look",

@@ -7,6 +7,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "要發布的既有 tag，例如 v0.1.0；留空則只建立 workflow artifact"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -26,6 +31,9 @@ jobs:
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
             echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.tag }}" ]]; then
+            echo "ref=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
           else
             echo "ref=${{ github.sha }}" >> "$GITHUB_OUTPUT"
             echo "tag=" >> "$GITHUB_OUTPUT"

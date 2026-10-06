@@ -358,3 +358,93 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
       txt(s,cx,H-24,p.t,'axis-t','middle');
     });
     (o.notes||[]).forEach(n=>txt(s,W-mr+8,Y(n.at)+4,n.text,'lab-s','start'));
+  }
+
+  function drawGrouped(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const labels=o.labels||['A','B'], fmt=o.fmt||F;
+    const max=o.max||Math.max(...data.flatMap(d=>[d.a,d.b]))*1.2, ticks=o.ticks||4;
+    const W=780,H=o.height||280,ml=52,mr=14,mt=26,mb=44, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s);
+    const c1=V('--series-1'), c2=V('--series-2');
+    axisY(s,ml,mr,W,mt,ph,max,ticks,fmt,o.unit);
+    const gw=pw/data.length, iw=Math.min(56,gw*0.3), gap=6;
+    data.forEach((d,i)=>{
+      const cx=ml+i*gw+gw/2;
+      [[d.a,c1,-1,labels[0]],[d.b,c2,1,labels[1]]].forEach(([v,col,side,lbl])=>{
+        const x=side<0?cx-iw-gap/2:cx+gap/2, hh=(v/max)*ph, y=mt+ph-hh;
+        const p=rrect(s,x,y,iw,hh,4,col);
+        bind(p,`<b>${d.n}</b>${lbl}：${fmt(v)}${o.unit||''}`);
+        txt(s,x+iw/2,y-8,fmt(v),'lab-t','middle');
+      });
+      txt(s,cx,H-16,d.n,'axis-t','middle');
+    });
+  }
+
+  function drawStacked(id,rows,series,o){
+    o=o||{};
+    const leg=document.getElementById(o.legendId||('leg-'+id.replace(/^c-/,'')));
+    if(leg){ leg.innerHTML=''; series.forEach(m=>{ const sp=document.createElement('span');
+      sp.innerHTML=`<i class="sw" style="background:${V(m.k)}"></i>${m.n}`; leg.appendChild(sp); }); }
+    const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const W=780,H=o.height||(rows.length*76+52),ml=o.ml||92,mr=20,mt=14, pw=W-ml-mr, bh=48, gap=28;
+    const s=svg(W,H); host.appendChild(s);
+    rows.forEach((r,ri)=>{
+      const y=mt+ri*(bh+gap); let x=ml;
+      txt(s,ml-12,y+bh/2+5,r.y,'lab-t','end');
+      r.v.forEach((val,i)=>{
+        const w=(val/100)*pw-2, first=i===0, last=i===r.v.length-1, rr=4;
+        let d;
+        if(first) d=`M${x+rr},${y} L${x+w},${y} L${x+w},${y+bh} L${x+rr},${y+bh} Q${x},${y+bh} ${x},${y+bh-rr} L${x},${y+rr} Q${x},${y} ${x+rr},${y} Z`;
+        else if(last) d=`M${x},${y} L${x+w-rr},${y} Q${x+w},${y} ${x+w},${y+rr} L${x+w},${y+bh-rr} Q${x+w},${y+bh} ${x+w-rr},${y+bh} L${x},${y+bh} Z`;
+        else d=`M${x},${y} L${x+w},${y} L${x+w},${y+bh} L${x},${y+bh} Z`;
+        const p=E('path',{d,fill:V(series[i].k)}); s.appendChild(p);
+        bind(p,`<b>${r.y}</b>${series[i].n}：${val}%`);
+        // 淺色系色塊（黃）改用深色字，否則對比不足
+        if(w>34) txt(s,x+w/2,y+bh/2+5,val+'%','lab-t','middle')
+                  .setAttribute('fill', /yellow|--series-4/.test(series[i].k) ? '#0b0b0b' : '#ffffff');
+        x+=w+2;
+      });
+    });
+    if(o.caption) txt(s,ml,H-10,o.caption,'axis-t','start');
+  }
+
+  function drawMini(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const fmt=o.fmt||F, max=o.max||Math.max(...data.map(d=>d.v))*1.25, ticks=o.ticks||4;
+    const W=360,H=210,ml=40,mr=10,mt=24,mb=34, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s); const c1=V('--series-1');
+    for(let i=0;i<=ticks;i++){ const g=max*i/ticks, y=mt+ph-(g/max)*ph;
+      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line'=>));
+      txt(s,ml-8,y+4,fmt(g),'axis-t','end'); }
+    const bw=pw/data.length, iw=Math.min(42,bw*0.56);
+    data.forEach((d,i)=>{
+      const x=ml+i*bw+(bw-iw)/2, h=(d.v/max)*ph, y=mt+ph-h;
+      const p=rrect(s,x,y,iw,h,4,c1);
+      bind(p,`<b>${d.y}　${fmt(d.v)} ${o.unit||''}</b>${d.note||''}`);
+      txt(s,x+iw/2,y-7,fmt(d.v),'lab-t','middle');
+      txt(s,x+iw/2,H-12,d.y,'axis-t','middle');
+    });
+  }
+
+  function drawScores(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const max=o.max||5, low=o.lowBelow!==undefinedd?o.lowBelow:3, row=38, bh=20;
+    const W=780,H=data.length*row+42,ml=o.ml||92,mr=44,mt=8, pw=W-ml-mr;
+    const s=svg(W,H); host.appendChild(s);
+    const c1=V('--series-1'), warn=V('--critical');
+    for(let g=0;g<=max;g++){ const x=ml+(g/max)*pw;
+      s.appendChild(E('line',{x1:x,x2:x,y1:mt,y2:mt+data.length*row-14,class:'grid-line'}));
+      txt(s,x,H-12,g,'axis-t','middle'); }
+    data.forEach((d,i)=>{
+      const y=mt+i*row, w=(d.v/max)*pw, isLow=d.v<low, rr=4;
+      const p=E('path',{d:`M${ml},${y} L${ml+w|},${y} Q${ml+w},${y} ${ml+w},${y+rr} L${ml+w},${y+bh-rr} Q${ml+w},${y+bh} ${ml+w-rr},${y+bh} L${ml},${y+bh} Z`,
+                        fill:isLow?warn:c1});
+      s.appendChild(p);
+      bind(p,`<b>${d.n}　${d.v.toFixed(1)} / ${max.toFixed(1)}</b>${isLow?'低於中位水準':(d.note||'')}`);
+      txt(s,ml-12,y+bh/2+5,d.n,'lab-s','end');
+      txt(s,ml+w+8,y+bh/2+5,d.v.toFixed(1),'lab-t','start');
+    });
+  }
+
+  function drawRanges(id,data,o){

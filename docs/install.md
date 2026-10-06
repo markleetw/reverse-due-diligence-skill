@@ -4,10 +4,11 @@
 
 ## ChatGPT
 
-1. 打開 **外掛程式**
-2. 進入 **外掛程式目錄 → 技能**
-3. 點 **建立 → 從電腦上傳**
-4. 選擇 `reverse-due-diligence.zip`
+1. 打開 **自訂 → 技能**
+2. 點 **建立 → 從電腦上傳**
+3. 選擇 `reverse-due-diligence.zip`
+
+> 不要從「外掛程式」上傳。RDD 是 Skill，不是 Plugin。
 
 ## Claude
 

@@ -1,0 +1,32 @@
+{
+  "correction_marker": "已移除或更正的主張",
+  "stale_claims": [
+    {
+      "pattern": "132\\.5",
+      "reason": "old reference price; canonical value is 126.5"
+    }
+  ],
+  "resolved_claims": [
+    {
+      "pattern": "應收分期款[^。<]{0,30}查不到",
+      "reason": "this item has since been obtained from a primary source"
+    }
+  ],
+  "canonical_values": [
+    {
+      "value": "126.5",
+      "label": "reference price",
+      "min_occurrences": 1
+    }
+  ],
+  "arithmetic": [
+    {
+      "label": "126.5 / 215 - 1 ≈ -41.16%",
+      "expression": "abs(126.5 / 215 - 1 + 0.4116) < 0.001"
+    },
+    {
+      "label": "child item must not exceed parent item",
+      "expression": "55 <= 85"
+    }
+  ]
+}

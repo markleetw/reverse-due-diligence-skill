@@ -82,13 +82,14 @@ def check_forbidden_paths() -> None:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        if "/home/claude/" in text:
+        forbidden_root = "/" + "home/claude/"
+        if forbidden_root in text:
             offenders.append(str(path.relative_to(ROOT)))
     if offenders:
         for rel in offenders:
             fail(f"absolute Claude path found in {rel}")
     else:
-        ok("no absolute /home/claude paths")
+        ok("no absolute Claude home paths")
 
 
 def check_generic_files() -> None:

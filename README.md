@@ -13,13 +13,14 @@
 
 到 [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases) 下載最新的 `reverse-due-diligence.zip`。
 
-**ChatGPT**
-
-`自訂 → 技能 → 建立 → 從電腦上傳`
-
 **Claude**
 
 `自訂 → 技能 → + → 建立技能 → 上傳技能`
+
+**ChatGPT**
+
+到 `自訂 → 技能`。如果「新增」裡有 **從電腦上傳**，即可選擇下載的 ZIP 安裝。  
+如果沒有這個選項，代表目前你的 ChatGPT 介面尚未提供 Skill 檔案匯入。
 
 完整步驟請看 [安裝說明](docs/install.md)。
 

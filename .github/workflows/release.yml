@@ -35,6 +35,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ steps.ref.outputs.ref }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -44,12 +45,14 @@ jobs:
       - name: Run repository checks
         run: python scripts/check_repo.py
 
-      - name: Build .skill
+      - name: Build release packages
         run: |
           mkdir -p dist
           python scripts/package.py --output dist/reverse-due-diligence.skill
+          cp dist/reverse-due-diligence.skill dist/reverse-due-diligence.zip
+          cmp dist/reverse-due-diligence.skill dist/reverse-due-diligence.zip
           cd dist
-          sha256sum reverse-due-diligence.skill > reverse-due-diligence.skill.sha256
+          sha256sum reverse-due-diligence.skill reverse-due-diligence.zip > SHA256SUMS.txt
 
       - name: Inspect package
         run: |
@@ -68,9 +71,35 @@ jobs:
           with zipfile.ZipFile(p) as z:
               actual = set(z.namelist())
           if actual != expected:
-              raise SystemExit(f"package contents mismatch\nexpected={sorted(expected)}\nactual={sorted(actual)}")
+              raise SystemExit(
+                  f"package contents mismatch\nexpected={sorted(expected)}\nactual={sorted(actual)}"
+              )
           print("Package contents verified.")
           PY
+
+      - name: Build release notes
+        if: steps.ref.outputs.tag != ''
+        env:
+          TAG: ${{ steps.ref.outputs.tag }}
+        shell: bash
+        run: |
+          PREVIOUS_TAG="$(git describe --tags --abbrev=0 "$TAG^" --match 'v*' 2>/dev/null || true)"
+
+          {
+            echo "Reverse Due Diligence Skill **$TAG**"
+            echo
+            echo "本版本的安裝檔由 GitHub Actions 從對應 tag 自動打包並通過 CI 驗證。"
+            echo
+            cat docs/install.md
+            echo
+            echo "## 版本變更"
+            echo
+            if [[ -n "$PREVIOUS_TAG" ]]; then
+              git log --pretty='- %s (`%h`)' "$PREVIOUS_TAG..$TAG"
+            else
+              git log --pretty='- %s (`%h`)' "$TAG"
+            fi
+          } > dist/release-notes.md
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
@@ -78,7 +107,8 @@ jobs:
           name: reverse-due-diligence-skill
           path: |
             dist/reverse-due-diligence.skill
-            dist/reverse-due-diligence.skill.sha256
+            dist/reverse-due-diligence.zip
+            dist/SHA256SUMS.txt
           if-no-files-found: error
 
       - name: Create or update GitHub Release
@@ -89,7 +119,8 @@ jobs:
         shell: bash
         run: |
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.skill.sha256               --clobber
+            gh release upload "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.zip               dist/SHA256SUMS.txt               --clobber
+            gh release edit "$TAG"               --title "Reverse Due Diligence Skill $TAG"               --notes-file dist/release-notes.md
           else
-            gh release create "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.skill.sha256               --verify-tag               --generate-notes               --title "$TAG"
+            gh release create "$TAG"               dist/reverse-due-diligence.skill               dist/reverse-due-diligence.zip               dist/SHA256SUMS.txt               --verify-tag               --title "Reverse Due Diligence Skill $TAG"               --notes-file dist/release-notes.md
           fi

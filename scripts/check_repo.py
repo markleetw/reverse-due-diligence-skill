@@ -142,6 +142,49 @@ def check_example_spec_and_audit() -> None:
 
 
 
+
+def check_public_docs() -> None:
+    required = [
+        ROOT / "README.md",
+        ROOT / "docs" / "install.md",
+    ]
+    for path in required:
+        if not path.exists():
+            fail(f"missing public documentation: {path.relative_to(ROOT)}")
+    if any(not path.exists() for path in required):
+        return
+
+    install = (ROOT / "docs" / "install.md").read_text(encoding="utf-8")
+    for marker in ("## Claude", "## ChatGPT", "SHA256SUMS.txt"):
+        if marker not in install:
+            fail(f"installation guide missing section/marker: {marker}")
+    if "help.openai.com/en/articles/20001066-skills-in-chatgpt" not in install:
+        fail("installation guide missing official ChatGPT Skills documentation")
+    if "support.claude.com/zh-TW/articles/12512180" not in install:
+        fail("installation guide missing official Claude Skills documentation")
+
+    banned = [
+        "Gogo" + "look",
+        "JU" + "JI",
+        "Who" + "scall",
+        "Scam" + "Adviser",
+        "走" + "著瞧",
+    ]
+    public_files = [
+        ROOT / "README.md",
+        ROOT / "SKILL.md",
+        ROOT / "references" / "analysis-playbook.md",
+        ROOT / "docs" / "install.md",
+    ]
+    for path in public_files:
+        text = path.read_text(encoding="utf-8")
+        for term in banned:
+            if term.lower() in text.lower():
+                fail(f"targeted case-company term {term!r} found in {path.relative_to(ROOT)}")
+
+    if not any("installation guide" in e or "targeted case-company" in e or "public documentation" in e for e in ERRORS):
+        ok("public docs, installation guide and fictionalized examples")
+
 def file_sha256(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as fh:
@@ -199,6 +242,7 @@ def main() -> int:
     check_generic_files()
     check_old_layout_references()
     check_example_spec_and_audit()
+    check_public_docs()
     check_package()
 
     if ERRORS:

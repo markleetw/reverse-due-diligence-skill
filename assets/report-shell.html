@@ -275,7 +275,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
        drawNodeLine(id, pts, o)    節點折線圖     pts:[{t,v,l,key?}]
        drawGrouped(id, data, o)    分組直條圖     data:[{n,a,b}]  o.labels:[A,B]
        drawStacked(id, rows, ser)  百分比堆疊橫條 rows:[{y,v:[..]}] ser:[{n,k}]
-       drawMini(id, data, o)       小倍數圖（改進 .two 並排）
+       drawMini(id, data, o)       小倍數圖（放進 .two 並排）
        drawScores(id, data, o)     橫條評分圖     data:[{n,v}]  o.max, o.lowBelow
        drawRanges(id, data, o)     區間橫條圖     data:[{n,lo,hi,c,t}]
 
@@ -415,7 +415,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
     const W=360,H=210,ml=40,mr=10,mt=24,mb=34, pw=W-ml-mr, ph=H-mt-mb;
     const s=svg(W,H); host.appendChild(s); const c1=V('--series-1');
     for(let i=0;i<=ticks;i++){ const g=max*i/ticks, y=mt+ph-(g/max)*ph;
-      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line'=>));
+      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line'}));
       txt(s,ml-8,y+4,fmt(g),'axis-t','end'); }
     const bw=pw/data.length, iw=Math.min(42,bw*0.56);
     data.forEach((d,i)=>{
@@ -429,7 +429,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
 
   function drawScores(id,data,o){
     o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
-    const max=o.max||5, low=o.lowBelow!==undefinedd?o.lowBelow:3, row=38, bh=20;
+    const max=o.max||5, low=o.lowBelow!==undefined?o.lowBelow:3, row=38, bh=20;
     const W=780,H=data.length*row+42,ml=o.ml||92,mr=44,mt=8, pw=W-ml-mr;
     const s=svg(W,H); host.appendChild(s);
     const c1=V('--series-1'), warn=V('--critical');
@@ -438,7 +438,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
       txt(s,x,H-12,g,'axis-t','middle'); }
     data.forEach((d,i)=>{
       const y=mt+i*row, w=(d.v/max)*pw, isLow=d.v<low, rr=4;
-      const p=E('path',{d:`M${ml},${y} L${ml+w|},${y} Q${ml+w},${y} ${ml+w},${y+rr} L${ml+w},${y+bh-rr} Q${ml+w},${y+bh} ${ml+w-rr},${y+bh} L${ml},${y+bh} Z`,
+      const p=E('path',{d:`M${ml},${y} L${ml+w-rr},${y} Q${ml+w},${y} ${ml+w},${y+rr} L${ml+w},${y+bh-rr} Q${ml+w},${y+bh} ${ml+w-rr},${y+bh} L${ml},${y+bh} Z`,
                         fill:isLow?warn:c1});
       s.appendChild(p);
       bind(p,`<b>${d.n}　${d.v.toFixed(1)} / ${max.toFixed(1)}</b>${isLow?'低於中位水準':(d.note||'')}`);
@@ -448,3 +448,69 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
   }
 
   function drawRanges(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const max=o.max||Math.max(...data.map(d=>d.hi))*1.1, suffix=o.suffix||'%';
+    const row=44,bh=18;
+    const W=780,H=data.length*row+46,ml=o.ml||176,mr=54,mt=10, pw=W-ml-mr;
+    const s=svg(W,H); host.appendChild(s);
+    const step=max/(o.ticks||5);
+    for(let g=0;g<=max+1e-9;g+=step){ const x=ml+(g/max)*pw;
+      s.appendChild(E('line',{x1:x,x2:x,y1:mt,y2:mt+data.length*row-18,class:'grid-line'}));
+      txt(s,x,H-12,Math.round(g)+suffix,'axis-t','middle'); }
+    data.forEach((d,i)=>{
+      const y=mt+i*row, x1=ml+(d.lo/max)*pw, x2=ml+(d.hi/max)*pw, point=d.lo===d.hi;
+      const w=point?9:Math.max(x2-x1,9), xx=point?x1-4.5:x1, rr=4;
+      const p=E('path',{d:`M${xx+rr},${y} L${xx+w-rr},${y} Q${xx+w},${y} ${xx+w},${y+rr} L${xx+w},${y+bh-rr} Q${xx+w},${y+bh} ${xx+w-rr},${y+bh} L${xx+rr},${y+bh} Q${xx},${y+bh} ${xx},${y+bh-rr} L${xx},${y+rr} Q${xx},${y} ${xx+rr},${y} Z`,
+                        fill:V(d.c||'--series-1')});
+      s.appendChild(p);
+      const lbl=point?d.lo+suffix:d.lo+'–'+d.hi+suffix;
+      bind(p,`<b>${d.n}　${lbl}</b>${d.t||''}`);
+      txt(s,ml-14,y+bh/2+5,d.n,'lab-s','end');
+      txt(s,xx+w+9,y+bh/2+5,lbl,'lab-t','start');
+    });
+  }
+
+  function legend(id,items){
+    const leg=document.getElementById(id); if(!leg) return; leg.innerHTML='';
+    items.forEach(([n,k])=>{ const sp=document.createElement('span');
+      sp.innerHTML=`<i class="sw" style="background:${V(k)}"></i>${n}`; leg.appendChild(sp); });
+  }
+
+
+  /* ── 在這裡呼叫需要的圖表。其餘為可直接改用的範例 ───────────────── */
+  function drawAll(){
+    drawBars('c-demo',
+      [{y:'2022',v:420},{y:'2023',v:774},{y:'2024',v:867},{y:'2025',v:1048},{y:'2026E',v:1260,est:true}],
+      {max:1400, unit:'百萬元'});
+
+    // drawSignedBars('c-eps', [{y:'2023',v:0.16},{y:'2024',v:-1.24},{y:'2025',v:1.58}],
+    //                {min:-2, max:4, unit:'元'});
+
+    // drawNodeLine('c-price', [{t:'2023.07',v:236.5,l:'掛牌開盤',key:1},{t:'2026.08',v:132.5,l:'現價',key:1}],
+    //              {max:260, prefix:'NT$', notes:[{at:236.5,text:'−38%'}]});
+
+    // legend('leg-demo', [['方案年費','--series-1'],['平均每人年費','--series-2']]);
+    // drawGrouped('c-price2', [{n:'個人版',a:890,b:890},{n:'家庭版',a:2590,b:518}],
+    //             {max:3000, unit:'元／年', labels:['方案年費','平均每人年費']});
+
+    // drawStacked('c-mix', [{y:'2025 全年',v:[31,32,27,10]},{y:'2026 Q2',v:[34,29,28,9]}],
+    //   [{n:'數位廣告',k:'--series-1'},{n:'訂閱',k:'--series-2'},
+    //    {n:'金融科技',k:'--series-3'},{n:'企業防詐',k:'--series-4'}],
+    //   {caption:'占總營收比重（%）'});
+
+    // drawMini('c-mini-a', [{y:'2023',v:155},{y:'2024',v:246,note:'高峰'},{y:'2025',v:211}], {max:260, unit:'人'});
+    // drawMini('c-mini-b', [{y:'2023',v:5.0},{y:'2024',v:3.5},{y:'2025',v:5.0}], {max:7, fmt:v=>v.toFixed(1)});
+
+    // drawScores('c-rate', [{n:'生活平衡',v:4.0},{n:'升遷機會',v:2.3}], {max:5, lowBelow:3});
+
+    // drawRanges('c-rates', [
+    //   {n:'銀行信用貸款',lo:2,hi:16,c:'--text-muted',t:'需信用紀錄'},
+    //   {n:'實質年化（推算）',lo:36,hi:36,c:'--series-2',t:'依單一公開案例推算'},
+    //   {n:'當舖（法定上限）',lo:30,hi:90,c:'--text-muted',t:''}], {max:100});
+  }
+  drawAll();
+
+})();
+</script>
+</body>
+</html>

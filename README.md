@@ -1,144 +1,160 @@
 # Reverse Due Diligence Skill
 
-An AI agent skill for structured reverse due diligence on companies, roles, and career opportunities.
+給求職者使用的 AI Agent Skill：在投履歷、進入面試流程或接受 offer 前，用公開資料反向調查雇主。
 
-This repository is the source of truth for the **RDD** skill: a job-candidate-oriented research workflow that turns public evidence into a company/role assessment, interview questions, and a reusable HTML report.
+RDD（Reverse Due Diligence，反向盡職調查）的目標不是做一份漂亮的公司簡介，而是把公開資訊轉成**可以拿來做職涯決策的判斷**：公司體質如何、這個角色到底有多少實權，以及面試現場該問什麼。
 
-## What it does
+## 這個 Skill 會回答什麼
 
-RDD is designed to answer three questions:
+1. **這家公司會不會有事？**
+   財務體質、現金流、營收結構、股權、低潮期、監管與結構性風險。
 
-1. **Is the company structurally healthy?** — financial quality, cash flow, business-model and regulatory risk.
-2. **Does the role have real scope and resources?** — ownership, KPI design, budget/headcount flexibility, reporting lines.
-3. **What should the candidate ask in interviews?** — questions derived from concrete findings, not a generic interview checklist.
+2. **這個角色有沒有實權與資源？**
+   權責邊界、KPI、匯報線、預算與 headcount 彈性，以及產品／業務／財務誰真正掌握決策權。
 
-The workflow is intentionally evidence-heavy:
+3. **面試現場該問什麼？**
+   面試題不是通用題庫，而是從調查結果反推出來，並附上「為什麼問」與「什麼答案是紅旗」。
+
+## 運作流程
 
 ```text
-Scope
-  ↓
-Company identity / legal entity
-  ↓
-Parallel research
-  ↓
-Deep analysis
-  ↓
-Evidence & uncertainty checks
-  ↓
-Decision synthesis
-  ↓
-Interview questions
-  ↓
-HTML report
-  ↓
+確認公司／角色／決策問題
+        ↓
+釘住法律實體與公司事實骨架
+        ↓
+平行蒐集財務、股權、營收、組織、文化、敘事
+        ↓
+深挖商業模式與結構性風險
+        ↓
+證據分級、交叉驗證、不確定性標註
+        ↓
+收斂成職涯判斷
+        ↓
+產生面試提問清單
+        ↓
+輸出 HTML 報告
+        ↓
 Deterministic audit
 ```
 
-## Repository structure
+## 安裝
+
+請直接從 [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases) 下載最新版本。
+
+- **Claude**：建議下載 `reverse-due-diligence.zip`
+- **ChatGPT**：建議下載 `reverse-due-diligence.zip`；Release 同時提供內容相同的 `.skill` 檔
+
+完整安裝步驟請看 [`docs/install.md`](docs/install.md)。
+
+> ChatGPT Skills 目前只開放給符合資格的 Business、Enterprise、Healthcare 與 Edu 工作區，且仍受工作區設定影響。如果你的 ChatGPT 看不到「外掛程式 > 技能」，通常代表目前方案／工作區尚未提供，或管理員尚未開啟相關權限。
+
+## 使用方式
+
+常見輸入：
+
+```text
+/rdd 台積電 資深工程師
+/rdd 星圖科技 Head of Product
+/rdd 某某公司 資深 PM 想知道值不值得接
+```
+
+Skill 最理想的輸入有三項：
+
+- **公司**：公司名、品牌名或股票代號
+- **角色**：應徵職缺或預計加入的角色
+- **決策問題**：要不要投、要不要繼續面、要不要接 offer、怎麼談薪等
+
+如果有 JD、offer、獵頭訊息或內部人士說法，也可以一起提供；Skill 會依證據強度分開處理，不會把口述資訊直接當成事實。
+
+## Repo 結構
 
 ```text
 .
-├── SKILL.md                         # Orchestrator: when to run RDD and what happens next
+├── README.md
+├── SKILL.md                         # Orchestrator：決定何時啟動、下一步做什麼
+├── docs/
+│   └── install.md                   # Claude / ChatGPT 安裝方式
 ├── references/
-│   ├── analysis-playbook.md         # Analysis methods, evidence discipline, QA heuristics
-│   ├── report-template.md           # Report information architecture
-│   ├── taiwan-sources.md            # Taiwan source registry
-│   └── global-sources.md            # Global source registry
+│   ├── analysis-playbook.md         # 分析方法、證據紀律、QA heuristics
+│   ├── report-template.md           # 報告資訊架構
+│   ├── taiwan-sources.md            # 台灣資料來源
+│   └── global-sources.md            # 海外／外商資料來源
 ├── templates/
-│   └── report-shell.html            # Self-contained HTML report template / chart library
+│   └── report-shell.html            # 自包含 HTML 報告樣板與圖表函式
 ├── scripts/
-│   ├── audit.py                     # Generic deterministic report audit
-│   └── check_repo.py                # Repository consistency checks
+│   ├── audit.py                     # 通用 deterministic audit
+│   ├── package.py                   # 建立 release package
+│   └── check_repo.py                # Repo 一致性與 smoke test
+├── examples/
+│   └── audit-spec.example.json
 └── .github/workflows/
-    └── ci.yml                       # CI
+    ├── ci.yml
+    └── release.yml
 ```
 
-### Responsibility boundaries
+### 各層責任
 
-- **`SKILL.md`** decides **when** to run the skill and **what step comes next**.
-- **`references/`** is the canonical source for **how to research, analyze, and validate evidence**.
-- **`templates/`** contains reusable output templates.
-- **`scripts/`** contains deterministic tooling. Company-specific facts must not be hard-coded here.
+- **`SKILL.md`**：只負責「什麼情況啟動」與「工作流程怎麼走」。
+- **`references/`**：分析方法與證據規則的單一事實來源。
+- **`templates/`**：可重複使用的輸出樣板。
+- **`scripts/`**：適合 deterministic 處理的事情，例如殘留掃描、算術驗證、打包與 repo 檢查。
+- **`docs/`**：給人看的使用與安裝說明。
 
-This separation is deliberate: analytical rules should have one source of truth, while runtime-specific mechanics and report-specific assertions stay outside the core skill instructions.
+## 報告稽核
 
-## Usage
-
-Typical invocations:
-
-```text
-/rdd Gogolook Head of Product
-/rdd 台積電 Senior Product Manager 想知道值不值得接
-research this company before I interview for Head of Product
-```
-
-The skill expects three inputs when available:
-
-- company / legal entity
-- role
-- decision question (apply, continue interviewing, accept an offer, negotiate compensation, etc.)
-
-If a job description or offer is available, it should be treated as first-party evidence about the role.
-
-## Report audit
-
-`scripts/audit.py` is generic. It receives a generated HTML report and a JSON audit spec:
+`scripts/audit.py` 是通用稽核引擎，不包含任何特定公司的數字。每次研究會另外產生一份 audit spec：
 
 ```bash
 python3 scripts/audit.py report.html audit-spec.json
 ```
 
-The spec can define:
+audit spec 可以定義：
 
-- stale claims that must no longer appear
-- canonical values that must appear
-- regex-based resolved claims
-- arithmetic assertions
+- 不應再出現的舊值／舊主張
+- 必須存在的 canonical values
+- 已解決但不應再被寫成「查不到」的主張
+- 算術恆等式與結構性約束
 
-The audit checks **internal consistency**, not whether the underlying external facts are true. Source verification still belongs to the research workflow.
+這套 audit 檢查的是**報告內部是否自洽**，不是替代原始來源查證。
 
-## Development principles
+## 開發與維護原則
 
-1. **One rule, one canonical location.** Avoid copying detailed evidence/QA rules into `SKILL.md`.
-2. **No company-specific state in reusable files.** Company facts belong in generated reports/audit specs, not scripts or templates.
-3. **Prefer deterministic checks for deterministic problems.** Arithmetic, stale-value scans, path/reference validation and syntax checks should not rely on LLM rereading.
-4. **Keep the distributable skill simple.** The repository may have CI and tooling; the skill itself should remain understandable from a small number of files.
+1. **同一條規則只維護一份。**
+   詳細 evidence / QA 規則放在 playbook，不要再複製到 `SKILL.md`。
 
-## Status
+2. **Reusable file 不放特定公司 state。**
+   特定公司的數字、舊值與檢查條件屬於單次研究產物，不應硬編碼在通用 script 或 template。
 
-The project is evolving from a working personal skill into a reusable, maintainable RDD workflow. The current focus is preserving the proven research method while reducing duplicated rules and report-specific hard-coding.
+3. **Deterministic 的問題用程式檢查。**
+   算術、舊值殘留、路徑、package contents、reproducible build 不靠 LLM 重讀。
 
+4. **案例用來教方法，不用來暗示真實公司。**
+   playbook 內的案例以明確標示的虛構公司為主，數字只供教學。
 
-## Packaging & releases
+## 打包與 Release
 
-The Git repository is the source of truth. The distributable `.skill` file is a **release artifact** and is not committed back into the repository.
+Git repo 是 source of truth；可安裝的 Skill 是 release artifact，不回寫進 repo。
 
-A release package contains only the files required at runtime:
-
-```text
-rdd/
-├── SKILL.md
-├── references/
-├── templates/
-└── scripts/
-    └── audit.py
-```
-
-Development-only files such as `README.md`, `.github/`, `examples/`, and `scripts/check_repo.py` are excluded.
-
-To build locally:
+本機打包：
 
 ```bash
 python scripts/package.py --output dist/reverse-due-diligence.skill
 ```
 
-To publish a release:
+正式發布：
 
 ```bash
 git tag v0.1.0
 git push origin v0.1.0
 ```
 
-Pushing a `v*` tag runs CI, creates the `.skill` package, generates a SHA-256 checksum, and creates or updates the matching GitHub Release. Publishing a Release manually from GitHub also rebuilds and uploads the package for that Release tag.
+當 `v*` tag 被 push 後，GitHub Actions 會：
 
-The package is built deterministically: file order, ZIP timestamps, and permissions are normalized so the same source tree produces the same `.skill` bytes.
+1. 跑完整 CI
+2. 建立 reproducible package
+3. 產出 `.skill` 與 `.zip`
+4. 產生 SHA-256 checksum
+5. 建立／更新對應的 GitHub Release
+6. 把安裝指引與版本變更寫入 Release page
+
+同一份 source tree 重複打包，產物必須 byte-for-byte 一致。

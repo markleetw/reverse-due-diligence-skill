@@ -1,0 +1,83 @@
+name: Render Demo Preview
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "demo/index.html"
+      - "templates/report-shell.html"
+      - ".github/workflows/demo-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: macos-14
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install renderer
+        run: |
+          pip install playwright pillow
+          python -m playwright install chromium
+
+      - name: Render preview with macOS typography
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          from playwright.sync_api import sync_playwright
+
+          url = Path("demo/index.html").resolve().as_uri()
+          tmp = Path("/tmp/demo-preview@2x.png")
+          out = Path("docs/assets/demo-preview.png")
+
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page(
+                  viewport={"width": 1440, "height": 1100},
+                  device_scale_factor=2,
+              )
+              page.goto(url)
+              page.evaluate(
+                  "document.documentElement.setAttribute('data-theme','light')"
+              )
+              page.add_style_tag(content="""
+                body {
+                  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC",
+                               "Helvetica Neue", Arial, sans-serif !important;
+                  -webkit-font-smoothing: antialiased;
+                }
+              """)
+              page.wait_for_function("document.fonts.status === 'loaded'")
+              page.wait_for_timeout(300)
+              page.screenshot(path=str(tmp), full_page=False)
+              browser.close()
+
+          img = Image.open(tmp).convert("RGB")
+          img = img.resize((1440, 1100), Image.Resampling.LANCZOS)
+          img.save(out, optimize=True)
+          print(f"Rendered {out} ({out.stat().st_size} bytes)")
+          PY
+
+      - name: Commit preview
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/demo-preview.png
+          if git diff --cached --quiet; then
+            echo "Preview unchanged."
+            exit 0
+          fi
+          git commit -m "docs: refresh demo preview"
+          git push

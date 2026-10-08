@@ -40,3 +40,15 @@ jobs:
 
       - name: Run browser QA
         run: python scripts/browser_test.py
+
+      - name: Build test package
+        run: |
+          mkdir -p dist
+          python scripts/package.py --output dist/reverse-due-diligence.zip
+
+      - name: Upload test package
+        uses: actions/upload-artifact@v4
+        with:
+          name: reverse-due-diligence-test-package
+          path: dist/reverse-due-diligence.zip
+          if-no-files-found: error

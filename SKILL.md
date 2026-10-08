@@ -142,7 +142,7 @@ Step 2 只會產出一份普通的公司簡介。真正的價值在下面四件�
 預設交付一份**自包含的單檔 HTML**（CSS 與 JS 全部 inline，無外部相依），使用者可本機開、可自行 host。
 
 - 若執行環境提供資料視覺化指南或相關 Skill，畫圖前先讀；否則遵循 `references/report-template.md` 的圖表與呈現規則
-- `templates/report-shell.html` 是 renderer SSOT：深淺色模式、tooltip、目錄、卡片、旗標與圖表函式都以它為準。**複製後保留整個 `<style>` 與共用 renderer JavaScript 原樣，不得為單次報告自行調色、改 spacing、重寫 chart library 或 theme logic。**只改正文，以及 `RDD_REPORT_DATA_START`／`RDD_REPORT_DATA_END` 之間的圖表資料與呼叫
+- `templates/report-shell.html` 是 renderer SSOT：**從完整檔案複製，不得只擷取內部 fragment。必須保留 `<!DOCTYPE html>`、`<html>`、`<head>`、`<body>` 與對應 closing tags，且 `</html>` 必須是最後一個非空白內容。**深淺色模式、tooltip、目錄、卡片、旗標與圖表函式都以它為準；整個 `<style>` 與共用 renderer JavaScript 原樣保留，不得為單次報告自行調色、改 spacing、重寫 chart library 或 theme logic。只改正文，以及 `RDD_REPORT_DATA_START`／`RDD_REPORT_DATA_END` 之間的圖表資料與呼叫
 - 章節骨架與撰寫要點見 `references/report-template.md`
 - 若執行環境支援 browser automation／headless browser，產出後實際載入 HTML，檢查 desktop／mobile、深淺色切換、排版碰撞與 console/page errors；若不支援，至少做 HTML／JavaScript 靜態檢查，並在交付時註明未執行 browser visual QA
 - 使用執行環境支援的檔案交付方式提供 HTML；若環境無法輸出檔案，改以完整 Markdown 報告交付，不因工具名稱不同而中止。若環境支援持久化 artifact／library，可另外保存方便後續更新

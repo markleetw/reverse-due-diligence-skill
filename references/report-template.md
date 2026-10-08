@@ -47,10 +47,13 @@
 - 圖表繪製函式：**直條圖**（含虛線推估柱）、**正負值直條圖**、**節點折線圖**、**分組直條圖**、**百分比堆疊橫條圖**、**小倍數圖**、**橫條評分圖**、**區間橫條圖**
 - 統一的 tooltip 綁定與深淺色重繪
 
-改資料陣列即可，不要重寫樣式。若執行環境提供資料視覺化指南或相關 Skill，動手前先讀；否則遵循本節既有的圖表規則。
+`templates/report-shell.html` 是 renderer SSOT。產出報告時必須原樣保留整個 `<style>`，以及 `RDD_REPORT_DATA_START` 之前、`RDD_REPORT_DATA_END` 之後的共用 renderer JavaScript。正文內容可自由替換；圖表資料與呼叫只放在兩個 marker 之間。**不要為單次公司報告自行調色、改 spacing、另寫 chart library 或改 theme logic。**若既有元件不足，優先用既有 primitives 組合，而不是 fork renderer。
+
+若執行環境提供資料視覺化指南或相關 Skill，動手前先讀；否則遵循本節既有的圖表規則。
 
 **必做的品管**：
 
+- 若能執行 packaged script，定稿前執行 `scripts/audit.py REPORT.html AUDIT_SPEC.json --renderer-template templates/report-shell.html`；renderer parity 失敗就先修回 template，不交付。
 - 若有 JavaScript runtime，可先抽出 inline script 做語法檢查。
 - 若有 browser automation／headless browser，實際載入 HTML，至少檢查：console/page errors、深淺色切換、desktop/mobile overflow、圖表與目錄連結。
 - browser QA 後要**實際看過畫面**——驗證器抓不到排版碰撞、標籤重疊與視覺層級問題。

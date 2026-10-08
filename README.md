@@ -74,7 +74,15 @@ RDD 不僅判斷「這家公司好不好」，還會把 **公司風險** 與 **�
 <!-- release-notes:start -->
 ## 安裝
 
-到 [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases) 下載最新的 `reverse-due-diligence.zip`，並依照頁面說明安裝。
+到 [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases) 下載最新的 `reverse-due-diligence.zip`。
+
+**ChatGPT**
+
+把 ZIP 丟進 ChatGPT 對話，請它安裝這個 Skill。
+
+**Claude**
+
+`自訂 → 技能 → + → 建立技能 → 上傳技能`
 
 ## 使用
 

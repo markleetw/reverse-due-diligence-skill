@@ -101,11 +101,7 @@ jobs:
             keep
           ' README.md > dist/release-content.md
 
-          {
-            echo "# Reverse Due Diligence Skill $TAG"
-            echo
-            cat dist/release-content.md
-          } > dist/release-notes.md
+          cp dist/release-content.md dist/release-notes.md
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4

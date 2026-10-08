@@ -23,7 +23,7 @@
 | AI Tool | 說明 |
 | --- | --- |
 | ChatGPT | 把 ZIP 丟進 ChatGPT 對話，請它安裝這個 Skill。 |
-| Claude | 設定 → Skills → 新增 → 上傳 Skill |
+| Claude | 自訂 → 技能 → + → 建立技能 → 上傳技能 |
 
 
 ## 使用

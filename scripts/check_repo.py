@@ -122,6 +122,7 @@ def check_runtime_portability() -> None:
         "update_artifact",
         '/opt/pw-browsers/',
         'display: "render"',
+        "dataviz skill",
     )
     for path in runtime_files:
         text = path.read_text(encoding="utf-8")

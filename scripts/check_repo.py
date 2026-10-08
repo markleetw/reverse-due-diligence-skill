@@ -144,26 +144,25 @@ def check_example_spec_and_audit() -> None:
 
 
 def check_public_docs() -> None:
-    required = [
-        ROOT / "README.md",
-        ROOT / "docs" / "install.md",
-    ]
-    for path in required:
-        if not path.exists():
-            fail(f"missing public documentation: {path.relative_to(ROOT)}")
-    if any(not path.exists() for path in required):
+    path = ROOT / "README.md"
+    if not path.exists():
+        fail("missing public documentation: README.md")
         return
 
-    install = (ROOT / "docs" / "install.md").read_text(encoding="utf-8")
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    for marker in ("## Claude", "## ChatGPT", "reverse-due-diligence.zip"):
-        if marker not in install:
-            fail(f"installation guide missing section/marker: {marker}")
+    readme = path.read_text(encoding="utf-8")
+    for marker in (
+        "<!-- release-notes:start -->",
+        "<!-- release-notes:end -->",
+        "**ChatGPT**",
+        "**Claude**",
+        "reverse-due-diligence.zip",
+    ):
+        if marker not in readme:
+            fail(f"README missing public install marker: {marker}")
 
-    for path, text in ((ROOT / "README.md", readme), (ROOT / "docs" / "install.md", install)):
-        for noise in (".skill", "SHA256SUMS"):
-            if noise in text:
-                fail(f"user-facing documentation contains implementation noise {noise!r}: {path.relative_to(ROOT)}")
+    for noise in (".skill", "SHA256SUMS"):
+        if noise in readme:
+            fail(f"user-facing documentation contains implementation noise {noise!r}: README.md")
 
     banned = [
         "Gogo" + "look",
@@ -176,16 +175,15 @@ def check_public_docs() -> None:
         ROOT / "README.md",
         ROOT / "SKILL.md",
         ROOT / "references" / "analysis-playbook.md",
-        ROOT / "docs" / "install.md",
     ]
-    for path in public_files:
-        text = path.read_text(encoding="utf-8")
+    for public_path in public_files:
+        text = public_path.read_text(encoding="utf-8")
         for term in banned:
             if term.lower() in text.lower():
-                fail(f"targeted case-company term {term!r} found in {path.relative_to(ROOT)}")
+                fail(f"targeted case-company term {term!r} found in {public_path.relative_to(ROOT)}")
 
-    if not any("installation guide" in e or "targeted case-company" in e or "public documentation" in e for e in ERRORS):
-        ok("public docs, installation guide and fictionalized examples")
+    if not any("README missing" in e or "targeted case-company" in e or "public documentation" in e for e in ERRORS):
+        ok("public README and fictionalized examples")
 
 def file_sha256(path: Path) -> str:
     h = hashlib.sha256()

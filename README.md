@@ -9,6 +9,7 @@
 - 拆解職缺的實際權責、KPI、資源與決策空間
 - 產出「值不值得去」的判斷與面試提問清單
 
+<!-- release-notes:start -->
 ## 安裝
 
 到 [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases) 下載最新的 `reverse-due-diligence.zip`。
@@ -21,8 +22,6 @@
 
 `自訂 → 技能 → + → 建立技能 → 上傳技能`
 
-完整步驟請看 [安裝說明](docs/install.md)。
-
 ## 使用
 
 直接告訴 AI 公司、職缺，以及你想做的決定：
@@ -33,6 +32,7 @@
 ```
 
 如果有 JD、offer、獵頭訊息或內部人士說法，也可以一起提供。
+<!-- release-notes:end -->
 
 ---
 

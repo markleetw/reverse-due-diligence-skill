@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{公司名}} 反向盡職調查</title>
+<title>晨霧科技｜Reverse Due Diligence Demo</title>
 <!--
   報告樣板 — reverse-due-diligence skill
   1) 把 {{...}} 佔位符換掉
@@ -135,10 +135,10 @@ hr{border:0;border-top:1px solid var(--border);margin:40px 0}
 <div class="wrap">
 
 <header class="hero">
-  <div class="kicker">Reverse Due Diligence · 求職者視角</div>
-  <h1>{{公司名}}（{{代號}}）<br>反向盡職調查</h1>
-  <p class="sub">為評估 <b>{{職缺}}</b> 職缺而做的公司調查：{{涵蓋範圍一句話}}。</p>
-  <p class="meta">資料截止：{{日期}} ｜ {{關鍵即時數字}} ｜ 全部數字來自公開財報、法說會紀要與媒體報導，來源列於文末</p>
+  <div class="kicker">Reverse Due Diligence · 求職者視角 <span class="pill a">DEMO · 全資料虛構</span></div>
+  <h1>晨霧科技<br>反向盡職調查</h1>
+  <p class="sub">為評估 <b>Head of Product</b> 職缺而做的完整示範報告：公司體質、營收引擎、低潮期、組織權責、薪酬文化、前景、面試必問題。</p>
+  <p class="meta">Demo ｜ 公司、人物、產品、財務數字、評論與職缺內容均為教學用虛構設定，不影射任何真實公司</p>
 </header>
 
 <nav class="toc">
@@ -146,85 +146,237 @@ hr{border:0;border-top:1px solid var(--border);margin:40px 0}
   <ol>
     <li><a href="#s1">一分鐘結論</a></li>
     <li><a href="#s2">公司是什麼、怎麼賺錢</a></li>
-    <!-- 依 references/report-template.md 的 17 節骨架續列 -->
+    <li><a href="#s3">營收引擎拆解</a></li>
+    <li><a href="#s4">高風險業務深挖</a></li>
+    <li><a href="#s5">上市與股價表現</a></li>
+    <li><a href="#s6">財務軌跡</a></li>
+    <li><a href="#s7">營收結構與市場</a></li>
+    <li><a href="#s8">低潮期</a></li>
+    <li><a href="#s9">創辦人與經營團隊</a></li>
+    <li><a href="#s10">股東結構</a></li>
+    <li><a href="#s11">人數、組織與薪酬</a></li>
+    <li><a href="#s12">組織風氣與風評</a></li>
+    <li><a href="#s13">產品主導還是業務主導</a></li>
+    <li><a href="#s14">前景推演與風險</a></li>
+    <li><a href="#s15">這份工作值不值得接</a></li>
+    <li><a href="#s16">面試提問清單</a></li>
+    <li><a href="#s17">資料來源與方法</a></li>
   </ol>
 </nav>
 
 <h2 id="s1"><span class="num">01</span>一分鐘結論</h2>
-
-<!-- stat tiles：一分鐘結論放 4–6 個。note 的 class：up=綠、down=紅、留空=中性 -->
 <div class="tiles">
-  <div class="tile"><div class="lab">標籤</div><div class="val">數值</div><div class="note up">附註</div></div>
+  <div class="tile"><div class="lab">2026 ARR</div><div class="val">NT$ 6.4 億</div><div class="note up">YoY +32%</div></div>
+  <div class="tile"><div class="lab">毛利率</div><div class="val">78%</div><div class="note up">SaaS 結構健康</div></div>
+  <div class="tile"><div class="lab">有機成長</div><div class="val">18%</div><div class="note">低於表面成長</div></div>
+  <div class="tile"><div class="lab">現金 runway</div><div class="val">30+ 月</div><div class="note up">短期安全</div></div>
+  <div class="tile"><div class="lab">角色實權</div><div class="val">5.8 / 10</div><div class="note down">需面試確認</div></div>
+  <div class="tile"><div class="lab">建議</div><div class="val">繼續面</div><div class="note">不要直接接 offer</div></div>
+</div>
+<p class="lead"><b>結論：公司體質可接受，職缺本身比公司風險更值得擔心。</b>晨霧科技已從 2024 的過度擴編修正回來，但 2026 的 32% 成長有約 14 個百分點來自併購。Head of Product 名義上背 revenue KPI，卻不一定握有對等的 Pricing、預算與 Enterprise roadmap 權限。</p>
+<div class="flag green"><b>好消息：</b>核心訂閱業務毛利高、現金流正向，短期沒有生存壓力。</div>
+<div class="flag amber"><b>真正風險：</b>表面成長高於有機動能，且企業客戶占比持續增加，產品決策容易被 Sales 拉走。</div>
+<div class="flag red"><b>職缺疑點：</b>JD 寫「own product revenue」，但 budget ownership、Pricing 與 Enterprise roadmap 的拍板權都沒有寫清楚。</div>
+
+<h2 id="s2"><span class="num">02</span>公司是什麼、怎麼賺錢</h2>
+<p class="lead">晨霧科技是一家 B2B2C SaaS 公司，替中小品牌提供會員、行銷自動化與電商整合工具，同時向大型企業提供客製化 CDP 與導入服務。</p>
+<table>
+<thead><tr><th>業務線</th><th>2026 占比</th><th>商業本質</th><th>主要 owner</th></tr></thead>
+<tbody>
+<tr><td>Self-serve SaaS</td><td>46%</td><td>月／年訂閱</td><td>Product</td></tr>
+<tr><td>Enterprise</td><td>31%</td><td>年約 + 導入</td><td>Sales</td></tr>
+<tr><td>Marketplace</td><td>15%</td><td>交易抽成</td><td>GM</td></tr>
+<tr><td>Services</td><td>8%</td><td>顧問與整合</td><td>Professional Services</td></tr>
+</tbody>
+</table>
+<div class="flag"><b>求職者視角：</b>Title 是 Head of Product，但真正直接控制的收入線只有 Self-serve；其餘三條線都需要跨部門協商。</div>
+
+<h2 id="s3"><span class="num">03</span>營收引擎拆解</h2>
+<figure class="fig">
+  <div class="ftitle">2026 營收結構</div>
+  <div class="fsub">四條收入線合計 100%</div>
+  <div class="legend" id="leg-mix"></div>
+  <div id="c-mix"></div>
+  <figcaption>Demo 虛構資料。Self-serve 是 Head of Product 最能直接控制的收入線。</figcaption>
+</figure>
+<div class="two">
+  <div class="card"><b>Self-serve</b><p>ARPA 約 NT$1.9 萬／年，毛利率 88%，續約率 91%。主要成長槓桿是 onboarding、使用深度與升級率。</p></div>
+  <div class="card"><b>Enterprise</b><p>平均合約 NT$220 萬／年，毛利率 62%，但銷售週期長、客製需求多，容易綁住 roadmap。</p></div>
 </div>
 
-<p class="lead">定調段落。先講結論，不要鋪陳。</p>
+<h2 id="s4"><span class="num">04</span>高風險業務深挖</h2>
+<p class="lead">這家公司沒有監管套利型業務；真正需要深挖的是 <b>Enterprise concentration</b> 與客製化負債。</p>
+<div class="tiles">
+  <div class="tile"><div class="lab">Top 5 客戶</div><div class="val">18%</div><div class="note">尚未過度集中</div></div>
+  <div class="tile"><div class="lab">Enterprise 毛利</div><div class="val">62%</div><div class="note down">低於公司平均</div></div>
+  <div class="tile"><div class="lab">客製需求占 sprint</div><div class="val">27%</div><div class="note down">產品債風險</div></div>
+</div>
+<div class="flag amber"><b>風險：</b>如果 Enterprise 占比繼續上升，但治理機制沒有把「客戶承諾」與「產品 roadmap」拆開，Head of Product 很可能變成大型客戶需求的排程管理者。</div>
 
-<!-- 旗標：green 好消息／red 壞消息／amber 需留意／無 class 為中性 -->
-<div class="flag green"><b>好消息：</b>…</div>
-<div class="flag red"><b>壞消息：</b>…</div>
-<div class="flag amber"><b>需留意：</b>…</div>
-<div class="flag"><b>中性提示：</b>…</div>
-
-<h2 id="s2"><span class="num">02</span>章節標題</h2>
-
-<!-- 圖表：容器 id 對應 drawAll() 裡的呼叫 -->
+<h2 id="s5"><span class="num">05</span>上市與股價表現</h2>
+<p class="lead">晨霧科技於 2023 年掛牌；股價曾在過度擴編期間跌破掛牌價，2026 才回到接近前高。</p>
 <figure class="fig">
-  <div class="ftitle">圖表標題</div>
-  <div class="fsub">副標：說明口徑與期間</div>
-  <div class="legend" id="leg-demo"></div>
-  <div id="c-demo"></div>
-  <figcaption>資料來源與限制。<b>推估值一定要在這裡標明。</b></figcaption>
+  <div class="ftitle">股價關鍵節點</div>
+  <div class="fsub">Demo 虛構股價，單位：NT$</div>
+  <div id="c-price"></div>
+  <figcaption>掛牌員工與 2024 高點加入的員工，股權感受可能完全不同。</figcaption>
 </figure>
+<div class="flag"><b>談薪含意：</b>如果 offer 有 RSU／選擇權，不能只看「目前股價」，還要問 vesting、exercise price、refresh policy 與流動性。</div>
 
-<!-- 小倍數：兩張並排 -->
+<h2 id="s6"><span class="num">06</span>財務軌跡</h2>
 <figure class="fig">
-  <div class="two">
-    <div><div class="ftitle">左圖標題</div><div class="fsub">副標</div><div id="c-mini-a"></div></div>
-    <div><div class="ftitle">右圖標題</div><div class="fsub">副標</div><div id="c-mini-b"></div></div>
-  </div>
-  <figcaption>資料來源。</figcaption>
+  <div class="ftitle">ARR 成長</div>
+  <div class="fsub">2023–2026，單位：億元</div>
+  <div id="c-arr"></div>
+  <figcaption>2026 表面 YoY +32%；扣除年中收購的 DataSpring 後，本體約 +18%。</figcaption>
 </figure>
+<figure class="fig">
+  <div class="ftitle">營業利益率</div>
+  <div class="fsub">2024 擴張失速後逐步修復</div>
+  <div id="c-margin"></div>
+  <figcaption>Demo 虛構資料。2024 的虧損主要來自人力與海外擴張，而非毛利崩壞。</figcaption>
+</figure>
+<div class="flag amber"><b>敘事演變：</b>2024 對外主軸是「搶市場」；2025 改成「效率與 retention」；2026 才重新談成長。這代表董事會現在比兩年前更在意可持續性。</div>
 
-<!-- 表格：tfoot 放口徑與推估標註 -->
+<h2 id="s7"><span class="num">07</span>營收結構與市場</h2>
+<figure class="fig">
+  <div class="ftitle">區域營收占比</div>
+  <div class="fsub">台灣仍是基本盤，但海外占比逐年增加</div>
+  <div class="legend" id="leg-geo"></div>
+  <div id="c-geo"></div>
+  <figcaption>Demo 虛構資料。日本成長最快，但目前規模仍小。</figcaption>
+</figure>
+<div class="flag"><b>判斷：</b>台灣市場沒有明顯萎縮，但成熟度高；中期成長必須靠日本與 Enterprise，而這兩條線都比 Self-serve 更吃 go-to-market 能力。</div>
+
+<h2 id="s8"><span class="num">08</span>低潮期</h2>
 <table>
-<thead><tr><th>欄位</th><th>數值</th></tr></thead>
-<tbody><tr><td>項目</td><td>123</td></tr></tbody>
-<tfoot><tr><td colspan="2">口徑說明、資料來源、推估標註</td></tr></tfoot>
+<thead><tr><th>時間</th><th>發生什麼</th><th>公司怎麼解釋</th><th>後來怎麼改</th></tr></thead>
+<tbody>
+<tr><td>2024 Q2</td><td>團隊 92 → 138 人，營收僅 +12%</td><td>為海外成長提前投資</td><td>停止先擴編再找 PMF</td></tr>
+<tr><td>2024 Q4</td><td>撤回兩個海外市場、凍結招募</td><td>資源聚焦核心市場</td><td>改採 stage-gate 投資</td></tr>
+<tr><td>2025</td><td>新產品砍半</td><td>提高研發效率</td><td>先達 retention 門檻再擴編</td></tr>
+<tr><td>2026</td><td>人均營收回到擴張前水準</td><td>效率改善完成</td><td>恢復選擇性招募</td></tr>
+</tbody>
+</table>
+<div class="flag green"><b>值得肯定：</b>公開訊號比較像決策機制真的有改，而不是一次性的縮編止血。</div>
+
+<h2 id="s9"><span class="num">09</span>創辦人與經營團隊</h2>
+<table>
+<thead><tr><th>角色</th><th>背景</th><th>公開能見度</th><th>對產品的影響</th></tr></thead>
+<tbody>
+<tr><td>CEO 林昱辰</td><td>前業務主管</td><td><span class="pill a">中高</span></td><td>大型客戶與市場策略介入深</td></tr>
+<tr><td>COO 陳子晴</td><td>營運／財務</td><td><span class="pill">低調</span></td><td>預算與 headcount gatekeeper</td></tr>
+<tr><td>CTO 王立衡</td><td>共同創辦人</td><td><span class="pill">低調</span></td><td>技術架構與平台投資拍板</td></tr>
+</tbody>
+</table>
+<div class="flag amber"><b>對 Head of Product 的含意：</b>CEO 是 sales-led 背景，產品主管需要證明自己不是只管理 PM，而是能在商業壓力下守住產品決策原則。</div>
+
+<h2 id="s10"><span class="num">10</span>股東結構</h2>
+<table>
+<thead><tr><th>股東</th><th>持股</th><th>治理含意</th></tr></thead>
+<tbody>
+<tr><td>創辦團隊</td><td>34%</td><td>仍握控制力</td></tr>
+<tr><td>晨星創投</td><td>17%</td><td>2021 進場，偏成長型</td></tr>
+<tr><td>遠岸資本</td><td>12%</td><td>2024 增持，偏效率與現金流</td></tr>
+<tr><td>員工與公開市場</td><td>37%</td><td>分散</td></tr>
+</tbody>
+</table>
+<div class="flag"><b>治理判斷：</b>沒有單一外部股東能控制公司，但 2024 後董事會明顯更重視效率；這與公司對外敘事轉向一致。</div>
+
+<h2 id="s11"><span class="num">11</span>人數、組織與薪酬</h2>
+<div class="two">
+  <figure class="fig">
+    <div class="ftitle">員工人數</div>
+    <div class="fsub">2023–2026</div>
+    <div id="c-headcount"></div>
+    <figcaption>2024 過度擴編後，2025 修正，2026 恢復小幅成長。</figcaption>
+  </figure>
+  <figure class="fig">
+    <div class="ftitle">人均 ARR</div>
+    <div class="fsub">單位：百萬元／人</div>
+    <div id="c-rpe"></div>
+    <figcaption>2026 已回到比 2023 更好的效率水準。</figcaption>
+  </figure>
+</div>
+<table>
+<thead><tr><th>項目</th><th>市場線索</th><th>職缺可能值</th></tr></thead>
+<tbody>
+<tr><td>Base</td><td>NT$ 240–300 萬</td><td>約 280 萬</td></tr>
+<tr><td>Bonus</td><td>10–20%</td><td>15%</td></tr>
+<tr><td>Equity</td><td>主管職常見</td><td>需談 refresh policy</td></tr>
+</tbody>
 </table>
 
-<!-- 雙欄對照：正反兩種讀法 -->
+<h2 id="s12"><span class="num">12</span>組織風氣與風評</h2>
+<figure class="fig">
+  <div class="ftitle">匿名評論面向</div>
+  <div class="fsub">Demo 虛構樣本，5 分制</div>
+  <div id="c-culture"></div>
+  <figcaption>匿名評論樣本小，只當作訊號，不當作公司事實。</figcaption>
+</figure>
 <div class="two">
-  <div class="card"><b>正面讀法</b><p style="margin-bottom:0">…</p></div>
-  <div class="card" style="border-color:var(--warn)"><b>負面讀法</b><p style="margin-bottom:0">…</p></div>
+  <div class="card"><b>一致正面</b><p>同事能力強、決策速度快、主管願意直接討論數字。</p></div>
+  <div class="card"><b>一致負面</b><p>跨部門 ownership 模糊；重要客戶需求容易越過既有 roadmap。</p></div>
 </div>
 
-<!-- pill：g 綠／r 紅／a 黃／無 中性 -->
-<p><span class="pill g">低調</span><span class="pill r">非常高調</span><span class="pill a">中高</span><span class="pill">28% 營收</span></p>
+<h2 id="s13"><span class="num">13</span>產品主導還是業務主導</h2>
+<div class="two">
+  <div class="card"><b>產品主導的證據</b><ul><li>Self-serve 46% 營收由 Product 完整掌握</li><li>新功能需經 usage / retention gate</li><li>PM 可主導 discovery 與實驗</li></ul></div>
+  <div class="card" style="border-color:var(--warn)"><b>業務主導的證據</b><ul><li>Enterprise 31% 營收由 Sales owner</li><li>大型客戶可直接進 CEO escalation</li><li>Pricing committee 沒有明確由 Product 主持</li></ul></div>
+</div>
+<div class="flag amber"><b>精確結論：</b>不是純 sales-led，也不是純 product-led；更像「Self-serve product-led、Enterprise sales-led」的雙軌公司。Head of Product 能不能成功，取決於兩條軌道衝突時誰拍板。</div>
 
-<!-- 值不值得接：評分條 -->
+<h2 id="s14"><span class="num">14</span>前景推演與風險</h2>
+<div class="tiles">
+  <div class="tile"><div class="lab">Base case 2027 ARR</div><div class="val">7.5 億</div><div class="note">假設有機 +17%</div></div>
+  <div class="tile"><div class="lab">Upside</div><div class="val">8.1 億</div><div class="note up">日本 + Enterprise 超預期</div></div>
+  <div class="tile"><div class="lab">Downside</div><div class="val">6.8 億</div><div class="note down">Enterprise 導入延遲</div></div>
+</div>
+<div class="flag red"><b>風險 1｜角色責任大於控制權：</b>如果 revenue KPI 沒有搭配 Pricing、budget 與 Enterprise roadmap 權限，績效風險會直接落在職缺本人。</div>
+<div class="flag amber"><b>風險 2｜併購整合：</b>DataSpring 帶來短期成長，但產品與資料架構整合可能吃掉 2–3 季研發容量。</div>
+<div class="flag amber"><b>風險 3｜Enterprise 客製化：</b>若客製 sprint 占比從 27% 繼續上升，核心 SaaS 的 compounding 會變弱。</div>
+
+<h2 id="s15"><span class="num">15</span>這份工作值不值得接</h2>
 <div class="verdict">
-  <h3 style="margin-top:0">整體判斷</h3>
-  <p class="lead">一句話定調。</p>
-  <div class="scorebar"><span class="nm">公司財務體質</span><span class="track"><span class="fillb" style="width:85%"></span></span><span class="sc">8.5</span></div>
-  <div class="scorebar"><span class="nm">角色實權</span><span class="track"><span class="fillb" style="width:60%"></span></span><span class="sc">6.0</span></div>
-  <p><small>分數為依公開資料的主觀評估，非公司官方或第三方評等。</small></p>
+  <h3 style="margin-top:0">整體判斷：值得繼續面，但不要在拿到權責答案前決定</h3>
+  <div class="scorebar"><span class="nm">財務體質</span><span class="track"><span class="fillb" style="width:85%"></span></span><span class="sc">8.5</span></div>
+  <div class="scorebar"><span class="nm">成長品質</span><span class="track"><span class="fillb" style="width:70%"></span></span><span class="sc">7.0</span></div>
+  <div class="scorebar"><span class="nm">題目吸引力</span><span class="track"><span class="fillb" style="width:82%"></span></span><span class="sc">8.2</span></div>
+  <div class="scorebar"><span class="nm">角色實權</span><span class="track"><span class="fillb" style="width:58%"></span></span><span class="sc">5.8</span></div>
+  <p><small>分數為依虛構公開資料做的示範性主觀評估。</small></p>
+</div>
+<div class="two">
+  <div class="card"><b>接的理由</b><ul><li>公司短期安全</li><li>Self-serve 還有成長題目</li><li>低潮期後治理機制有改善</li></ul></div>
+  <div class="card"><b>不接的理由</b><ul><li>Title 可能大於實權</li><li>Enterprise 需求可能綁 roadmap</li><li>P&L 責任與資源不一定對稱</li></ul></div>
 </div>
 
-<!-- 面試題卡片 -->
-<div class="q"><div class="qt">1. 具體到數字的提問，不是通用題庫。</div>
-<div class="why">為什麼問這個、什麼答案是紅旗。</div></div>
-
-<!-- 摺疊區塊（附錄、算式明細） -->
-<details><summary>算式明細</summary><div class="body"><p>…</p></div></details>
-
-<h2 id="sN"><span class="num">17</span>資料來源與方法說明</h2>
-<div class="flag"><b>方法：</b>全部依據公開資料。匿名評論平台樣本小且自願填答，存在選擇偏誤，已在引用處標註。查不到的項目已標明「公開來源查不到」並註明可去哪裡找。</div>
-<h3>分組標題</h3>
-<ul class="src">
-<li><a href="#">來源名稱</a>｜<a href="#">另一個來源</a></li>
+<h2 id="s16"><span class="num">16</span>面試提問清單</h2>
+<div class="card"><b>現場速查｜P0</b><p style="margin-bottom:0">這三題問不到具體答案，不建議接。</p></div>
+<div class="q"><div class="qt">P0 · 問 CEO／用人主管：如果我對 product revenue 負責，Pricing、折扣、行銷預算與 headcount 分別由誰拍板？</div><div class="why">確認 revenue KPI 是否搭配實際控制權。紅旗：只要求背數字，但所有槓桿都在其他主管手上。</div></div>
+<div class="q"><div class="qt">P0 · 問 CEO／Sales leader：Enterprise roadmap 與 Self-serve roadmap 衝突時，最後誰有決策權？請舉最近一次實例。</div><div class="why">31% 營收由 Sales 主導，這題用來確認產品主管是不是名義 owner。</div></div>
+<div class="q"><div class="qt">P0 · 問 COO：2024 擴編失敗後，現在新增 headcount 的 gate 是什麼？誰可以否決？</div><div class="why">判斷公司修的是症狀，還是決策機制。</div></div>
+<details><summary>P1／P2 題目</summary><div class="body">
+<ul>
+<li><b>P1：</b>DataSpring 併購後，哪些 roadmap 是必做 integration，哪些仍可由產品團隊取捨？</li>
+<li><b>P1：</b>現有 PM 團隊最缺的是 discovery、delivery、data 還是商業化能力？</li>
+<li><b>P1：</b>這個角色成功 6 個月後，你希望看到哪三個數字改變？</li>
+<li><b>P2：</b>日本市場目前是 PMF 驗證期還是規模化期？</li>
+<li><b>P2：</b>CEO 最近一次否決 Sales 客製需求是什麼？</li>
 </ul>
+</div></details>
 
-<p style="margin-top:40px"><small>本報告依 {{日期}} 前之公開資訊彙整，僅供求職決策參考，不構成投資或法律建議。</small></p>
+<h2 id="s17"><span class="num">17</span>資料來源與方法說明</h2>
+<div class="flag"><b>Demo 方法：</b>本頁全部公司、人物、產品、財務、評論與職缺資料皆為虛構；目的只是展示 Reverse Due Diligence Skill 如何把不同來源轉成職涯決策。</div>
+<h3>虛構來源類型</h3>
+<ul class="src">
+<li>公司年報與法說會摘要（虛構）</li>
+<li>公開職缺與獵頭訊息（虛構）</li>
+<li>匿名員工評論（虛構，僅作訊號）</li>
+<li>公司新聞稿、股東結構與市場資料（虛構）</li>
+</ul>
+<p><small>正式研究時，Skill 會區分官方來源、第三方資料、匿名訊號與推論，並標註查不到的項目與不確定性。</small></p>
+
+<p style="margin-top:40px"><small>此 Demo 不構成對任何真實公司或職缺的評價。</small></p>
 </div>
 
 <script>
@@ -479,34 +631,47 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
 
   /* ── 在這裡呼叫需要的圖表。其餘為可直接改用的範例 ───────────────── */
   function drawAll(){
-    drawBars('c-demo',
-      [{y:'2022',v:420},{y:'2023',v:774},{y:'2024',v:867},{y:'2025',v:1048},{y:'2026E',v:1260,est:true}],
-      {max:1400, unit:'百萬元'});
+    drawStacked('c-mix',
+      [{y:'2026',v:[46,31,15,8]}],
+      [{n:'Self-serve',k:'--series-1'},{n:'Enterprise',k:'--series-3'},
+       {n:'Marketplace',k:'--series-4'},{n:'Services',k:'--series-2'}],
+      {legendId:'leg-mix',height:118,ml:86,caption:'占總營收比重（%）'});
 
-    // drawSignedBars('c-eps', [{y:'2023',v:0.16},{y:'2024',v:-1.24},{y:'2025',v:1.58}],
-    //                {min:-2, max:4, unit:'元'});
+    drawNodeLine('c-price',
+      [{t:'2023.07',v:82,l:'掛牌',key:1},{t:'2024.06',v:126,l:'擴張高點',key:1},
+       {t:'2024.12',v:61,l:'修正低點',key:1},{t:'2026.10',v:118,l:'目前',key:1}],
+      {max:140,prefix:'NT$',solid:true,mr:36});
 
-    // drawNodeLine('c-price', [{t:'2023.07',v:236.5,l:'掛牌開盤',key:1},{t:'2026.08',v:132.5,l:'現價',key:1}],
-    //              {max:260, prefix:'NT$', notes:[{at:236.5,text:'−38%'}]});
+    drawBars('c-arr',
+      [{y:'2023',v:3.1},{y:'2024',v:3.8},{y:'2025',v:4.85},{y:'2026',v:6.4}],
+      {max:7,unit:'億元',fmt:v=>v.toFixed(v%1?1:0),height:250});
 
-    // legend('leg-demo', [['方案年費','--series-1'],['平均每人年費','--series-2']]);
-    // drawGrouped('c-price2', [{n:'個人版',a:890,b:890},{n:'家庭版',a:2590,b:518}],
-    //             {max:3000, unit:'元／年', labels:['方案年費','平均每人年費']});
+    drawSignedBars('c-margin',
+      [{y:'2023',v:6},{y:'2024',v:-11},{y:'2025',v:2},{y:'2026',v:9}],
+      {min:-15,max:15,unit:'%',fmt:v=>v.toFixed(0),height:240});
 
-    // drawStacked('c-mix', [{y:'2025 全年',v:[31,32,27,10]},{y:'2026 Q2',v:[34,29,28,9]}],
-    //   [{n:'數位廣告',k:'--series-1'},{n:'訂閱',k:'--series-2'},
-    //    {n:'金融科技',k:'--series-3'},{n:'企業防詐',k:'--series-4'}],
-    //   {caption:'占總營收比重（%）'});
+    drawStacked('c-geo',
+      [{y:'2024',v:[72,14,8,6]},{y:'2025',v:[66,16,11,7]},{y:'2026',v:[58,18,16,8]}],
+      [{n:'台灣',k:'--series-1'},{n:'香港／新加坡',k:'--series-3'},
+       {n:'日本',k:'--series-4'},{n:'其他',k:'--series-2'}],
+      {legendId:'leg-geo',height:270,ml:86,caption:'各區域占總營收比重（%）'});
 
-    // drawMini('c-mini-a', [{y:'2023',v:155},{y:'2024',v:246,note:'高峰'},{y:'2025',v:211}], {max:260, unit:'人'});
-    // drawMini('c-mini-b', [{y:'2023',v:5.0},{y:'2024',v:3.5},{y:'2025',v:5.0}], {max:7, fmt:v=>v.toFixed(1)});
+    drawMini('c-headcount',
+      [{y:'2023',v:92},{y:'2024',v:138},{y:'2025',v:112},{y:'2026',v:118}],
+      {max:150,unit:'人'});
+    drawMini('c-rpe',
+      [{y:'2023',v:3.4},{y:'2024',v:2.8},{y:'2025',v:4.3},{y:'2026',v:5.4}],
+      {max:6,fmt:v=>v.toFixed(1),unit:'百萬元'});
 
-    // drawScores('c-rate', [{n:'生活平衡',v:4.0},{n:'升遷機會',v:2.3}], {max:5, lowBelow:3});
+    drawScores('c-culture',
+      [{n:'同事能力',v:4.4},{n:'工作彈性',v:4.0},{n:'主管品質',v:3.5},
+       {n:'升遷透明',v:2.7},{n:'跨部門合作',v:2.9}],
+      {max:5,lowBelow:3,ml:130});
 
-    // drawRanges('c-rates', [
-    //   {n:'銀行信用貸款',lo:2,hi:16,c:'--text-muted',t:'需信用紀錄'},
-    //   {n:'實質年化（推算）',lo:36,hi:36,c:'--series-2',t:'依單一公開案例推算'},
-    //   {n:'當舖（法定上限）',lo:30,hi:90,c:'--text-muted',t:''}], {max:100});
+    drawScores('c-scope',
+      [{n:'Core roadmap',v:9.0},{n:'Pricing',v:4.5},{n:'Headcount',v:6.0},
+       {n:'Budget',v:3.5},{n:'Enterprise roadmap',v:5.5}],
+      {max:10,lowBelow:5,ml:150});
   }
   drawAll();
 

@@ -3,6 +3,14 @@
 給求職者使用的 AI Agent Skill。  
 在投履歷、面試或接受 offer 前，用公開資料反向調查公司與職缺。
 
+## Preview
+
+[![Reverse Due Diligence Demo](docs/assets/demo-preview.png)](https://htmlpreview.github.io/?https://github.com/markleetw/reverse-due-diligence-skill/blob/demo/readme-preview/demo/index.html)
+
+> Demo 使用完全虛構的公司、人物與資料，不影射任何真實公司。
+
+[查看完整互動 Demo →](https://htmlpreview.github.io/?https://github.com/markleetw/reverse-due-diligence-skill/blob/demo/readme-preview/demo/index.html)
+
 ## 它會幫你做什麼
 
 - 判斷公司財務、營運與結構性風險

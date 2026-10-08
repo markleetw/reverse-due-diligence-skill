@@ -529,16 +529,35 @@ grep -o "零風險\|就是護城河\|已經飽和\|完全不受\|一定會" repo
 **② 承重數字點名**
 列出報告結論真正依賴的十幾二十個數字，逐一確認仍存在於文中且拼寫一致。若某個數字出現 0 次，代表它在某次改寫中被誤刪或被改成了別的寫法。
 
-**③ 算術自檢**
-把所有推導關係寫成恆等式重算：加總、百分比、成長率、比率。**特別要放進「子項不可能大於母項」這類結構性約束**——它能抓到擷取錯位（見第 13 節）。
+**③ 報告綁定的算術自檢**
+不要只把正確數字直接寫進 audit spec 再互算——那只能證明 spec 自己沒算錯，抓不到 HTML 顯示錯誤。先用 regex 從**實際報告**擷取 named values，再讓 assertion 引用這些值。
 
-```python
-checks = [
-    ('Q1+Q2 = H1',        abs(54.853+63.744-118.597) < 0.001),
-    ('備抵/債權 = 覆蓋率',  abs(18.44/508-0.0363)     < 0.0002),
-    ('子項 <= 母項',       55 <= 85),
-]
+```json
+{
+  "values": {
+    "current_price": {
+      "pattern": "current price:\\s*([\\d,.]+)",
+      "type": "number"
+    },
+    "reference_price": {
+      "pattern": "reference price:\\s*([\\d,.]+)",
+      "type": "number"
+    },
+    "displayed_return": {
+      "pattern": "displayed return:\\s*([+\\-−]?[\\d,.]+)%",
+      "type": "percent"
+    }
+  },
+  "assertions": [
+    {
+      "label": "報酬率與畫面數字一致",
+      "expression": "abs(displayed_return - (current_price / reference_price - 1)) < 0.001"
+    }
+  ]
+}
 ```
+
+加總、百分比、成長率、比率都用同一方式。**特別要放進「子項不可能大於母項」這類結構性約束**——它能抓到擷取錯位（見第 13 節）。舊版 literal `arithmetic` 仍可用，但只適合檢查固定常數或 script 本身，不應再作為報告數值一致性的主要防線。
 
 **④ Renderer parity**
 `templates/report-shell.html` 是 renderer SSOT。若執行環境能跑 packaged script，定稿時把它傳給 `scripts/audit.py --renderer-template`：整個 `<style>` 與共用 renderer JavaScript 必須和樣板一致，只有正文與 `RDD_REPORT_DATA_START`／`RDD_REPORT_DATA_END` 之間的圖表資料可以變。這是為了避免每次研究時順手調色、改 spacing 或重寫 chart library，讓不同報告逐漸分叉。

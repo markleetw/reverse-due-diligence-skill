@@ -13,7 +13,7 @@
 
 [查看完整互動 Demo →](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)
 
-> Demo 中的公司、人物、產品、財務數字、評論與職缺內容均為虛構，只用來展示分析方法與報告形式。
+> Demo 中的公司、人物、產品、財務數字、評論與職缺內容均為虛構且省略大部分內容，只用來展示分析方法與報告形式。
 
 <!-- release-notes:start -->
 ## 安裝

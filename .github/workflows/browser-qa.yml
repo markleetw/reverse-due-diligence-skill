@@ -5,15 +5,23 @@ on:
     branches:
       - main
     paths:
-      - "demo/**"
+      - "SKILL.md"
+      - "references/**"
       - "templates/**"
+      - "scripts/audit.py"
+      - "scripts/package.py"
       - "scripts/browser_test.py"
+      - "demo/**"
       - ".github/workflows/browser-qa.yml"
   pull_request:
     paths:
-      - "demo/**"
+      - "SKILL.md"
+      - "references/**"
       - "templates/**"
+      - "scripts/audit.py"
+      - "scripts/package.py"
       - "scripts/browser_test.py"
+      - "demo/**"
       - ".github/workflows/browser-qa.yml"
   workflow_dispatch:
 

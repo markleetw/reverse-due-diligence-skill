@@ -5,11 +5,11 @@
 
 ## Preview
 
-[![Reverse Due Diligence Demo](docs/assets/demo-preview.png)](https://htmlpreview.github.io/?https://github.com/markleetw/reverse-due-diligence-skill/blob/demo/readme-preview/demo/index.html)
+[![Reverse Due Diligence Demo](docs/assets/demo-preview.png)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)
 
 > Demo 使用完全虛構的公司、人物與資料，不影射任何真實公司。
 
-[查看完整互動 Demo →](https://htmlpreview.github.io/?https://github.com/markleetw/reverse-due-diligence-skill/blob/demo/readme-preview/demo/index.html)
+[查看完整互動 Demo →](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)
 
 ## 它會幫你做什麼
 

@@ -118,6 +118,46 @@ def scan_claims(
 
 
 
+def check_document_envelope(html: str) -> list[str]:
+    """Require a complete standards-mode HTML document, not an inner fragment."""
+    failures: list[str] = []
+    source = html.lstrip("\ufeff \t\r\n")
+
+    if not re.match(r"(?is)^<!doctype\s+html\s*>", source):
+        failures.append("document must begin with <!DOCTYPE html>")
+
+    tags = {
+        "html_open": re.search(r"(?is)<html\b[^>]*>", source),
+        "head_open": re.search(r"(?is)<head\b[^>]*>", source),
+        "head_close": re.search(r"(?is)</head\s*>", source),
+        "body_open": re.search(r"(?is)<body\b[^>]*>", source),
+        "body_close": re.search(r"(?is)</body\s*>", source),
+        "html_close": re.search(r"(?is)</html\s*>", source),
+    }
+    for name, match in tags.items():
+        if match is None:
+            failures.append(f"missing required document tag: {name}")
+
+    if not failures:
+        order = [
+            tags["html_open"].start(),
+            tags["head_open"].start(),
+            tags["head_close"].start(),
+            tags["body_open"].start(),
+            tags["body_close"].start(),
+            tags["html_close"].start(),
+        ]
+        if order != sorted(order):
+            failures.append("document tags are not in html > head > body order")
+
+    if len(re.findall(r"(?is)</html\s*>", source)) != 1:
+        failures.append("document must contain exactly one </html> closing tag")
+    if not re.search(r"(?is)</html\s*>\s*$", source):
+        failures.append("</html> must be the final non-whitespace content")
+
+    return failures
+
+
 REPORT_DATA_START = "/* RDD_REPORT_DATA_START */"
 REPORT_DATA_END = "/* RDD_REPORT_DATA_END */"
 
@@ -190,6 +230,15 @@ def main() -> int:
     allow_terms = spec.get("allow_context_terms", DEFAULT_ALLOW_CONTEXT_TERMS)
     context_chars = int(spec.get("allow_context_chars", 160))
     failures: list[str] = []
+
+    print("═══ Document envelope ═══")
+    envelope_failures = check_document_envelope(html)
+    if envelope_failures:
+        for failure in envelope_failures:
+            print("  ✗", failure)
+        failures.extend(envelope_failures)
+    else:
+        print("  ✓ complete standards-mode HTML document")
 
     claims = list(spec.get("stale_claims", [])) + list(spec.get("resolved_claims", []))
     claim_failures = scan_claims(body, claims, allow_terms, context_chars)

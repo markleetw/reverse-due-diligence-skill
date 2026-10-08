@@ -19,14 +19,42 @@
       "min_occurrences": 1
     }
   ],
-  "arithmetic": [
+  "values": {
+    "current_price": {
+      "pattern": "current price:\\s*([\\d,.]+)",
+      "type": "number"
+    },
+    "reference_price": {
+      "pattern": "reference price:\\s*([\\d,.]+)",
+      "type": "number"
+    },
+    "displayed_return": {
+      "pattern": "displayed return:\\s*([+\\-−]?[\\d,.]+)%",
+      "type": "percent"
+    },
+    "child_value": {
+      "pattern": "child value:\\s*([\\d,.]+)",
+      "type": "number"
+    },
+    "parent_value": {
+      "pattern": "parent value:\\s*([\\d,.]+)",
+      "type": "number"
+    }
+  },
+  "assertions": [
     {
-      "label": "126.5 / 215 - 1 ≈ -41.16%",
-      "expression": "abs(126.5 / 215 - 1 + 0.4116) < 0.001"
+      "label": "displayed return matches current/reference price",
+      "expression": "abs(displayed_return - (current_price / reference_price - 1)) < 0.001"
     },
     {
       "label": "child item must not exceed parent item",
-      "expression": "55 <= 85"
+      "expression": "child_value <= parent_value"
+    }
+  ],
+  "arithmetic": [
+    {
+      "label": "legacy literal check remains supported",
+      "expression": "abs(126.5 / 215 - 1 + 0.4116) < 0.001"
     }
   ]
 }

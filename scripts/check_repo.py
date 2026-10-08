@@ -158,7 +158,12 @@ def check_example_spec_and_audit() -> None:
     with tempfile.TemporaryDirectory() as temp_dir:
         temp = Path(temp_dir)
         report = temp / "report.html"
-        report.write_text("<html><body>reference price: 126.5</body></html>", encoding="utf-8")
+        report.write_text(
+            "<!DOCTYPE html><html lang=\"zh-Hant\"><head>"
+            "<meta charset=\"utf-8\"><title>Audit</title></head>"
+            "<body>reference price: 126.5</body></html>",
+            encoding="utf-8",
+        )
         proc = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "audit.py"), str(report), str(spec_path)],
             cwd=ROOT,
@@ -217,6 +222,49 @@ def check_example_spec_and_audit() -> None:
             fail("renderer guard failed to detect CSS drift")
         else:
             ok("renderer guard detects CSS drift")
+
+        fragment = temp / "fragment.html"
+        fragment.write_text(
+            "<title>Fragment</title><body>reference price: 126.5</body>",
+            encoding="utf-8",
+        )
+        envelope = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(fragment),
+                str(empty_spec),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if envelope.returncode == 0:
+            fail("document envelope guard failed to reject HTML fragment")
+        else:
+            ok("document envelope guard rejects HTML fragment")
+
+        trailing = temp / "trailing.html"
+        trailing.write_text(
+            "<!DOCTYPE html><html><head><title>Trailing</title></head>"
+            "<body></body></html>trailing content",
+            encoding="utf-8",
+        )
+        tail = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(trailing),
+                str(empty_spec),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if tail.returncode == 0:
+            fail("document envelope guard failed to reject content after </html>")
+        else:
+            ok("document envelope guard rejects trailing content")
 
 
 

@@ -47,13 +47,16 @@ _CMP_OPS = {
 }
 
 
-def safe_eval(expression: str) -> Any:
+def safe_eval(expression: str, variables: dict[str, float] | None = None) -> Any:
     """Evaluate a numeric/boolean expression without Python eval()."""
+    variables = variables or {}
     node = ast.parse(expression, mode="eval").body
 
     def visit(n: ast.AST) -> Any:
         if isinstance(n, ast.Constant) and isinstance(n.value, (int, float, bool)):
             return n.value
+        if isinstance(n, ast.Name) and n.id in variables:
+            return variables[n.id]
         if isinstance(n, ast.BinOp) and type(n.op) in _BIN_OPS:
             return _BIN_OPS[type(n.op)](visit(n.left), visit(n.right))
         if isinstance(n, ast.UnaryOp) and type(n.op) in _UNARY_OPS:
@@ -116,6 +119,63 @@ def scan_claims(
             failures.append(f"[{reason}] …{snippet}…")
     return failures
 
+
+
+def parse_extracted_number(raw: str, kind: str) -> float:
+    """Normalize a captured numeric string for deterministic assertions."""
+    value = (
+        raw.strip()
+        .replace(",", "")
+        .replace("，", "")
+        .replace("−", "-")
+        .replace("－", "-")
+        .replace("＋", "+")
+        .replace("%", "")
+        .replace("％", "")
+    )
+    number = float(value)
+    if kind == "percent":
+        number /= 100.0
+    elif kind != "number":
+        raise ValueError(f"unsupported extracted value type: {kind}")
+    return number
+
+
+def extract_named_values(
+    text: str,
+    definitions: dict[str, dict[str, Any]],
+) -> tuple[dict[str, float], list[str]]:
+    """Extract report values by regex so assertions bind to what is displayed."""
+    values: dict[str, float] = {}
+    failures: list[str] = []
+
+    for name, item in definitions.items():
+        pattern = item["pattern"]
+        flags = re.IGNORECASE if item.get("ignore_case") else 0
+        matches = list(re.finditer(pattern, text, flags))
+        if not matches:
+            failures.append(f"named value {name!r} not found")
+            continue
+        if item.get("unique") and len(matches) != 1:
+            failures.append(
+                f"named value {name!r} expected one match, found {len(matches)}"
+            )
+            continue
+
+        match = matches[0]
+        group = item.get("group", 1)
+        try:
+            raw = match.group(group)
+            kind = item.get("type", "number")
+            value = parse_extracted_number(raw, kind)
+            value *= float(item.get("scale", 1))
+        except Exception as exc:
+            failures.append(f"named value {name!r} could not be parsed: {exc}")
+            continue
+
+        values[name] = value
+
+    return values, failures
 
 
 def check_document_envelope(html: str) -> list[str]:
@@ -261,6 +321,35 @@ def main() -> int:
         if not ok:
             failures.append(f"missing canonical value: {label} ({value})")
 
+    named_definitions = spec.get("values", {})
+    named_values: dict[str, float] = {}
+    if named_definitions:
+        print("\n═══ Extracted report values ═══")
+        named_values, value_failures = extract_named_values(body, named_definitions)
+        if value_failures:
+            for failure in value_failures:
+                print("  ✗", failure)
+            failures.extend(value_failures)
+        for name, value in named_values.items():
+            print(f"  ✓ {name} = {value:g}")
+
+    assertions = spec.get("assertions", [])
+    if assertions:
+        print("\n═══ Report-bound assertions ═══")
+    for item in assertions:
+        label = item.get("label", item["expression"])
+        expression = item["expression"]
+        try:
+            ok = bool(safe_eval(expression, named_values))
+        except Exception as exc:
+            ok = False
+            print(f"  ✗ {label}: invalid expression ({exc})")
+            failures.append(f"invalid report-bound assertion: {label}")
+            continue
+        print(f"  {'✓' if ok else '✗'} {label}")
+        if not ok:
+            failures.append(f"report-bound assertion failed: {label}")
+
     if args.renderer_template:
         print("\n═══ Renderer parity ═══")
         template_html = args.renderer_template.read_text(encoding="utf-8")
@@ -274,7 +363,7 @@ def main() -> int:
 
     arithmetic = spec.get("arithmetic", [])
     if arithmetic:
-        print("\n═══ Arithmetic assertions ═══")
+        print("\n═══ Legacy literal arithmetic assertions ═══")
     for item in arithmetic:
         label = item.get("label", item["expression"])
         expression = item["expression"]

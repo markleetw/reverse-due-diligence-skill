@@ -31,9 +31,9 @@ description: 反向盡職調查（reverse due diligence）——求職者視角�
 
 如果使用者有貼職缺原文或 offer 條件，優先讀它——那是唯一直接描述「這個角色」的一手資料。
 
-接著用 AskUserQuestion 問**交付形式**與**側重點**（全面涵蓋／偏重值不值得接／偏重財務前景／要不要面試題清單）。不要問「你想知道什麼」——使用者通常不知道自己該問什麼，這正是這份 skill 存在的理由。
+接著確認**交付形式**與**側重點**（全面涵蓋／偏重值不值得接／偏重財務前景／要不要面試題清單）。若執行環境支援互動式追問就直接問；使用者已明確指定時不要重問。不要問「你想知道什麼」——使用者通常不知道自己該問什麼，這正是這份 skill 存在的理由。
 
-若判斷是無人值守情境（排程觸發、使用者已離開），直接採用預設：HTML 報告、全面涵蓋、含面試題清單，並在開頭寫明假設。
+若執行環境不支援互動式追問，或判斷是無人值守情境（排程觸發、使用者已離開），直接採用預設：HTML 報告、全面涵蓋、含面試題清單，並在開頭寫明假設。
 
 ---
 
@@ -93,7 +93,7 @@ Step 2 只會產出一份普通的公司簡介。真正的價值在下面四件�
 - 帳面成長 vs 剔除併購後的有機成長
 - 人均營收（營收 ÷ 員工數）——揭穿「靠加人買成長」最快的指標
 
-**用 Bash 實際算，不要心算或估。**把算式與假設寫進報告，讓使用者能自己驗算。
+**實際重算，不要心算或估。**優先使用執行環境可用的計算器、程式執行或 shell；若沒有可用的計算工具，就把算式與假設清楚列出，避免把未驗算的結果寫成已驗證事實。
 
 ### 3.4　找結構套利與監管地位
 
@@ -131,7 +131,7 @@ Step 2 只會產出一份普通的公司簡介。真正的價值在下面四件�
 5. **修正傳播**：每次更正一個數字或主張，都要掃描全文（含圖表 JS、摘要、stat tile、面試題）是否仍殘留舊版本。
 6. **期間與口徑**：占比、成長率、利潤率一律綁期間；部門與產品、營收與曝險、名目與實質口徑不可混用。
 7. **求職證據邊界**：職缺原文、獵頭／內部人士轉述、自己的推論是三個不同等級；例如 revenue KPI 不能直接推出 P&L ownership。
-8. **Deterministic audit**：完成 HTML 後，用 `scripts/audit.py` 搭配該次報告產生的 audit spec，至少檢查 stale claims、canonical values 與算術恆等式。
+8. **Deterministic audit**：完成 HTML 後，用 `scripts/audit.py` 搭配該次報告產生的 audit spec，至少檢查 stale claims、canonical values 與算術恆等式；若執行環境可跑 packaged script，同時以 `templates/report-shell.html` 做 renderer parity check，CSS 與共用 renderer JavaScript 不得漂移。
 
 **硬規則**：絕對不要為了讓論述完整而補一個「大概是這樣」的數字。公開資料未拆分，就直接寫未拆分。
 
@@ -141,11 +141,11 @@ Step 2 只會產出一份普通的公司簡介。真正的價值在下面四件�
 
 預設交付一份**自包含的單檔 HTML**（CSS 與 JS 全部 inline，無外部相依），使用者可本機開、可自行 host。
 
-- 動手畫任何圖表前先讀 **dataviz** skill
-- `templates/report-shell.html` 是可直接沿用的樣板：深淺色模式、tooltip、目錄、卡片與旗標樣式、以及長條圖／區間圖／堆疊圖／折線圖的繪製函式都已備妥。改資料陣列即可
+- 若執行環境提供資料視覺化指南或相關 Skill，畫圖前先讀；否則遵循 `references/report-template.md` 的圖表與呈現規則
+- `templates/report-shell.html` 是 renderer SSOT：**從完整檔案複製，不得只擷取內部 fragment。必須保留 `<!DOCTYPE html>`、`<html>`、`<head>`、`<body>` 與對應 closing tags，且 `</html>` 必須是最後一個非空白內容。**深淺色模式、tooltip、目錄、卡片、旗標與圖表函式都以它為準；整個 `<style>` 與共用 renderer JavaScript 原樣保留，不得為單次報告自行調色、改 spacing、重寫 chart library 或 theme logic。只改正文，以及 `RDD_REPORT_DATA_START`／`RDD_REPORT_DATA_END` 之間的圖表資料與呼叫
 - 章節骨架與撰寫要點見 `references/report-template.md`
-- 產出後用 Playwright 截圖檢查排版與標籤碰撞（`/opt/pw-browsers/chromium-*/chrome-linux/chrome`），確認 console 無錯誤
-- 用 SendUserFile 交付；若判斷使用者會反覆回來看（通常會），再用 create_artifact 存進側欄
+- 若執行環境支援 browser automation／headless browser，產出後實際載入 HTML，檢查 desktop／mobile、深淺色切換、排版碰撞與 console/page errors；若不支援，至少做 HTML／JavaScript 靜態檢查，並在交付時註明未執行 browser visual QA
+- 使用執行環境支援的檔案交付方式提供 HTML；若環境無法輸出檔案，改以完整 Markdown 報告交付，不因工具名稱不同而中止。若環境支援持久化 artifact／library，可另外保存方便後續更新
 
 **寫作語氣**：直接、具體、不客套。好消息與壞消息都要講。使用者是要拿這份東西做人生決策，含糊的措辭幫不上忙。用「這代表什麼」而不是「這值得注意」。
 

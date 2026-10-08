@@ -107,6 +107,35 @@ def check_generic_files() -> None:
             ok(f"generic file is company-neutral: {rel}")
 
 
+def check_runtime_portability() -> None:
+    """Keep distributed instructions free of host-specific tool/API names."""
+    runtime_files = [
+        ROOT / "SKILL.md",
+        ROOT / "references" / "analysis-playbook.md",
+        ROOT / "references" / "report-template.md",
+        ROOT / "templates" / "report-shell.html",
+    ]
+    forbidden = (
+        "AskUserQuestion",
+        "SendUserFile",
+        "create_artifact",
+        "update_artifact",
+        '/opt/pw-browsers/',
+        'display: "render"',
+        "dataviz skill",
+    )
+    for path in runtime_files:
+        text = path.read_text(encoding="utf-8")
+        for term in forbidden:
+            if term in text:
+                fail(
+                    f"host-specific runtime instruction {term!r} found in "
+                    f"{path.relative_to(ROOT)}"
+                )
+    if not any("host-specific runtime instruction" in e for e in ERRORS):
+        ok("runtime instructions are host-neutral")
+
+
 def check_old_layout_references() -> None:
     text_files = [ROOT / "SKILL.md", ROOT / "references" / "report-template.md", ROOT / "README.md"]
     for path in text_files:
@@ -127,8 +156,14 @@ def check_example_spec_and_audit() -> None:
         return
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        report = Path(temp_dir) / "report.html"
-        report.write_text("<html><body>reference price: 126.5</body></html>", encoding="utf-8")
+        temp = Path(temp_dir)
+        report = temp / "report.html"
+        report.write_text(
+            "<!DOCTYPE html><html lang=\"zh-Hant\"><head>"
+            "<meta charset=\"utf-8\"><title>Audit</title></head>"
+            "<body>reference price: 126.5</body></html>",
+            encoding="utf-8",
+        )
         proc = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "audit.py"), str(report), str(spec_path)],
             cwd=ROOT,
@@ -139,6 +174,97 @@ def check_example_spec_and_audit() -> None:
             fail("generic audit smoke test failed:\n" + proc.stdout + proc.stderr)
         else:
             ok("generic audit smoke test")
+
+        empty_spec = temp / "empty-audit.json"
+        empty_spec.write_text("{}\n", encoding="utf-8")
+        template = ROOT / "templates" / "report-shell.html"
+        demo = ROOT / "demo" / "index.html"
+
+        parity = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(demo),
+                str(empty_spec),
+                "--renderer-template",
+                str(template),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if parity.returncode != 0:
+            fail("demo renderer parity failed:\n" + parity.stdout + parity.stderr)
+        else:
+            ok("demo renderer matches canonical report shell")
+
+        drifted = temp / "renderer-drift.html"
+        drifted_html = template.read_text(encoding="utf-8").replace(
+            "--surface-0:#f6f5f2",
+            "--surface-0:#f6f5f3",
+            1,
+        )
+        drifted.write_text(drifted_html, encoding="utf-8")
+        drift = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(drifted),
+                str(empty_spec),
+                "--renderer-template",
+                str(template),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if drift.returncode == 0:
+            fail("renderer guard failed to detect CSS drift")
+        else:
+            ok("renderer guard detects CSS drift")
+
+        fragment = temp / "fragment.html"
+        fragment.write_text(
+            "<title>Fragment</title><body>reference price: 126.5</body>",
+            encoding="utf-8",
+        )
+        envelope = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(fragment),
+                str(empty_spec),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if envelope.returncode == 0:
+            fail("document envelope guard failed to reject HTML fragment")
+        else:
+            ok("document envelope guard rejects HTML fragment")
+
+        trailing = temp / "trailing.html"
+        trailing.write_text(
+            "<!DOCTYPE html><html><head><title>Trailing</title></head>"
+            "<body></body></html>trailing content",
+            encoding="utf-8",
+        )
+        tail = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(trailing),
+                str(empty_spec),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if tail.returncode == 0:
+            fail("document envelope guard failed to reject content after </html>")
+        else:
+            ok("document envelope guard rejects trailing content")
 
 
 
@@ -240,6 +366,7 @@ def main() -> int:
     check_python()
     check_forbidden_paths()
     check_generic_files()
+    check_runtime_portability()
     check_old_layout_references()
     check_example_spec_and_audit()
     check_public_docs()

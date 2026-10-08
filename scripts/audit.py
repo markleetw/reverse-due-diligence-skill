@@ -3,10 +3,12 @@
 """Generic deterministic audit for RDD HTML reports.
 
 Usage:
-    python3 scripts/audit.py REPORT.html AUDIT_SPEC.json
+    python3 scripts/audit.py REPORT.html AUDIT_SPEC.json \
+        [--renderer-template templates/report-shell.html]
 
-The audit checks internal consistency only. It does not verify whether external
-facts are true; source verification remains part of the research workflow.
+The audit checks internal consistency and can also verify renderer parity with
+the canonical report shell. It does not verify whether external facts are true;
+source verification remains part of the research workflow.
 """
 from __future__ import annotations
 
@@ -115,10 +117,107 @@ def scan_claims(
     return failures
 
 
+
+def check_document_envelope(html: str) -> list[str]:
+    """Require a complete standards-mode HTML document, not an inner fragment."""
+    failures: list[str] = []
+    source = html.lstrip("\ufeff \t\r\n")
+
+    if not re.match(r"(?is)^<!doctype\s+html\s*>", source):
+        failures.append("document must begin with <!DOCTYPE html>")
+
+    tags = {
+        "html_open": re.search(r"(?is)<html\b[^>]*>", source),
+        "head_open": re.search(r"(?is)<head\b[^>]*>", source),
+        "head_close": re.search(r"(?is)</head\s*>", source),
+        "body_open": re.search(r"(?is)<body\b[^>]*>", source),
+        "body_close": re.search(r"(?is)</body\s*>", source),
+        "html_close": re.search(r"(?is)</html\s*>", source),
+    }
+    for name, match in tags.items():
+        if match is None:
+            failures.append(f"missing required document tag: {name}")
+
+    if not failures:
+        order = [
+            tags["html_open"].start(),
+            tags["head_open"].start(),
+            tags["head_close"].start(),
+            tags["body_open"].start(),
+            tags["body_close"].start(),
+            tags["html_close"].start(),
+        ]
+        if order != sorted(order):
+            failures.append("document tags are not in html > head > body order")
+
+    if len(re.findall(r"(?is)</html\s*>", source)) != 1:
+        failures.append("document must contain exactly one </html> closing tag")
+    if not re.search(r"(?is)</html\s*>\s*$", source):
+        failures.append("</html> must be the final non-whitespace content")
+
+    return failures
+
+
+REPORT_DATA_START = "/* RDD_REPORT_DATA_START */"
+REPORT_DATA_END = "/* RDD_REPORT_DATA_END */"
+
+
+def extract_renderer_parts(html: str, *, label: str) -> tuple[str, str, str]:
+    """Return immutable renderer parts: CSS, JS prefix, JS suffix."""
+    style_match = re.search(r"<style>([\s\S]*?)</style>", html)
+    script_match = re.search(r"<script>([\s\S]*?)</script>", html)
+    if not style_match or not script_match:
+        raise ValueError(f"{label}: missing inline <style> or <script> block")
+
+    script = script_match.group(1)
+    start = script.find(REPORT_DATA_START)
+    end = script.find(REPORT_DATA_END)
+    if start < 0 or end < 0 or end <= start:
+        raise ValueError(
+            f"{label}: missing renderer data markers "
+            f"{REPORT_DATA_START!r} / {REPORT_DATA_END!r}"
+        )
+
+    prefix = script[:start]
+    suffix = script[end + len(REPORT_DATA_END):]
+    return style_match.group(1), prefix, suffix
+
+
+def check_renderer_parity(report_html: str, template_html: str) -> list[str]:
+    """Detect accidental CSS or renderer-library drift."""
+    failures: list[str] = []
+    try:
+        report_style, report_prefix, report_suffix = extract_renderer_parts(
+            report_html, label="report"
+        )
+        template_style, template_prefix, template_suffix = extract_renderer_parts(
+            template_html, label="template"
+        )
+    except ValueError as exc:
+        return [str(exc)]
+
+    if report_style != template_style:
+        failures.append(
+            "renderer CSS differs from templates/report-shell.html; "
+            "keep the canonical <style> block unchanged"
+        )
+    if report_prefix != template_prefix or report_suffix != template_suffix:
+        failures.append(
+            "renderer JavaScript differs from templates/report-shell.html; "
+            "only edit the block between RDD_REPORT_DATA_START/END"
+        )
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("report", type=Path)
     parser.add_argument("spec", type=Path)
+    parser.add_argument(
+        "--renderer-template",
+        type=Path,
+        help="canonical report shell; fail if CSS or renderer JS drifts",
+    )
     args = parser.parse_args()
 
     html = args.report.read_text(encoding="utf-8")
@@ -131,6 +230,15 @@ def main() -> int:
     allow_terms = spec.get("allow_context_terms", DEFAULT_ALLOW_CONTEXT_TERMS)
     context_chars = int(spec.get("allow_context_chars", 160))
     failures: list[str] = []
+
+    print("═══ Document envelope ═══")
+    envelope_failures = check_document_envelope(html)
+    if envelope_failures:
+        for failure in envelope_failures:
+            print("  ✗", failure)
+        failures.extend(envelope_failures)
+    else:
+        print("  ✓ complete standards-mode HTML document")
 
     claims = list(spec.get("stale_claims", [])) + list(spec.get("resolved_claims", []))
     claim_failures = scan_claims(body, claims, allow_terms, context_chars)
@@ -152,6 +260,17 @@ def main() -> int:
         print(f"  {'✓' if ok else '✗'} {label}: {value!r} — {count} occurrence(s), need {minimum}")
         if not ok:
             failures.append(f"missing canonical value: {label} ({value})")
+
+    if args.renderer_template:
+        print("\n═══ Renderer parity ═══")
+        template_html = args.renderer_template.read_text(encoding="utf-8")
+        renderer_failures = check_renderer_parity(html, template_html)
+        if renderer_failures:
+            for failure in renderer_failures:
+                print("  ✗", failure)
+            failures.extend(renderer_failures)
+        else:
+            print("  ✓ CSS and renderer JavaScript match canonical template")
 
     arithmetic = spec.get("arithmetic", [])
     if arithmetic:

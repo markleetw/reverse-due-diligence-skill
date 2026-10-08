@@ -1,0 +1,62 @@
+name: Browser QA
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "SKILL.md"
+      - "references/**"
+      - "templates/**"
+      - "scripts/audit.py"
+      - "scripts/package.py"
+      - "scripts/browser_test.py"
+      - "demo/**"
+      - ".github/workflows/browser-qa.yml"
+  pull_request:
+    paths:
+      - "SKILL.md"
+      - "references/**"
+      - "templates/**"
+      - "scripts/audit.py"
+      - "scripts/package.py"
+      - "scripts/browser_test.py"
+      - "demo/**"
+      - ".github/workflows/browser-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install browser test dependencies
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Run browser QA
+        run: python scripts/browser_test.py
+
+      - name: Build test package
+        run: |
+          mkdir -p dist
+          python scripts/package.py --output dist/reverse-due-diligence.zip
+
+      - name: Upload test package
+        uses: actions/upload-artifact@v4
+        with:
+          name: reverse-due-diligence-test-package
+          path: dist/reverse-due-diligence.zip
+          if-no-files-found: error

@@ -1,0 +1,42 @@
+name: Refresh Release Notes
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/refresh-release-notes.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Refresh existing release notes from tagged README
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          git fetch --tags --force
+
+          gh release list --limit 100 --json tagName --jq '.[].tagName' | while read -r TAG; do
+            test -n "$TAG" || continue
+
+            git show "$TAG:README.md" > /tmp/README.md
+            awk '
+              /<!-- release-notes:start -->/ { keep=1; next }
+              /<!-- release-notes:end -->/   { keep=0 }
+              keep
+            ' /tmp/README.md > /tmp/release-notes.md
+
+            gh release edit "$TAG" --notes-file /tmp/release-notes.md
+            echo "Updated $TAG"
+          done

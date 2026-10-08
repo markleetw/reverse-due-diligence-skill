@@ -161,7 +161,9 @@ def check_example_spec_and_audit() -> None:
         report.write_text(
             "<!DOCTYPE html><html lang=\"zh-Hant\"><head>"
             "<meta charset=\"utf-8\"><title>Audit</title></head>"
-            "<body>reference price: 126.5</body></html>",
+            "<body>current price: 126.5; reference price: 215; "
+            "displayed return: -41.16%; child value: 55; parent value: 85"
+            "</body></html>",
             encoding="utf-8",
         )
         proc = subprocess.run(
@@ -174,6 +176,26 @@ def check_example_spec_and_audit() -> None:
             fail("generic audit smoke test failed:\n" + proc.stdout + proc.stderr)
         else:
             ok("generic audit smoke test")
+
+        wrong_report = temp / "wrong-calculation.html"
+        wrong_report.write_text(
+            "<!DOCTYPE html><html lang=\"zh-Hant\"><head>"
+            "<meta charset=\"utf-8\"><title>Audit</title></head>"
+            "<body>current price: 126.5; reference price: 215; "
+            "displayed return: -40.00%; child value: 55; parent value: 85"
+            "</body></html>",
+            encoding="utf-8",
+        )
+        wrong = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "audit.py"), str(wrong_report), str(spec_path)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if wrong.returncode == 0:
+            fail("report-bound arithmetic guard failed to detect displayed mismatch")
+        else:
+            ok("report-bound arithmetic guard detects displayed mismatch")
 
         empty_spec = temp / "empty-audit.json"
         empty_spec.write_text("{}\n", encoding="utf-8")

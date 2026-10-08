@@ -31,11 +31,19 @@ jobs:
             test -n "$TAG" || continue
 
             git show "$TAG:README.md" > /tmp/README.md
-            awk '
-              /<!-- release-notes:start -->/ { keep=1; next }
-              /<!-- release-notes:end -->/   { keep=0 }
-              keep
-            ' /tmp/README.md > /tmp/release-notes.md
+            if grep -q '<!-- release-notes:start -->' /tmp/README.md; then
+              awk '
+                /<!-- release-notes:start -->/ { keep=1; next }
+                /<!-- release-notes:end -->/   { keep=0 }
+                keep
+              ' /tmp/README.md > /tmp/release-notes.md
+            else
+              awk '
+                /^## 安裝/ { keep=1 }
+                /^## Repo 結構/ { keep=0 }
+                keep
+              ' /tmp/README.md > /tmp/release-notes.md
+            fi
 
             gh release edit "$TAG" --notes-file /tmp/release-notes.md
             echo "Updated $TAG"

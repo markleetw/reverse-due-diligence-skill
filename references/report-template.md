@@ -47,28 +47,22 @@
 - 圖表繪製函式：**直條圖**（含虛線推估柱）、**正負值直條圖**、**節點折線圖**、**分組直條圖**、**百分比堆疊橫條圖**、**小倍數圖**、**橫條評分圖**、**區間橫條圖**
 - 統一的 tooltip 綁定與深淺色重繪
 
-改資料陣列即可，不要重寫樣式。**動手前先讀 dataviz skill。**
+改資料陣列即可，不要重寫樣式。若執行環境提供資料視覺化指南或相關 Skill，動手前先讀；否則遵循本節既有的圖表規則。
 
 **必做的品管**：
 
-```bash
-# 語法檢查
-python3 -c "
-h=open('report.html',encoding='utf-8').read()
-open('/tmp/chk.js','w').write(h.split('<script>')[1].split('</script>')[0])"
-node --check /tmp/chk.js
+- 若有 JavaScript runtime，可先抽出 inline script 做語法檢查。
+- 若有 browser automation／headless browser，實際載入 HTML，至少檢查：console/page errors、深淺色切換、desktop/mobile overflow、圖表與目錄連結。
+- browser QA 後要**實際看過畫面**——驗證器抓不到排版碰撞、標籤重疊與視覺層級問題。
+- 若執行環境沒有 browser automation，至少做靜態檢查，並在交付時明確註明未執行 browser visual QA。
 
-# 雙模式截圖 + console 錯誤檢查
-# 用 Playwright，executablePath 指向 /opt/pw-browsers/chromium-*/chrome-linux/chrome
-```
-
-截圖後**實際看過**——驗證器只檢查顏色，排版碰撞、標籤重疊、溢出要用眼睛。常見問題：軸單位標籤與第一個資料標籤重疊、堆疊圖窄色塊上的白字對比不足（淺色系色塊要改深色字）、時間軸上相鄰標籤重複。
+常見問題：軸單位標籤與第一個資料標籤重疊、堆疊圖窄色塊上的白字對比不足（淺色系色塊要改深色字）、時間軸上相鄰標籤重複。
 
 ## 交付
 
-1. `SendUserFile`（`display: "render"`）
-2. 判斷使用者會反覆回來看 → 再 `create_artifact` 存進側欄
-3. 後續每次實質更新都重新 `SendUserFile` 並 `update_artifact`
+1. 以執行環境可用的檔案交付方式提供自包含 HTML。
+2. 若環境無法輸出檔案，改以完整 Markdown 報告交付，保留相同的分析結構、來源與面試題。
+3. 若環境支援持久化 artifact／library，且使用者可能反覆回來查看，可另外保存；後續更新應同步更新該份持久化版本。
 4. **提醒保密**：這類報告含有對雇主的尖銳評論，不適合公開發布。若使用者想公開，建議另做一份匿名化、去掉個人求職判斷的產業分析版
 
 

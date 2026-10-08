@@ -153,8 +153,8 @@ def check_public_docs() -> None:
     for marker in (
         "<!-- release-notes:start -->",
         "<!-- release-notes:end -->",
-        "**ChatGPT**",
-        "**Claude**",
+        "ChatGPT",
+        "Claude",
         "reverse-due-diligence.zip",
     ):
         if marker not in readme:

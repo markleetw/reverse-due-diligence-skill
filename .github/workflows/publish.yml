@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: write
-  actions: write
 
 jobs:
   tag:
@@ -42,23 +41,18 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Check existing tag
-        id: existing
+      - name: Require a new release tag
         env:
           TAG: ${{ steps.version.outputs.tag }}
         shell: bash
         run: |
           git fetch --tags --force
           if git rev-parse "$TAG^{commit}" >/dev/null 2>&1; then
-            EXISTING_SHA="$(git rev-parse "$TAG^{commit}")"
-            echo "$TAG 已存在，指向 $EXISTING_SHA；沿用既有 tag 發布。"
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "$TAG 已存在。VERSION 必須升版；既有 tag 不可重新指向新的 source snapshot。" >&2
+            exit 1
           fi
 
       - name: Create release tag
-        if: steps.existing.outputs.exists != 'true'
         env:
           TAG: ${{ steps.version.outputs.tag }}
         shell: bash
@@ -67,11 +61,3 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" -m "Release $TAG" "$GITHUB_SHA"
           git push origin "$TAG"
-
-      - name: Dispatch release workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ steps.version.outputs.tag }}
-        shell: bash
-        run: |
-          gh workflow run release.yml --ref main -f tag="$TAG"

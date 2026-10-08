@@ -3,10 +3,12 @@
 """Generic deterministic audit for RDD HTML reports.
 
 Usage:
-    python3 scripts/audit.py REPORT.html AUDIT_SPEC.json
+    python3 scripts/audit.py REPORT.html AUDIT_SPEC.json \
+        [--renderer-template templates/report-shell.html]
 
-The audit checks internal consistency only. It does not verify whether external
-facts are true; source verification remains part of the research workflow.
+The audit checks internal consistency and can also verify renderer parity with
+the canonical report shell. It does not verify whether external facts are true;
+source verification remains part of the research workflow.
 """
 from __future__ import annotations
 
@@ -115,10 +117,67 @@ def scan_claims(
     return failures
 
 
+
+REPORT_DATA_START = "/* RDD_REPORT_DATA_START */"
+REPORT_DATA_END = "/* RDD_REPORT_DATA_END */"
+
+
+def extract_renderer_parts(html: str, *, label: str) -> tuple[str, str, str]:
+    """Return immutable renderer parts: CSS, JS prefix, JS suffix."""
+    style_match = re.search(r"<style>([\s\S]*?)</style>", html)
+    script_match = re.search(r"<script>([\s\S]*?)</script>", html)
+    if not style_match or not script_match:
+        raise ValueError(f"{label}: missing inline <style> or <script> block")
+
+    script = script_match.group(1)
+    start = script.find(REPORT_DATA_START)
+    end = script.find(REPORT_DATA_END)
+    if start < 0 or end < 0 or end <= start:
+        raise ValueError(
+            f"{label}: missing renderer data markers "
+            f"{REPORT_DATA_START!r} / {REPORT_DATA_END!r}"
+        )
+
+    prefix = script[:start]
+    suffix = script[end + len(REPORT_DATA_END):]
+    return style_match.group(1), prefix, suffix
+
+
+def check_renderer_parity(report_html: str, template_html: str) -> list[str]:
+    """Detect accidental CSS or renderer-library drift."""
+    failures: list[str] = []
+    try:
+        report_style, report_prefix, report_suffix = extract_renderer_parts(
+            report_html, label="report"
+        )
+        template_style, template_prefix, template_suffix = extract_renderer_parts(
+            template_html, label="template"
+        )
+    except ValueError as exc:
+        return [str(exc)]
+
+    if report_style != template_style:
+        failures.append(
+            "renderer CSS differs from templates/report-shell.html; "
+            "keep the canonical <style> block unchanged"
+        )
+    if report_prefix != template_prefix or report_suffix != template_suffix:
+        failures.append(
+            "renderer JavaScript differs from templates/report-shell.html; "
+            "only edit the block between RDD_REPORT_DATA_START/END"
+        )
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("report", type=Path)
     parser.add_argument("spec", type=Path)
+    parser.add_argument(
+        "--renderer-template",
+        type=Path,
+        help="canonical report shell; fail if CSS or renderer JS drifts",
+    )
     args = parser.parse_args()
 
     html = args.report.read_text(encoding="utf-8")
@@ -152,6 +211,17 @@ def main() -> int:
         print(f"  {'✓' if ok else '✗'} {label}: {value!r} — {count} occurrence(s), need {minimum}")
         if not ok:
             failures.append(f"missing canonical value: {label} ({value})")
+
+    if args.renderer_template:
+        print("\n═══ Renderer parity ═══")
+        template_html = args.renderer_template.read_text(encoding="utf-8")
+        renderer_failures = check_renderer_parity(html, template_html)
+        if renderer_failures:
+            for failure in renderer_failures:
+                print("  ✗", failure)
+            failures.extend(renderer_failures)
+        else:
+            print("  ✓ CSS and renderer JavaScript match canonical template")
 
     arithmetic = spec.get("arithmetic", [])
     if arithmetic:

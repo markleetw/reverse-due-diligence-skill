@@ -107,6 +107,34 @@ def check_generic_files() -> None:
             ok(f"generic file is company-neutral: {rel}")
 
 
+def check_runtime_portability() -> None:
+    """Keep distributed instructions free of host-specific tool/API names."""
+    runtime_files = [
+        ROOT / "SKILL.md",
+        ROOT / "references" / "analysis-playbook.md",
+        ROOT / "references" / "report-template.md",
+        ROOT / "templates" / "report-shell.html",
+    ]
+    forbidden = (
+        "AskUserQuestion",
+        "SendUserFile",
+        "create_artifact",
+        "update_artifact",
+        '/opt/pw-browsers/',
+        'display: "render"',
+    )
+    for path in runtime_files:
+        text = path.read_text(encoding="utf-8")
+        for term in forbidden:
+            if term in text:
+                fail(
+                    f"host-specific runtime instruction {term!r} found in "
+                    f"{path.relative_to(ROOT)}"
+                )
+    if not any("host-specific runtime instruction" in e for e in ERRORS):
+        ok("runtime instructions are host-neutral")
+
+
 def check_old_layout_references() -> None:
     text_files = [ROOT / "SKILL.md", ROOT / "references" / "report-template.md", ROOT / "README.md"]
     for path in text_files:
@@ -240,6 +268,7 @@ def main() -> int:
     check_python()
     check_forbidden_paths()
     check_generic_files()
+    check_runtime_portability()
     check_old_layout_references()
     check_example_spec_and_audit()
     check_public_docs()

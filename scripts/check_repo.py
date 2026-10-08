@@ -156,7 +156,8 @@ def check_example_spec_and_audit() -> None:
         return
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        report = Path(temp_dir) / "report.html"
+        temp = Path(temp_dir)
+        report = temp / "report.html"
         report.write_text("<html><body>reference price: 126.5</body></html>", encoding="utf-8")
         proc = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "audit.py"), str(report), str(spec_path)],
@@ -168,6 +169,54 @@ def check_example_spec_and_audit() -> None:
             fail("generic audit smoke test failed:\n" + proc.stdout + proc.stderr)
         else:
             ok("generic audit smoke test")
+
+        empty_spec = temp / "empty-audit.json"
+        empty_spec.write_text("{}\n", encoding="utf-8")
+        template = ROOT / "templates" / "report-shell.html"
+        demo = ROOT / "demo" / "index.html"
+
+        parity = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(demo),
+                str(empty_spec),
+                "--renderer-template",
+                str(template),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if parity.returncode != 0:
+            fail("demo renderer parity failed:\n" + parity.stdout + parity.stderr)
+        else:
+            ok("demo renderer matches canonical report shell")
+
+        drifted = temp / "renderer-drift.html"
+        drifted_html = template.read_text(encoding="utf-8").replace(
+            "--surface-0:#f6f5f2",
+            "--surface-0:#f6f5f3",
+            1,
+        )
+        drifted.write_text(drifted_html, encoding="utf-8")
+        drift = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(drifted),
+                str(empty_spec),
+                "--renderer-template",
+                str(template),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if drift.returncode == 0:
+            fail("renderer guard failed to detect CSS drift")
+        else:
+            ok("renderer guard detects CSS drift")
 
 
 

@@ -164,11 +164,20 @@ REPORT_DATA_END = "/* RDD_REPORT_DATA_END */"
 
 def extract_renderer_parts(html: str, *, label: str) -> tuple[str, str, str]:
     """Return immutable renderer parts: CSS, JS prefix, JS suffix."""
-    style_match = re.search(r"<style>([\s\S]*?)</style>", html)
-    script_match = re.search(r"<script>([\s\S]*?)</script>", html)
-    if not style_match or not script_match:
-        raise ValueError(f"{label}: missing inline <style> or <script> block")
+    # Strip HTML comments first so documentation such as literal <style> text
+    # cannot be mistaken for the actual renderer stylesheet.
+    source = re.sub(r"<!--[\s\S]*?-->", "", html)
+    style_matches = list(re.finditer(r"<style>([\s\S]*?)</style>", source))
+    script_matches = list(re.finditer(r"<script>([\s\S]*?)</script>", source))
+    if len(style_matches) != 1 or len(script_matches) != 1:
+        raise ValueError(
+            f"{label}: expected exactly one inline <style> and one <script> block "
+            f"after removing HTML comments; found {len(style_matches)} style / "
+            f"{len(script_matches)} script"
+        )
 
+    style_match = style_matches[0]
+    script_match = script_matches[0]
     script = script_match.group(1)
     start = script.find(REPORT_DATA_START)
     end = script.find(REPORT_DATA_END)

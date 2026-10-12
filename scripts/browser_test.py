@@ -60,6 +60,17 @@ def static_checks(path: Path) -> None:
     if html.count("</html>") != 1:
         fail(f"{path}: expected exactly one </html>")
 
+    uncommented = re.sub(r"<!--[\s\S]*?-->", "", html)
+    style_open_count = len(re.findall(r"<style(?:\s[^>]*)?>", uncommented))
+    style_close_count = len(re.findall(r"</style\s*>", uncommented))
+    if style_open_count != 1 or style_close_count != 1:
+        fail(
+            f"{path}: expected exactly one real <style> block, found "
+            f"{style_open_count} open / {style_close_count} close"
+        )
+    if "-->" in uncommented:
+        fail(f"{path}: stray HTML comment terminator outside a comment")
+
     parser = DocumentIndex()
     parser.feed(html)
 

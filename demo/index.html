@@ -3,14 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>晨霧科技｜Reverse Due Diligence Demo</title>
-<!--
-  報告樣板 — reverse-due-diligence skill
-  1) 把 {{...}} 佔位符換掉
-  2) 依 references/report-template.md 的骨架填章節
-  3) <style> 與 renderer JavaScript 視為 SSOT，不自行改寫；只改正文與 RDD_REPORT_DATA_START/END 之間的圖表資料
-  4) 若環境有資料視覺化指南／Skill，先讀取；若支援 browser automation，實際載入並檢查排版、深淺色與 console/page errors
--->
+<title>Asterra Digital · Head of Product · RDD Demo Review</title>
+<!-- Review draft: synthetic demo based on the analytical depth and structure of a prior RDD report. All company facts are fictional. -->
 <style>
 :root{
   color-scheme: light;
@@ -130,255 +124,172 @@ hr{border:0;border-top:1px solid var(--border);margin:40px 0}
 </style>
 </head>
 <body>
-<button class="themebtn" id="tbtn">◐ 深／淺色</button>
-<div id="tt"></div>
-<div class="wrap">
-
+<button class="themebtn" id="tbtn">◐ 深／淺色</button><div id="tt"></div><div class="wrap">
 <header class="hero">
-  <div class="kicker">Reverse Due Diligence · 求職者視角 <span class="pill a">DEMO · 全資料虛構</span></div>
-  <h1>晨霧科技<br>反向盡職調查</h1>
-  <p class="sub">為評估 <b>Head of Product</b> 職缺而做的完整示範報告：公司體質、營收引擎、低潮期、組織權責、薪酬文化、前景、面試必問題。</p>
-  <p class="meta">Demo ｜ 公司、人物、產品、財務數字、評論與職缺內容均為教學用虛構設定，不影射任何真實公司</p>
+<div class="kicker">Reverse Due Diligence · 公開示範 · 全資料虛構</div>
+<h1>Asterra Digital 星衡數位<br>Head of Product · Sentry</h1>
+<p class="sub">結論：值得進入面試，但真正的風險不是公司會不會活，而是這個 Head 是否拿得到與責任相稱的資源與決策權。</p>
+<p class="meta">Demo case｜資料截止 2026-09-30｜所有公司、產品、人物、財務數字與來源名稱皆為虛構，僅用來展示 RDD 的分析方法與輸出品質。</p>
 </header>
-
-<nav class="toc">
-  <b style="font-size:13px;color:var(--text-muted);letter-spacing:.05em">目錄</b>
-  <ol>
-    <li><a href="#s1">一分鐘結論</a></li>
-    <li><a href="#s2">公司是什麼、怎麼賺錢</a></li>
-    <li><a href="#s3">營收引擎拆解</a></li>
-    <li><a href="#s4">高風險業務深挖</a></li>
-    <li><a href="#s5">上市與股價表現</a></li>
-    <li><a href="#s6">財務軌跡</a></li>
-    <li><a href="#s7">營收結構與市場</a></li>
-    <li><a href="#s8">低潮期</a></li>
-    <li><a href="#s9">創辦人與經營團隊</a></li>
-    <li><a href="#s10">股東結構</a></li>
-    <li><a href="#s11">人數、組織與薪酬</a></li>
-    <li><a href="#s12">組織風氣與風評</a></li>
-    <li><a href="#s13">產品主導還是業務主導</a></li>
-    <li><a href="#s14">前景推演與風險</a></li>
-    <li><a href="#s15">這份工作值不值得接</a></li>
-    <li><a href="#s16">面試提問清單</a></li>
-    <li><a href="#s17">資料來源與方法</a></li>
-  </ol>
-</nav>
-
-<h2 id="s1"><span class="num">01</span>一分鐘結論</h2>
+<nav class="toc"><b>目錄</b><ol>
+<li><a href="#s1">一分鐘結論</a></li><li><a href="#s2">公司是什麼、怎麼賺錢</a></li><li><a href="#s3">營收引擎：誰付錢、付多少、換到什麼</a></li><li><a href="#s4">高風險業務：收入不等於曝險</a></li><li><a href="#s5">上市與股價：市場怎麼重新定價</a></li><li><a href="#s6">財務軌跡與對外敘事</a></li><li><a href="#s7">營收結構與市場：集團成長 ≠ Sentry 成長</a></li><li><a href="#s8">低潮期：修的是症狀還是機制</a></li><li><a href="#s9">創辦人與經營團隊</a></li><li><a href="#s10">股東結構與治理</a></li><li><a href="#s11">人數、組織與薪酬</a></li><li><a href="#s12">組織風氣與風評</a></li><li><a href="#s13">產品主導還是業務主導</a></li><li><a href="#s14">前景推演與風險排序</a></li><li><a href="#s15">這份工作值不值得接</a></li><li><a href="#s16">面試提問清單</a></li><li><a href="#s17">承重主張、修正紀錄與限制</a></li>
+</ol></nav>
+<section><h2 id="s1"><span class="num">01</span>一分鐘結論</h2>
 <div class="tiles">
-  <div class="tile"><div class="lab">2026 ARR</div><div class="val">NT$ 6.4 億</div><div class="note up">YoY +32%</div></div>
-  <div class="tile"><div class="lab">毛利率</div><div class="val">78%</div><div class="note up">SaaS 結構健康</div></div>
-  <div class="tile"><div class="lab">有機成長</div><div class="val">18%</div><div class="note">低於表面成長</div></div>
-  <div class="tile"><div class="lab">現金 runway</div><div class="val">30+ 月</div><div class="note up">短期安全</div></div>
-  <div class="tile"><div class="lab">角色實權</div><div class="val">5.8 / 10</div><div class="note down">需面試確認</div></div>
-  <div class="tile"><div class="lab">建議</div><div class="val">繼續面</div><div class="note">不要直接接 offer</div></div>
+<div class="tile"><div class="lab">2025 合併營收</div><div class="val">11.9 億</div><div class="note up">年增 31.5%</div></div>
+<div class="tile"><div class="lab">2026 H1 營益率</div><div class="val">16.2%</div><div class="note up">去年同期 6.8%</div></div>
+<div class="tile"><div class="lab">2026 H1 營業現金流</div><div class="val">5,100 萬</div><div class="note">淨利 9,800 萬；轉現約 52%</div></div>
+<div class="tile"><div class="lab">Sentry 2025 平均 MAU</div><div class="val">1,380 萬</div><div class="note down">前一年 1,460 萬</div></div>
+<div class="tile"><div class="lab">Pulse Advance 應收款</div><div class="val">4.65 億</div><div class="note">約占總資產 28%</div></div>
+<div class="tile"><div class="lab">Head 的預算／人力權</div><div class="val">待確認</div><div class="note">JD 寫 ownership，未載明額度</div></div>
 </div>
-<p class="lead"><b>結論：公司體質可接受，職缺本身比公司風險更值得擔心。</b>晨霧科技已從 2024 的過度擴編修正回來，但 2026 的 32% 成長有約 14 個百分點來自併購。Head of Product 名義上背 revenue KPI，卻不一定握有對等的 Pricing、預算與 Enterprise roadmap 權限。</p>
-<div class="flag green"><b>好消息：</b>核心訂閱業務毛利高、現金流正向，短期沒有生存壓力。</div>
-<div class="flag amber"><b>真正風險：</b>表面成長高於有機動能，且企業客戶占比持續增加，產品決策容易被 Sales 拉走。</div>
-<div class="flag red"><b>職缺疑點：</b>JD 寫「own product revenue」，但 budget ownership、Pricing 與 Enterprise roadmap 的拍板權都沒有寫清楚。</div>
-
-<h2 id="s2"><span class="num">02</span>公司是什麼、怎麼賺錢</h2>
-<p class="lead">晨霧科技是一家 B2B2C SaaS 公司，替中小品牌提供會員、行銷自動化與電商整合工具，同時向大型企業提供客製化 CDP 與導入服務。</p>
-<table>
-<thead><tr><th>業務線</th><th>2026 占比</th><th>商業本質</th><th>主要 owner</th></tr></thead>
-<tbody>
-<tr><td>Self-serve SaaS</td><td>46%</td><td>月／年訂閱</td><td>Product</td></tr>
-<tr><td>Enterprise</td><td>31%</td><td>年約 + 導入</td><td>Sales</td></tr>
-<tr><td>Marketplace</td><td>15%</td><td>交易抽成</td><td>GM</td></tr>
-<tr><td>Services</td><td>8%</td><td>顧問與整合</td><td>Professional Services</td></tr>
-</tbody>
-</table>
-<div class="flag"><b>求職者視角：</b>Title 是 Head of Product，但真正直接控制的收入線只有 Self-serve；其餘三條線都需要跨部門協商。</div>
-
-<h2 id="s3"><span class="num">03</span>營收引擎拆解</h2>
-<figure class="fig">
-  <div class="ftitle">2026 營收結構</div>
-  <div class="fsub">四條收入線合計 100%</div>
-  <div class="legend" id="leg-mix"></div>
-  <div id="c-mix"></div>
-  <figcaption>Demo 虛構資料。Self-serve 是 Head of Product 最能直接控制的收入線。</figcaption>
-</figure>
-<div class="two">
-  <div class="card"><b>Self-serve</b><p>ARPA 約 NT$1.9 萬／年，毛利率 88%，續約率 91%。主要成長槓桿是 onboarding、使用深度與升級率。</p></div>
-  <div class="card"><b>Enterprise</b><p>平均合約 NT$220 萬／年，毛利率 62%，但銷售週期長、客製需求多，容易綁住 roadmap。</p></div>
+<div class="verdict"><b>立場：值得面試；接 offer 前必須先確認「責任、控制權、已核准資源」是不是同一個量級。</b><p>Asterra 已從 2024 的擴張失速回到獲利成長，財務安全性目前不是最大問題。真正需要拆的是角色本身：Sentry 仍是集團最大的使用者產品，但成長最快的資源正流向企業 Trust API 與 Pulse Advance。新 Head 若只背 Sentry 的留存、訂閱與信任指標，卻無法控制共享工程、資料平台與商業化優先級，title 會比實權大。</p></div>
+<div class="flag green"><b>好消息：</b>2026 H1 營收 6.80 億、營業利益 1.10 億；2025 訂閱收入首度高於品牌曝光收入，收入品質比兩年前健康。</div>
+<div class="flag red"><b>具體風險：</b>Pulse Advance 單季營收只占 27.3%，但相關應收款 4.65 億、約占總資產 28%。只看營收占比會低估它對資金與治理的影響。</div>
+<div class="flag amber"><b>角色風險：</b>JD 說 Head of Product 負責 Sentry 全球產品策略，但沒有公開 P&amp;L、招聘額度、共享工程配額與跨 BU 衝突的最終裁決者。這四個缺口足以改變是否接 offer 的答案。</div>
+<p class="src"><span class="pill">Demo evidence</span>虛構 2026Q2 財報、2026Q2 法說、2025 年報、Head of Product JD。所有來源僅供示範，不對應真實公司。</p>
+</section>
+<section><h2 id="s2"><span class="num">02</span>公司是什麼、怎麼賺錢</h2>
+<div style="overflow-x:auto"><table><thead><tr><th>識別</th><th>Demo 設定</th></tr></thead><tbody>
+<tr><td>法律實體</td><td>星衡數位股份有限公司／Asterra Digital Co., Ltd.（虛構）</td></tr>
+<tr><td>成立／總部</td><td>2013；台北</td></tr>
+<tr><td>上市</td><td>示範代碼 ASTER；2023 掛牌</td></tr>
+<tr><td>核心產品</td><td>Sentry：消費者信任與帳號安全 App</td></tr>
+<tr><td>成長業務</td><td>Trust API：企業端身分與風險訊號；Pulse Advance：中小商戶短期週轉服務</td></tr>
+</tbody></table></div>
+<p>Asterra 不是單一 App 公司。對求職者更重要的拆法，是把它看成三套不同的經濟模型：</p>
+<div class="two"><div class="card"><h3>Sentry｜消費者信任產品</h3><p>靠訂閱與品牌曝光變現。最大的產品張力是：使用者付費是為了更少干擾、更高信任；廣告與品牌曝光卻需要更多版位與商業訊息。</p></div><div class="card"><h3>Trust API + Pulse｜企業與資金業務</h3><p>Trust API 是高毛利 B2B；Pulse Advance 則會占用資金、承擔信用與催收風險。兩者都需要共用身份資料、風險模型與工程團隊，因此會和 Sentry 爭同一批核心能力。</p></div></div>
+<div class="flag"><b>對 Head of Product 的意義：</b>公司整體成長不等於 Sentry 的產品資源會增加。若董事會把下一階段成長押在 B2B 與資金業務，consumer Head 可能接到「守住核心＋提升獲利」而不是「擴張產品版圖」的任務。</div>
+<p class="src"><span class="pill">證據層級</span>本節把「產品範圍」與「集團範圍」分開，避免用集團營收成長直接推定 Sentry 成長。</p>
+</section>
+<section><h2 id="s3"><span class="num">03</span>營收引擎：誰付錢、付多少、換到什麼</h2>
+<div style="overflow-x:auto"><table><thead><tr><th>2026Q2 業務</th><th>營收 百萬元</th><th>占比</th><th>誰付錢／買什麼</th></tr></thead><tbody>
+<tr><td>Sentry 訂閱</td><td>112</td><td>32.4%</td><td>個人／家庭付費，購買進階防護、家人共享與無廣告體驗</td></tr>
+<tr><td>品牌曝光</td><td>78</td><td>22.6%</td><td>品牌與通路付費，購買可信任情境中的曝光</td></tr>
+<tr><td>Trust API</td><td>61</td><td>17.7%</td><td>銀行、平台、電商購買風險訊號與驗證 API</td></tr>
+<tr><td>Pulse Advance</td><td>94</td><td>27.3%</td><td>商戶支付資金成本與服務費，換取短期週轉</td></tr>
+</tbody><tfoot><tr><td colspan="4">示範數字合計 345 百萬元。這張表是營收口徑，不代表各業務的資產負債表風險。</td></tr></tfoot></table></div>
+<figure class="fig"><div class="ftitle">Sentry 年費方案：家庭方案降低每人價格</div><div class="fsub">Demo pricing，不代表真實產品</div><div id="leg-plans" class="legend"></div><svg id="c-plans"></svg><figcaption>家庭方案把單人年費壓低到個人方案的約 61%，代表成長不只靠漲價，也靠多人滲透。</figcaption></figure>
+<p><span class="pill">產品矛盾</span>Sentry 一邊靠訂閱賣「更安靜、更少商業干擾」，另一邊又靠品牌曝光變現。真正的 Head 不是選一邊，而是要知道誰有權設定曝光護欄、哪些頁面不可商業化、以及短期收入壓力能不能推翻產品原則。</p>
+<div class="flag amber"><b>面試要驗證：</b>最近一次 Growth／Sales 要求增加曝光，而產品團隊拒絕或限縮時，最後是誰拍板？用具體案例才能判斷產品實權。</div>
+</section>
+<section><h2 id="s4"><span class="num">04</span>高風險業務：收入不等於曝險</h2>
+<p class="lead">Pulse Advance 是這份 Demo 刻意放進來的「看營收會看錯」案例。它不是 Sentry Head 的直接 scope，但它會透過資金、治理與共享資源影響這個角色。</p>
+<div class="tiles"><div class="tile"><div class="lab">Q2 Pulse 營收</div><div class="val">9,400 萬</div><div class="note">占集團 27.3%</div></div><div class="tile"><div class="lab">相關應收款</div><div class="val">4.65 億</div><div class="note">占總資產 28%</div></div><div class="tile"><div class="lab">逾期 30+ 天</div><div class="val">12.1%</div><div class="note">較去年 8.4% 上升</div></div><div class="tile"><div class="lab">備抵率</div><div class="val">4.5%</div><div class="note">需和 vintage 搭配看</div></div></div>
+<div class="card"><h3>為什麼這跟 Consumer Head 有關？</h3><ul><li>資金需求上升時，董事會可能優先保留資本給 Pulse，而不是新增 consumer headcount。</li><li>風險模型、資料平台、身份圖譜與資安工程是共享能力，Pulse 與 Sentry 會直接搶 roadmap。</li><li>一旦逾期或監管議題升溫，管理層注意力會轉向法遵與風險處置，consumer roadmap 的決策速度可能下降。</li></ul></div>
+<div class="flag red"><b>不要寫成：</b>「Pulse 占 27% 營收，所以集團只有 27% 金融風險。」營收是 flow；應收款與資本需求是 stock，兩個分母不同。</div>
+<div class="flag"><b>法律與監管：</b>本 Demo 只示範風險框架，不下合法／違法結論。若真實公司有相似業務，必須回到主管機關、契約、法規與裁判原文。</div>
+</section>
+<section><h2 id="s5"><span class="num">05</span>上市與股價：市場怎麼重新定價</h2>
+<figure class="fig"><div class="ftitle">股價節點：從成長故事到獲利驗證</div><div class="fsub">虛構價格，只示範如何把事件與定價放在同一張圖</div><svg id="c-stock"></svg><figcaption>股價從掛牌高點回落後，在 2026 獲利改善時重估。對求職者而言，重點不是預測股價，而是理解管理層目前被市場要求證明什麼。</figcaption></figure>
+<div style="overflow-x:auto"><table><thead><tr><th>節點</th><th>Demo 價格</th><th>解讀</th></tr></thead><tbody><tr><td>2023 掛牌首日</td><td>NT$188</td><td>市場買的是 consumer trust 的高成長敘事</td></tr><tr><td>2025 低點</td><td>NT$58</td><td>擴張失速、虧損與新業務資金需求同時被折價</td></tr><tr><td>2026 高點</td><td>NT$164</td><td>營益率改善後重新評價</td></tr><tr><td>2026-09-30</td><td>NT$128</td><td>仍低於掛牌首日，市場已從成長夢轉向獲利品質</td></tr></tbody></table></div>
+<p><span class="pill">對角色的傳導</span>當股價敘事從「高速成長」變成「營益率與資本效率」，Head of Product 常會拿到更嚴格的投資門檻：新增 headcount、免費功能、長期平台投資都需要更具體的回收證據。</p>
+</section>
+<section><h2 id="s6"><span class="num">06</span>財務軌跡與對外敘事</h2>
+<div class="two"><figure class="fig"><div class="ftitle">營收：仍成長，但速度已不是唯一問題</div><svg id="c-revenue"></svg><figcaption>2021–2025 CAGR 仍高，但 2025 的重點轉向收入組合與獲利。</figcaption></figure><figure class="fig"><div class="ftitle">EPS：2024 再度轉負，2025 修復</div><svg id="c-eps"></svg><figcaption>Demo 用來展示「營收上升但 EPS 不一定同步」的判讀。</figcaption></figure></div>
+<div style="overflow-x:auto"><table><thead><tr><th>年度</th><th>對外關鍵詞</th><th>本報告解讀</th></tr></thead><tbody><tr><td>2022</td><td>使用者成長、跨國擴張</td><td>優先搶規模</td></tr><tr><td>2023</td><td>Trust ecosystem、平台化</td><td>從單一 App 擴成多業務故事</td></tr><tr><td>2024</td><td>聚焦、效率、核心市場</td><td>擴張成本開始被檢討</td></tr><tr><td>2025</td><td>營益率、付費轉換、資本效率</td><td>董事會看產品的語言明顯財務化</td></tr><tr><td>2026 H1</td><td>AI efficiency、shared platform</td><td>期待用共享能力讓多 BU 同時成長</td></tr></tbody></table></div>
+<div class="flag amber"><b>角色含意：</b>如果公司現在用「效率」看產品，新 Head 的成功條件就不只是把 Sentry 做得更好，而是證明每一筆投資為何值得分配稀缺的工程與資料資源。</div>
+</section>
+<section><h2 id="s7"><span class="num">07</span>營收結構與市場：集團成長 ≠ Sentry 成長</h2>
+<figure class="fig"><div class="ftitle">營收 mix：consumer 仍最大，但相對占比下降</div><div id="leg-mix" class="legend"></div><svg id="c-mix"></svg><figcaption>2025Q2 到 2026Q2，Sentry 訂閱成長但品牌曝光下降；Trust API 與 Pulse 合計占比提高。</figcaption></figure>
+<div class="two"><div class="card"><h3>集團角度</h3><p>總營收與營益率都變好，代表公司層級沒有立即財務危機。這支持「值得面試」。</p></div><div class="card"><h3>Sentry 角度</h3><p>MAU 從 1,460 萬降到 1,380 萬，但付費戶仍成長。這代表產品可能正在從「擴使用者」切向「深化價值與付費」，不能只拿集團 30% 成長來說 consumer core 很健康。</p></div></div>
+<figure class="fig"><div class="ftitle">Sentry 平均 MAU</div><div class="fsub">百萬人，虛構</div><svg id="c-mau"></svg><figcaption>2025 使用者規模小幅回落。若訂閱收入仍成長，下一步要問的是付費率、留存與 ARPPU，而不是只問下載量。</figcaption></figure>
+<div class="flag"><b>最重要的分母：</b>「集團成長」和「你負責的產品成長」不是同一件事。面試時要把 Head 可控制的收入、成本與 KPI 從集團數字拆出來。</div>
+</section>
+<section><h2 id="s8"><span class="num">08</span>低潮期：修的是症狀還是決策機制</h2>
+<div style="overflow-x:auto"><table><thead><tr><th>層</th><th>2024 Demo 事件</th><th>現在看起來</th></tr></thead><tbody><tr><td>發生什麼</td><td>營收仍增，但 EPS 轉負；員工數與海外專案快速增加</td><td>2025 恢復獲利</td></tr><tr><td>病因</td><td>同時做東南亞 consumer 擴張、B2B 平台與 Pulse 前期投資</td><td>公開說法改成「聚焦核心＋共享平台」</td></tr><tr><td>怎麼度過</td><td>停掉兩個區域專案、整併平台團隊、headcount -12%</td><td>費用成長低於營收</td></tr><tr><td>會不會再來</td><td>取決於是否真的建立投資 gate</td><td>公開資料無法確認</td></tr></tbody></table></div>
+<div class="flag amber"><b>這裡不能太早給好評：</b>「2025 不再亂加人」只能證明症狀被控制，不能證明決策機制已改。真正要問的是：最近一個被停掉的產品／市場投資，當時用什麼 gate 決定停？誰有權踩煞車？</div>
+<p><span class="pill">轉成面試題</span>「請舉一個過去 12 個月你們主動停止投入的產品例子：當時看到什麼訊號、誰做決定、被釋放的資源後來去了哪裡？」這題比問「你們是不是更聚焦」有鑑別力。</p>
+</section>
+<section><h2 id="s9"><span class="num">09</span>創辦人與經營團隊：新 Head 要在哪裡發揮</h2>
+<div style="overflow-x:auto"><table><thead><tr><th>角色</th><th>Demo 背景</th><th>對 Head 的潛在影響</th></tr></thead><tbody><tr><td>CEO／共同創辦人 林奕辰</td><td>產品與資料背景；公開能見度高</td><td>可能直接參與 consumer roadmap 與 AI 方向</td></tr><tr><td>COO 周明潔</td><td>商業化與國際市場</td><td>品牌曝光、通路與 monetization 的主要 sponsor</td></tr><tr><td>CTO 陳楷</td><td>平台與 ML infrastructure</td><td>掌共享工程與資料平台的供給</td></tr><tr><td>GM, Pulse</td><td>金融與風險管理</td><td>成長快、資源需求高，會和 consumer 爭平台能力</td></tr></tbody></table></div>
+<div class="flag"><b>真正要釐清的不是「report to CEO」：</b>而是 CEO 會不會越過 Head 直接定 roadmap、CTO 能否否決資源、COO 能否用營收目標改變產品護欄。這三個權力點比匯報線更重要。</div>
+</section>
+<section><h2 id="s10"><span class="num">10</span>股東結構與治理</h2>
+<p>Demo 設定中，創辦團隊合計持股 21%，策略投資人 North Harbor Capital 於 2025 增持至 12%，並取得一席董事。這不是自動的壞消息，但它改變了「誰對資本效率最敏感」。</p>
+<div class="two"><div class="card"><h3>正面讀法</h3><p>策略股東帶來企業客戶、資本市場紀律與 B2B 擴張能力，能讓公司不只靠 consumer 流量。</p></div><div class="card"><h3>風險讀法</h3><p>如果新股東更重視 EBITDA 與企業營收，Sentry 的免費體驗、長期 trust investment 與未立即變現的功能可能更難拿到資源。</p></div></div>
+<div class="flag amber"><b>不能從董事席次直接推定 roadmap：</b>公開治理資料只能告訴你權力來源可能改變；產品優先級仍需用實際決策案例驗證。</div>
+</section>
+<section><h2 id="s11"><span class="num">11</span>人數、組織與薪酬：公司量級不等於你的資源</h2>
+<figure class="fig"><div class="ftitle">正職人數：營收上升、headcount 收縮</div><svg id="c-people"></svg><figcaption>2024 年末 248 → 2025 年末 219。這可能是效率改善，也可能代表新 Head 需要在固定 capacity 下承擔更多目標。</figcaption></figure>
+<div class="tiles"><div class="tile"><div class="lab">公司正職</div><div class="val">219</div><div class="note">2025 年末</div></div><div class="tile"><div class="lab">產品＋設計</div><div class="val">約 31</div><div class="note">公司自報，未拆 Sentry</div></div><div class="tile"><div class="lab">公開 Head 薪資帶</div><div class="val">未揭露</div><div class="note">公司平均不能當 Head 市價</div></div><div class="tile"><div class="lab">新增 HC</div><div class="val">待確認</div><div class="note">JD 僅寫 build the team</div></div></div>
+<div class="flag red"><b>不要犯的錯：</b>公司年報說平均薪資多少，不代表 Head of Product 的市場價。真正談薪要對齊 role × level × location × total compensation；公司平均只適合當 sanity check。</div>
+<div class="flag amber"><b>也不要把「build the team」翻譯成已核准 headcount：</b>它可能只是職責敘述。要問清楚現在團隊多少人、已核准缺額多少、多久沒補到人、哪些是 replacement、哪些是真新增。</div>
+</section>
+<section><h2 id="s12"><span class="num">12</span>組織風氣與風評：訊號要用案例驗證</h2>
+<figure class="fig"><div class="ftitle">匿名評論構面</div><div class="fsub">Demo 自填樣本，不能當成公司事實</div><svg id="c-culture"></svg><figcaption>生活平衡高、升遷與溝通偏弱。這種組合常見於「工作節奏可控，但權責與升遷機制不透明」，但仍需要具體案例驗證。</figcaption></figure>
+<div class="two"><div class="card"><h3>重複訊號</h3><ul><li>多則評論都提到跨 BU priority 容易改。</li><li>升遷標準被形容為「看主管共識」。</li><li>生活平衡整體正面，極端加班不是主要抱怨。</li></ul></div><div class="card"><h3>不能直接下的結論</h3><ul><li>不能因此寫「公司人治」。</li><li>不能用匿名評論直接給 Head 的組織健康低分。</li><li>不能把工程師對 PM 的抱怨當成 Head 的權力證據。</li></ul></div></div>
+<div class="flag"><b>正確用法：</b>把弱訊號變成案例題，例如：「最近一次跨 BU priority 改變時，誰重新排優先順序？原本承諾的 roadmap 怎麼處理？」</div>
+</section>
+<section><h2 id="s13"><span class="num">13</span>產品主導還是業務主導：用權限決定</h2>
+<div class="two"><div class="card"><h3>產品主導訊號</h3><ul><li>CEO 本身有產品背景。</li><li>JD 把 strategy、roadmap、user value 明列為 Head 責任。</li><li>Sentry 訂閱成長代表產品價值可以直接變現。</li></ul></div><div class="card"><h3>商業／財務主導訊號</h3><ul><li>法說語言從使用者成長轉向營益率與資本效率。</li><li>Trust API 與 Pulse 是近兩年最快成長來源。</li><li>共享工程由 CTO 平台組集中配置，consumer 不一定有 dedicated capacity。</li></ul></div></div>
+<p><span class="pill">精確結論</span>公開證據不足以把 Asterra 定義成「產品導向」或「業務導向」。更有用的判斷是：**Sentry Head 可能擁有產品判斷責任，但共享資源與商業優先級仍需和其他高權力角色協商。**</p>
+<div class="flag amber"><b>驗證方式：</b>請對方講最近一次產品團隊反對一個能帶來短期收入的提案，最後結果如何。若對方只能談文化、不講決策案例，權力邊界仍未被證明。</div>
+</section>
+<section><h2 id="s14"><span class="num">14</span>前景推演與風險排序</h2>
+<p>以下是敏感度情境，不是公司財測。已知 Demo 2026 H1 營收 680 百萬元；用 H2 年增率觀察公司能有多少新增投資空間。</p>
+<div style="overflow-x:auto"><table><thead><tr><th>情境</th><th>2026 H2 假設</th><th>全年營收</th><th>對 Head 的意義</th></tr></thead><tbody><tr><td>較弱</td><td>同比 +5%</td><td>13.2 億</td><td>董事會更重效率；新增 HC 難度提高</td></tr><tr><td>基準</td><td>同比 +15%</td><td>13.8 億</td><td>可投資，但會要求清楚的回收 gate</td></tr><tr><td>較強</td><td>同比 +25%</td><td>14.4 億</td><td>較有空間同時投 consumer 與 B2B</td></tr></tbody></table></div>
+<div class="card"><h3>風險排序</h3><ol><li><b>角色授權與資源不對稱</b>：最直接影響是否接 offer。</li><li><b>共享平台資源競爭</b>：決定 roadmap 是否只是紙上 ownership。</li><li><b>Pulse 資產負債表風險</b>：不是 consumer 問題，但會影響集團資本與注意力。</li><li><b>Sentry MAU 回落</b>：若付費深化可抵消，不一定是衰退；需要 cohort 與付費率證據。</li><li><b>治理敘事財務化</b>：長期 trust investment 可能需要更強的 business case。</li></ol></div>
+</section>
+<section><h2 id="s15"><span class="num">15</span>這份工作值不值得接</h2>
+<div class="verdict"><b>目前答案：值得進二面以上，但不建議在拿到三個答案前做接 offer 的心理承諾。</b><p>公司本身是「可研究的健康公司」，角色卻仍是「高不確定性的領導職」。最吸引人的地方是題目夠大、consumer trust 有真實使用者價值、訂閱模型已被證明；最大問題是 title 與 control plane 是否一致。</p></div>
+<div class="scorebar"><div class="nm">財務體質</div><div class="track"><span class="fillb" style="width:78%"></span></div><div class="sc">7.8</div></div>
+<p class="src">Confidence: High｜財報與現金流直接支持；Pulse 風險仍需拆 vintage。</p>
+<div class="scorebar"><div class="nm">成長前景</div><div class="track"><span class="fillb" style="width:70%"></span></div><div class="sc">7.0</div></div>
+<p class="src">Confidence: Medium｜集團成長強，但 Sentry MAU 與新 BU mix 讓產品層級答案不一樣。</p>
+<div class="scorebar"><div class="nm">題目吸引力</div><div class="track"><span class="fillb" style="width:86%"></span></div><div class="sc">8.6</div></div>
+<p class="src">Confidence: High｜consumer trust、訂閱、廣告護欄、AI 與國際市場的 product trade-off 很完整。</p>
+<div class="scorebar"><div class="nm">角色實權</div><div class="track"><span class="fillb" style="width:52%"></span></div><div class="sc">5.2</div></div>
+<p class="src">Confidence: Low｜JD 有 ownership，但 budget、P&amp;L、shared engineering 與 final decision 未證實。</p>
+<div class="scorebar"><div class="nm">資源充裕度</div><div class="track"><span class="fillb" style="width:48%"></span></div><div class="sc">4.8</div></div>
+<p class="src">Confidence: Low｜公司縮 HC、共享平台集中；Sentry dedicated capacity 未取得。</p>
+<div class="scorebar"><div class="nm">組織健康度</div><div class="track"><span class="fillb" style="width:61%"></span></div><div class="sc">6.1</div></div>
+<p class="src">Confidence: Low｜匿名評論只能當訊號，需用實際決策案例驗證。</p>
+<div class="flag green"><b>接的理由：</b>公司已證明從低潮回到獲利；Sentry 有成熟用戶基礎與直接付費；題目包含產品信任、商業化、AI 與跨國複雜度，對資深產品主管有足夠槓桿。</div>
+<div class="flag red"><b>不接或至少要談到的理由：</b>如果 Head 沒有 dedicated engineering capacity、不能決定 monetization guardrail、也沒有已核准的 team-building budget，那這會是「高責任、低控制」的典型陷阱。</div>
+</section>
+<section><h2 id="s16"><span class="num">16</span>面試提問清單</h2>
+<div class="card"><h3>P0 現場速查</h3><ol><li>這個 Head 有哪些決策不需要再往上核准？</li><li>目前 Sentry dedicated PM／Design／Engineering 各多少人？已核准新增 HC 幾個？</li><li>如果 Sentry 與 Pulse 同時需要資料平台，誰決定優先順序？</li><li>這個角色 12 個月後被判定成功的三個指標是什麼？誰設定？</li><li>請舉最近一次產品為了使用者價值拒絕短期收入的例子，最後誰拍板？</li></ol></div>
+<h3>P0｜不問到答案就不該接</h3>
+<div class="q"><div class="qt">1. 這個 Head 有哪些決策可以自己做，哪些一定要 CEO／COO／CTO 核准？</div><div class="why"><b>為什麼問：</b>JD 的 ownership 不是權限矩陣。<br><b>紅旗：</b>只說「我們很扁平」「大家一起討論」，卻無法列出具體決策權。</div></div>
+<div class="q"><div class="qt">2. Sentry 現在 dedicated 的 PM、Design、Engineering 各多少人？已核准但未補的 HC 有多少？</div><div class="why"><b>為什麼問：</b>公司總人數 219 不等於你能用的人。<br><b>紅旗：</b>把 shared team 算進來，卻無法說你能優先排多少 capacity。</div></div>
+<div class="q"><div class="qt">3. 如果 Sentry、Trust API、Pulse 同時要求資料平台支援，誰有最後 prioritization 權？</div><div class="why"><b>為什麼問：</b>這是目前最可能的實際瓶頸。<br><b>紅旗：</b>回答「看當時商業價值」但沒有固定決策機制或 escalation path。</div></div>
+<div class="q"><div class="qt">4. 這個角色 12 個月後被判定成功的三個指標是什麼？其中哪些是我能直接控制的？</div><div class="why"><b>為什麼問：</b>避免背集團成長或廣告收入，卻無法控制資源。<br><b>紅旗：</b>KPI 還沒定，或 KPI 大半依賴別的 BU。</div></div>
+<div class="q"><div class="qt">5. 請舉最近一次產品團隊為了 trust／user experience 拒絕短期收入的例子：誰反對、誰拍板、結果如何？</div><div class="why"><b>為什麼問：</b>這一題比「你們產品導向嗎」更能驗證實權。<br><b>紅旗：</b>找不到案例，或所有衝突最後都由商業單位勝出。</div></div>
+<h3>P1｜影響談判與期待設定</h3>
+<div class="q"><div class="qt">6. 2024 低潮後，你們新增了哪些 investment gate？最近一次被停掉的專案是什麼？</div><div class="why"><b>看什麼：</b>公司修的是機制還是只是不加人。</div></div>
+<div class="q"><div class="qt">7. Sentry MAU 下降但訂閱成長，你們內部認為核心 north star 已經從 reach 轉向 paid depth 嗎？</div><div class="why"><b>看什麼：</b>Head 接到的是 defend core、grow paid，還是重新擴張。</div></div>
+<div class="q"><div class="qt">8. 定價、廣告護欄與免費／付費功能邊界，現在各由誰決定？</div><div class="why"><b>看什麼：</b>能不能真正管理 subscription vs monetization trade-off。</div></div>
+<div class="q"><div class="qt">9. 新 Head 可以調整組織嗎？哪些 manager 是既定、哪些職缺可以自己招？</div><div class="why"><b>看什麼：</b>「build the team」是真 mandate 還是漂亮文案。</div></div>
+<div class="q"><div class="qt">10. 你們期待 AI 先提升 PM／工程效率，還是直接改變 Sentry 的產品體驗？</div><div class="why"><b>看什麼：</b>避免 AI 成為沒有邊界的新 KPI。</div></div>
+<div class="q"><div class="qt">11. North Harbor 進董事會後，哪些投資門檻或績效要求真的改了？</div><div class="why"><b>看什麼：</b>治理變化是否已傳導到 roadmap。</div></div>
+<div class="q"><div class="qt">12. 這個角色的前任／代理人現在在哪裡？為什麼需要重新招 Head？</div><div class="why"><b>看什麼：</b>確認是成長型補位、能力升級，還是權責衝突留下的 vacancy。</div></div>
+<h3>P2｜有時間再問</h3>
+<div class="q"><div class="qt">13. 哪個海外市場最值得重新加大 consumer 投資？為什麼？</div></div>
+<div class="q"><div class="qt">14. Trust API 有沒有反過來提升 Sentry 的資料或體驗，而不只是共用成本？</div></div>
+<div class="q"><div class="qt">15. 你們如何衡量品牌曝光對 trust perception 的長期傷害？</div></div>
+<div class="q"><div class="qt">16. 產品主管最常因為哪一種決策和 CEO 意見不同？</div></div>
+<h3>自行查證，不浪費面試時間</h3><ul><li>歷史財務、員工數、股權與法定揭露。</li><li>Sentry 公開方案、App 更新紀錄、公開市場足跡。</li><li>董事名單與正式治理文件。</li></ul>
+</section>
+<section><h2 id="s17"><span class="num">17</span>承重主張、修正紀錄與限制</h2>
+<p>這一節不是 bibliography，而是把「哪些東西真的撐住前面的判斷」攤開。Demo 刻意保留弱證據、未知項與修正紀錄，因為真實 RDD 不會每一題都有漂亮答案。</p>
+<div style="overflow-x:auto"><table><thead><tr><th>承重主張</th><th>證據型態</th><th>強度</th><th>影響判斷</th></tr></thead><tbody>
+<tr><td>2026 H1 已恢復獲利且營益率 16.2%</td><td>虛構法定財報</td><td>🟢 可引用</td><td>公司短期財務不是主要 blocker</td></tr>
+<tr><td>Pulse 應收款 4.65 億、占總資產 28%</td><td>虛構財報附註</td><td>🟢 可引用</td><td>不能用營收占比衡量資金風險</td></tr>
+<tr><td>Sentry Head 擁有 global product strategy</td><td>虛構 JD</td><td>🟡 公司承諾</td><td>代表責任，不代表實際授權</td></tr>
+<tr><td>跨 BU priority 容易改</td><td>虛構匿名評論多筆</td><td>🔴 僅作訊號</td><td>轉成面試題，不直接扣分</td></tr>
+<tr><td>North Harbor 會推高 EBITDA 壓力</td><td>本報告推論</td><td>🔴 待驗證</td><td>不能寫成董事會既定要求</td></tr>
+</tbody></table></div>
+<h3>修正紀錄</h3>
+<div class="flag"><b>已移除：</b>初稿曾把「build the team」寫成「已有 8 個新增 HC」。JD 只證明招聘責任，沒有核准名額，因此改成「待確認」。</div>
+<div class="flag"><b>已降級：</b>初稿曾把匿名評論中的「priority 常被改」寫成組織事實；現改為弱訊號，只用來設計 P0/P1 問題。</div>
+<div class="flag"><b>已拆分：</b>初稿曾把 Pulse 27.3% 營收占比當成風險比重；現改用應收款／總資產看資產負債表曝險。</div>
+<h3>目前仍不知道</h3><ul><li>Sentry 真正 dedicated engineering capacity。</li><li>Head 是否有 P&amp;L、pricing、budget、hiring final approval。</li><li>Sentry paid conversion、cohort retention 與各市場 unit economics。</li><li>Pulse receivable vintage、funding source 與真實 loss curve。</li><li>Head 的 offer、equity 與生活節奏。</li></ul>
+<div class="flag amber"><b>Demo 的重點：</b>未知不是瑕疵。RDD 的工作是把「不知道」變成能改變決策的問題，而不是為了報告看起來完整就補一個猜測。</div>
+<p><small>本頁所有公司、人物、產品、數字與文件名稱均為虛構。它是公開展示 RDD 方法的 synthetic case，不構成任何真實公司的描述、投資意見或法律意見。</small></p>
+</section>
+<p><small>Review draft：內容結構刻意比一般 demo 更接近一份真正完成的 RDD。此檔尚未進 repo，也尚未取代 live demo。</small></p>
 </div>
-
-<h2 id="s4"><span class="num">04</span>高風險業務深挖</h2>
-<p class="lead">這家公司沒有監管套利型業務；真正需要深挖的是 <b>Enterprise concentration</b> 與客製化負債。</p>
-<div class="tiles">
-  <div class="tile"><div class="lab">Top 5 客戶</div><div class="val">18%</div><div class="note">尚未過度集中</div></div>
-  <div class="tile"><div class="lab">Enterprise 毛利</div><div class="val">62%</div><div class="note down">低於公司平均</div></div>
-  <div class="tile"><div class="lab">客製需求占 sprint</div><div class="val">27%</div><div class="note down">產品債風險</div></div>
-</div>
-<div class="flag amber"><b>風險：</b>如果 Enterprise 占比繼續上升，但治理機制沒有把「客戶承諾」與「產品 roadmap」拆開，Head of Product 很可能變成大型客戶需求的排程管理者。</div>
-
-<h2 id="s5"><span class="num">05</span>上市與股價表現</h2>
-<p class="lead">晨霧科技於 2023 年掛牌；股價曾在過度擴編期間跌破掛牌價，2026 才回到接近前高。</p>
-<figure class="fig">
-  <div class="ftitle">股價關鍵節點</div>
-  <div class="fsub">Demo 虛構股價，單位：NT$</div>
-  <div id="c-price"></div>
-  <figcaption>掛牌員工與 2024 高點加入的員工，股權感受可能完全不同。</figcaption>
-</figure>
-<div class="flag"><b>談薪含意：</b>如果 offer 有 RSU／選擇權，不能只看「目前股價」，還要問 vesting、exercise price、refresh policy 與流動性。</div>
-
-<h2 id="s6"><span class="num">06</span>財務軌跡</h2>
-<figure class="fig">
-  <div class="ftitle">ARR 成長</div>
-  <div class="fsub">2023–2026，單位：億元</div>
-  <div id="c-arr"></div>
-  <figcaption>2026 表面 YoY +32%；扣除年中收購的 DataSpring 後，本體約 +18%。</figcaption>
-</figure>
-<figure class="fig">
-  <div class="ftitle">營業利益率</div>
-  <div class="fsub">2024 擴張失速後逐步修復</div>
-  <div id="c-margin"></div>
-  <figcaption>Demo 虛構資料。2024 的虧損主要來自人力與海外擴張，而非毛利崩壞。</figcaption>
-</figure>
-<div class="flag amber"><b>敘事演變：</b>2024 對外主軸是「搶市場」；2025 改成「效率與 retention」；2026 才重新談成長。這代表董事會現在比兩年前更在意可持續性。</div>
-
-<h2 id="s7"><span class="num">07</span>營收結構與市場</h2>
-<figure class="fig">
-  <div class="ftitle">區域營收占比</div>
-  <div class="fsub">台灣仍是基本盤，但海外占比逐年增加</div>
-  <div class="legend" id="leg-geo"></div>
-  <div id="c-geo"></div>
-  <figcaption>Demo 虛構資料。日本成長最快，但目前規模仍小。</figcaption>
-</figure>
-<div class="flag"><b>判斷：</b>台灣市場沒有明顯萎縮，但成熟度高；中期成長必須靠日本與 Enterprise，而這兩條線都比 Self-serve 更吃 go-to-market 能力。</div>
-
-<h2 id="s8"><span class="num">08</span>低潮期</h2>
-<table>
-<thead><tr><th>時間</th><th>發生什麼</th><th>公司怎麼解釋</th><th>後來怎麼改</th></tr></thead>
-<tbody>
-<tr><td>2024 Q2</td><td>團隊 92 → 138 人，營收僅 +12%</td><td>為海外成長提前投資</td><td>停止先擴編再找 PMF</td></tr>
-<tr><td>2024 Q4</td><td>撤回兩個海外市場、凍結招募</td><td>資源聚焦核心市場</td><td>改採 stage-gate 投資</td></tr>
-<tr><td>2025</td><td>新產品砍半</td><td>提高研發效率</td><td>先達 retention 門檻再擴編</td></tr>
-<tr><td>2026</td><td>人均營收回到擴張前水準</td><td>效率改善完成</td><td>恢復選擇性招募</td></tr>
-</tbody>
-</table>
-<div class="flag green"><b>值得肯定：</b>公開訊號比較像決策機制真的有改，而不是一次性的縮編止血。</div>
-
-<h2 id="s9"><span class="num">09</span>創辦人與經營團隊</h2>
-<table>
-<thead><tr><th>角色</th><th>背景</th><th>公開能見度</th><th>對產品的影響</th></tr></thead>
-<tbody>
-<tr><td>CEO 林昱辰</td><td>前業務主管</td><td><span class="pill a">中高</span></td><td>大型客戶與市場策略介入深</td></tr>
-<tr><td>COO 陳子晴</td><td>營運／財務</td><td><span class="pill">低調</span></td><td>預算與 headcount gatekeeper</td></tr>
-<tr><td>CTO 王立衡</td><td>共同創辦人</td><td><span class="pill">低調</span></td><td>技術架構與平台投資拍板</td></tr>
-</tbody>
-</table>
-<div class="flag amber"><b>對 Head of Product 的含意：</b>CEO 是 sales-led 背景，產品主管需要證明自己不是只管理 PM，而是能在商業壓力下守住產品決策原則。</div>
-
-<h2 id="s10"><span class="num">10</span>股東結構</h2>
-<table>
-<thead><tr><th>股東</th><th>持股</th><th>治理含意</th></tr></thead>
-<tbody>
-<tr><td>創辦團隊</td><td>34%</td><td>仍握控制力</td></tr>
-<tr><td>晨星創投</td><td>17%</td><td>2021 進場，偏成長型</td></tr>
-<tr><td>遠岸資本</td><td>12%</td><td>2024 增持，偏效率與現金流</td></tr>
-<tr><td>員工與公開市場</td><td>37%</td><td>分散</td></tr>
-</tbody>
-</table>
-<div class="flag"><b>治理判斷：</b>沒有單一外部股東能控制公司，但 2024 後董事會明顯更重視效率；這與公司對外敘事轉向一致。</div>
-
-<h2 id="s11"><span class="num">11</span>人數、組織與薪酬</h2>
-<div class="two">
-  <figure class="fig">
-    <div class="ftitle">員工人數</div>
-    <div class="fsub">2023–2026</div>
-    <div id="c-headcount"></div>
-    <figcaption>2024 過度擴編後，2025 修正，2026 恢復小幅成長。</figcaption>
-  </figure>
-  <figure class="fig">
-    <div class="ftitle">人均 ARR</div>
-    <div class="fsub">單位：百萬元／人</div>
-    <div id="c-rpe"></div>
-    <figcaption>2026 已回到比 2023 更好的效率水準。</figcaption>
-  </figure>
-</div>
-<table>
-<thead><tr><th>項目</th><th>市場線索</th><th>職缺可能值</th></tr></thead>
-<tbody>
-<tr><td>Base</td><td>NT$ 240–300 萬</td><td>約 280 萬</td></tr>
-<tr><td>Bonus</td><td>10–20%</td><td>15%</td></tr>
-<tr><td>Equity</td><td>主管職常見</td><td>需談 refresh policy</td></tr>
-</tbody>
-</table>
-
-<h2 id="s12"><span class="num">12</span>組織風氣與風評</h2>
-<figure class="fig">
-  <div class="ftitle">匿名評論面向</div>
-  <div class="fsub">Demo 虛構樣本，5 分制</div>
-  <div id="c-culture"></div>
-  <figcaption>匿名評論樣本小，只當作訊號，不當作公司事實。</figcaption>
-</figure>
-<div class="two">
-  <div class="card"><b>一致正面</b><p>同事能力強、決策速度快、主管願意直接討論數字。</p></div>
-  <div class="card"><b>一致負面</b><p>跨部門 ownership 模糊；重要客戶需求容易越過既有 roadmap。</p></div>
-</div>
-
-<h2 id="s13"><span class="num">13</span>產品主導還是業務主導</h2>
-<div class="two">
-  <div class="card"><b>產品主導的證據</b><ul><li>Self-serve 46% 營收由 Product 完整掌握</li><li>新功能需經 usage / retention gate</li><li>PM 可主導 discovery 與實驗</li></ul></div>
-  <div class="card" style="border-color:var(--warn)"><b>業務主導的證據</b><ul><li>Enterprise 31% 營收由 Sales owner</li><li>大型客戶可直接進 CEO escalation</li><li>Pricing committee 沒有明確由 Product 主持</li></ul></div>
-</div>
-<div class="flag amber"><b>精確結論：</b>不是純 sales-led，也不是純 product-led；更像「Self-serve product-led、Enterprise sales-led」的雙軌公司。Head of Product 能不能成功，取決於兩條軌道衝突時誰拍板。</div>
-
-<h2 id="s14"><span class="num">14</span>前景推演與風險</h2>
-<div class="tiles">
-  <div class="tile"><div class="lab">Base case 2027 ARR</div><div class="val">7.5 億</div><div class="note">假設有機 +17%</div></div>
-  <div class="tile"><div class="lab">Upside</div><div class="val">8.1 億</div><div class="note up">日本 + Enterprise 超預期</div></div>
-  <div class="tile"><div class="lab">Downside</div><div class="val">6.8 億</div><div class="note down">Enterprise 導入延遲</div></div>
-</div>
-<div class="flag red"><b>風險 1｜角色責任大於控制權：</b>如果 revenue KPI 沒有搭配 Pricing、budget 與 Enterprise roadmap 權限，績效風險會直接落在職缺本人。</div>
-<div class="flag amber"><b>風險 2｜併購整合：</b>DataSpring 帶來短期成長，但產品與資料架構整合可能吃掉 2–3 季研發容量。</div>
-<div class="flag amber"><b>風險 3｜Enterprise 客製化：</b>若客製 sprint 占比從 27% 繼續上升，核心 SaaS 的 compounding 會變弱。</div>
-
-<h2 id="s15"><span class="num">15</span>這份工作值不值得接</h2>
-<div class="verdict">
-  <h3 style="margin-top:0">整體判斷：值得繼續面，但不要在拿到權責答案前決定</h3>
-  <div class="scorebar"><span class="nm">財務體質</span><span class="track"><span class="fillb" style="width:85%"></span></span><span class="sc">8.5</span></div>
-  <div class="scorebar"><span class="nm">成長品質</span><span class="track"><span class="fillb" style="width:70%"></span></span><span class="sc">7.0</span></div>
-  <div class="scorebar"><span class="nm">題目吸引力</span><span class="track"><span class="fillb" style="width:82%"></span></span><span class="sc">8.2</span></div>
-  <div class="scorebar"><span class="nm">角色實權</span><span class="track"><span class="fillb" style="width:58%"></span></span><span class="sc">5.8</span></div>
-  <p><small>分數為依虛構公開資料做的示範性主觀評估。</small></p>
-</div>
-<div class="two">
-  <div class="card"><b>接的理由</b><ul><li>公司短期安全</li><li>Self-serve 還有成長題目</li><li>低潮期後治理機制有改善</li></ul></div>
-  <div class="card"><b>不接的理由</b><ul><li>Title 可能大於實權</li><li>Enterprise 需求可能綁 roadmap</li><li>P&L 責任與資源不一定對稱</li></ul></div>
-</div>
-
-<h2 id="s16"><span class="num">16</span>面試提問清單</h2>
-<div class="card"><b>現場速查｜P0</b><p style="margin-bottom:0">這三題問不到具體答案，不建議接。</p></div>
-<div class="q"><div class="qt">P0 · 問 CEO／用人主管：如果我對 product revenue 負責，Pricing、折扣、行銷預算與 headcount 分別由誰拍板？</div><div class="why">確認 revenue KPI 是否搭配實際控制權。紅旗：只要求背數字，但所有槓桿都在其他主管手上。</div></div>
-<div class="q"><div class="qt">P0 · 問 CEO／Sales leader：Enterprise roadmap 與 Self-serve roadmap 衝突時，最後誰有決策權？請舉最近一次實例。</div><div class="why">31% 營收由 Sales 主導，這題用來確認產品主管是不是名義 owner。</div></div>
-<div class="q"><div class="qt">P0 · 問 COO：2024 擴編失敗後，現在新增 headcount 的 gate 是什麼？誰可以否決？</div><div class="why">判斷公司修的是症狀，還是決策機制。</div></div>
-<details><summary>P1／P2 題目</summary><div class="body">
-<ul>
-<li><b>P1：</b>DataSpring 併購後，哪些 roadmap 是必做 integration，哪些仍可由產品團隊取捨？</li>
-<li><b>P1：</b>現有 PM 團隊最缺的是 discovery、delivery、data 還是商業化能力？</li>
-<li><b>P1：</b>這個角色成功 6 個月後，你希望看到哪三個數字改變？</li>
-<li><b>P2：</b>日本市場目前是 PMF 驗證期還是規模化期？</li>
-<li><b>P2：</b>CEO 最近一次否決 Sales 客製需求是什麼？</li>
-</ul>
-</div></details>
-
-<h2 id="s17"><span class="num">17</span>資料來源與方法說明</h2>
-<div class="flag"><b>Demo 方法：</b>本頁全部公司、人物、產品、財務、評論與職缺資料皆為虛構；目的只是展示 Reverse Due Diligence Skill 如何把不同來源轉成職涯決策。</div>
-<h3>虛構來源類型</h3>
-<ul class="src">
-<li>公司年報與法說會摘要（虛構）</li>
-<li>公開職缺與獵頭訊息（虛構）</li>
-<li>匿名員工評論（虛構，僅作訊號）</li>
-<li>公司新聞稿、股東結構與市場資料（虛構）</li>
-</ul>
-<p><small>正式研究時，Skill 會區分官方來源、第三方資料、匿名訊號與推論，並標註查不到的項目與不確定性。</small></p>
-
-<p style="margin-top:40px"><small>此 Demo 不構成對任何真實公司或職缺的評價。</small></p>
-</div>
-
 <script>
 (function(){
 const root=document.documentElement, btn=document.getElementById('tbtn');
@@ -630,45 +541,16 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
 
 
   /* RDD_REPORT_DATA_START */
-  /* ── 在這裡呼叫需要的圖表。其餘為可直接改用的範例 ───────────────── */
   function drawAll(){
-    drawStacked('c-mix',
-      [{y:'2026',v:[46,31,15,8]}],
-      [{n:'Self-serve',k:'--series-1'},{n:'Enterprise',k:'--series-3'},
-       {n:'Marketplace',k:'--series-4'},{n:'Services',k:'--series-2'}],
-      {legendId:'leg-mix',height:118,ml:86,caption:'占總營收比重（%）'});
-
-    drawNodeLine('c-price',
-      [{t:'2023.07',v:82,l:'掛牌',key:1},{t:'2024.06',v:126,l:'擴張高點',key:1},
-       {t:'2024.12',v:61,l:'修正低點',key:1},{t:'2026.10',v:118,l:'目前',key:1}],
-      {max:140,prefix:'NT$',solid:true,mr:36});
-
-    drawBars('c-arr',
-      [{y:'2023',v:3.1},{y:'2024',v:3.8},{y:'2025',v:4.85},{y:'2026',v:6.4}],
-      {max:7,unit:'億元',fmt:v=>v.toFixed(v%1?1:0),height:250});
-
-    drawSignedBars('c-margin',
-      [{y:'2023',v:6},{y:'2024',v:-11},{y:'2025',v:2},{y:'2026',v:9}],
-      {min:-15,max:15,unit:'%',fmt:v=>v.toFixed(0),height:240});
-
-    drawStacked('c-geo',
-      [{y:'2024',v:[72,14,8,6]},{y:'2025',v:[66,16,11,7]},{y:'2026',v:[58,18,16,8]}],
-      [{n:'台灣',k:'--series-1'},{n:'香港／新加坡',k:'--series-3'},
-       {n:'日本',k:'--series-4'},{n:'其他',k:'--series-2'}],
-      {legendId:'leg-geo',height:270,ml:86,caption:'各區域占總營收比重（%）'});
-
-    drawMini('c-headcount',
-      [{y:'2023',v:92},{y:'2024',v:138},{y:'2025',v:112},{y:'2026',v:118}],
-      {max:150,unit:'人'});
-    drawMini('c-rpe',
-      [{y:'2023',v:3.4},{y:'2024',v:2.8},{y:'2025',v:4.3},{y:'2026',v:5.4}],
-      {max:6,fmt:v=>v.toFixed(1),unit:'百萬元'});
-
-    drawScores('c-culture',
-      [{n:'同事能力',v:4.4},{n:'工作彈性',v:4.0},{n:'主管品質',v:3.5},
-       {n:'升遷透明',v:2.7},{n:'跨部門合作',v:2.9}],
-      {max:5,lowBelow:3,ml:130});
-
+    drawGrouped('c-plans',[{n:'個人',a:990,b:990},{n:'雙人',a:1590,b:795},{n:'家庭五人',a:2990,b:598}],{max:3400,unit:'元／年',labels:['方案總年費','滿額每人年費'],fmt:v=>Math.round(v)});
+    legend('leg-plans',[['方案總年費','--series-1'],['滿額每人年費','--series-2']]);
+    drawNodeLine('c-stock',[{t:'2023 首日',v:188,key:1,l:'首日收盤'},{t:'2025 低點',v:58,key:1,l:'擴張失速後低點'},{t:'2026 高點',v:164,key:1,l:'獲利重估高點'},{t:'2026-09-30',v:128,key:1,l:'最新示範價'}],{max:220,mr:70,prefix:'NT$',height:300});
+    drawBars('c-revenue',[{y:'2021',v:312},{y:'2022',v:498},{y:'2023',v:760},{y:'2024',v:905},{y:'2025',v:1190}],{max:1500,unit:'百萬元',fmt:v=>Math.round(v)});
+    drawSignedBars('c-eps',[{y:'2021',v:-1.20},{y:'2022',v:-0.80},{y:'2023',v:0.20},{y:'2024',v:-0.50},{y:'2025',v:1.80}],{min:-2,max:2.5,ticks:5,unit:'元',fmt:v=>v.toFixed(2)});
+    drawStacked('c-mix',[{y:'2025Q2',v:[31.0,29.0,14.0,26.0]},{y:'2026Q2',v:[32.4,22.6,17.7,27.3]}],[{n:'Sentry 訂閱',k:'--series-1'},{n:'品牌曝光',k:'--series-2'},{n:'Trust API',k:'--series-4'},{n:'Pulse Advance',k:'--series-3'}],{legendId:'leg-mix',caption:'占單季營收（%）'});
+    drawBars('c-mau',[{y:'2021',v:10.2},{y:'2022',v:12.1},{y:'2023',v:13.5},{y:'2024',v:14.6},{y:'2025',v:13.8}],{max:18,unit:'百萬人',fmt:v=>v.toFixed(1)});
+    drawBars('c-people',[{y:'2024年末',v:248},{y:'2025年末',v:219}],{max:300,unit:'正職人數',fmt:v=>Math.round(v)});
+    drawScores('c-culture',[{n:'生活平衡',v:4.2},{n:'升遷',v:2.5},{n:'員工建議',v:3.1},{n:'溝通',v:2.9}],{max:5,lowBelow:3});
   }
   drawAll();
   /* RDD_REPORT_DATA_END */

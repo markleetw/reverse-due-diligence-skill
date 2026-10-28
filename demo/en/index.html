@@ -39,7 +39,7 @@
 *{box-sizing:border-box}
 body{
   margin:0; background:var(--surface-0); color:var(--text-primary);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   line-height:1.75; font-size:15.5px; -webkit-font-smoothing:antialiased;
 }
 .wrap{max-width:960px;margin:0 auto;padding:0 22px 100px}
@@ -301,7 +301,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
       const x=ml+i*bw+(bw-iw)/2, h=(d.v/max)*ph, y=mt+ph-h;
       const p=rrect(s,x,y,iw,h,4, d.est?'none':c1,
                     d.est?{stroke:c1,'stroke-width':2,'stroke-dasharray':'5 4'}:{});
-      bind(p,`<b>${d.y}　${fmt(d.v)}${o.unit||''}</b>${d.note||(d.est?'Estimated, not a company forecast':'')}`);
+      bind(p,`<b>${d.y}　${fmt(d.v)}${o.unit||''}</b>${d.note||(d.est?'推估值，非公司財測':'')}`);
       txt(s,x+iw/2,y-8,fmt(d.v),'lab-t','middle');
       txt(s,x+iw/2,H-14,d.y,'axis-t','middle');
     });
@@ -437,7 +437,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
       const p=E('path',{d:`M${ml},${y} L${ml+w-rr},${y} Q${ml+w},${y} ${ml+w},${y+rr} L${ml+w},${y+bh-rr} Q${ml+w},${y+bh} ${ml+w-rr},${y+bh} L${ml},${y+bh} Z`,
                         fill:isLow?warn:c1});
       s.appendChild(p);
-      bind(p,`<b>${d.n}　${d.v.toFixed(1)} / ${max.toFixed(1)}</b>${isLow?'Below midpoint':(d.note||'')}`);
+      bind(p,`<b>${d.n}　${d.v.toFixed(1)} / ${max.toFixed(1)}</b>${isLow?'低於中位水準':(d.note||'')}`);
       txt(s,ml-12,y+bh/2+5,d.n,'lab-s','end');
       txt(s,ml+w+8,y+bh/2+5,d.v.toFixed(1),'lab-t','start');
     });

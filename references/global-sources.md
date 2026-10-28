@@ -18,8 +18,8 @@
 ## 文化與薪酬
 
 - **Glassdoor** — 評分、面試心得、薪資；注意公司可能有清理負評的動機
-- **Blind (teamblind.com)** — 需公司信箱驗證，內容最直白，科技業覆蓋率高
-- **levels.fyi** — 科技業薪酬結構（base / stock / bonus）最準的來源
+- **Blind (teamblind.com)** — 需公司信箱驗證，科技業覆蓋率高；內容常直接但仍屬匿名／半匿名訊號，需看樣本與交叉驗證
+- **levels.fyi** — 科技業薪酬結構（base / stock / bonus）的重要參考來源之一；先對齊 role、level、location、年份與 total compensation 口徑
 - **Indeed、Comparably、RepVue**（RepVue 專攻業務組織）
 - **Reddit**（r/cscareerquestions、產業專版）、**Hacker News** 的 "Who is hiring" 與公司討論串
 - **LinkedIn** — 員工人數趨勢、離職率觀察（看該公司員工的異動密度）、可聯繫的前員工

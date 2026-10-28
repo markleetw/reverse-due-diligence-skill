@@ -21,12 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the explicitly dispatched source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -90,7 +90,7 @@ jobs:
           (cd dist && sha256sum reverse-due-diligence.zip > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
 
       - name: Upload reviewed release artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rdd-release-artifacts
           path: |

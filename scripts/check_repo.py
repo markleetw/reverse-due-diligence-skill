@@ -273,6 +273,25 @@ def check_example_spec_and_audit() -> None:
         else:
             ok("demo renderer matches canonical report shell")
 
+        english_demo = ROOT / "demo" / "en" / "index.html"
+        english_parity = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "audit.py"),
+                str(english_demo),
+                str(empty_spec),
+                "--renderer-template",
+                str(template),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if english_parity.returncode != 0:
+            fail("English demo renderer parity failed:\n" + english_parity.stdout + english_parity.stderr)
+        else:
+            ok("English demo renderer matches canonical report shell")
+
         drifted = temp / "renderer-drift.html"
         drifted_html = template.read_text(encoding="utf-8").replace(
             "--surface-0:#f6f5f2",

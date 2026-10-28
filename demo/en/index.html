@@ -39,7 +39,7 @@
 *{box-sizing:border-box}
 body{
   margin:0; background:var(--surface-0); color:var(--text-primary);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   line-height:1.75; font-size:15.5px; -webkit-font-smoothing:antialiased;
 }
 .wrap{max-width:960px;margin:0 auto;padding:0 22px 100px}
@@ -301,7 +301,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
       const x=ml+i*bw+(bw-iw)/2, h=(d.v/max)*ph, y=mt+ph-h;
       const p=rrect(s,x,y,iw,h,4, d.est?'none':c1,
                     d.est?{stroke:c1,'stroke-width':2,'stroke-dasharray':'5 4'}:{});
-      bind(p,`<b>${d.y}　${fmt(d.v)}${o.unit||''}</b>${d.note||(d.est?'Estimated, not a company forecast':'')}`);
+      bind(p,`<b>${d.y}　${fmt(d.v)}${o.unit||''}</b>${d.note||(d.est?'推估值，非公司財測':'')}`);
       txt(s,x+iw/2,y-8,fmt(d.v),'lab-t','middle');
       txt(s,x+iw/2,H-14,d.y,'axis-t','middle');
     });
@@ -437,7 +437,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
       const p=E('path',{d:`M${ml},${y} L${ml+w-rr},${y} Q${ml+w},${y} ${ml+w},${y+rr} L${ml+w},${y+bh-rr} Q${ml+w},${y+bh} ${ml+w-rr},${y+bh} L${ml},${y+bh} Z`,
                         fill:isLow?warn:c1});
       s.appendChild(p);
-      bind(p,`<b>${d.n}　${d.v.toFixed(1)} / ${max.toFixed(1)}</b>${isLow?'Below midpoint':(d.note||'')}`);
+      bind(p,`<b>${d.n}　${d.v.toFixed(1)} / ${max.toFixed(1)}</b>${isLow?'低於中位水準':(d.note||'')}`);
       txt(s,ml-12,y+bh/2+5,d.n,'lab-s','end');
       txt(s,ml+w+8,y+bh/2+5,d.v.toFixed(1),'lab-t','start');
     });
@@ -476,9 +476,13 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
   function drawAll(){
     drawGrouped('c-plans',[{n:'Individual',a:990,b:990},{n:'Couple',a:1590,b:795},{n:'Family of five',a:2990,b:598}],{max:3400,unit:'NT$/year',labels:['Total annual price','Cost per person'],fmt:v=>Math.round(v)});
     legend('leg-plans',[['Total annual price','--series-1'],['Cost per person','--series-2']]);
-    drawNodeLine('c-stock',[{t:'2023 debut',v:188,key:1,l:'First close'},{t:'2025 low',v:58,key:1,l:'Post-expansion low'},{t:'2026 high',v:164,key:1,l:'Earnings rerating'},{t:'2026-09-30',v:128,key:1,l:'Latest fictional price'}],{max:220,mr:70,prefix:'NT$',height:300});
+    drawNodeLine('c-stock',[{t:'2023 debut',v:188,key:1,l:'First close'},{t:'2025 low',v:58,key:1,l:'Post-expansion low'},{t:'2026 high',v:164,key:1,l:'Earnings rerating'},{t:'2026-09-30',v:128,key:1,l:'Latest fictional price'}],{max:220,mr:70,prefix:'NT
+</body>
+</html>,height:300});
     drawBars('c-revenue',[{y:'2021',v:312},{y:'2022',v:498},{y:'2023',v:760},{y:'2024',v:905},{y:'2025',v:1190}],{max:1500,unit:'NT$ millions',fmt:v=>Math.round(v)});
-    drawSignedBars('c-eps',[{y:'2021',v:-1.20},{y:'2022',v:-0.80},{y:'2023',v:0.20},{y:'2024',v:-0.50},{y:'2025',v:1.80}],{min:-2,max:2.5,ticks:5,unit:'NT$',fmt:v=>v.toFixed(2)});
+    drawSignedBars('c-eps',[{y:'2021',v:-1.20},{y:'2022',v:-0.80},{y:'2023',v:0.20},{y:'2024',v:-0.50},{y:'2025',v:1.80}],{min:-2,max:2.5,ticks:5,unit:'NT
+</body>
+</html>,fmt:v=>v.toFixed(2)});
     drawStacked('c-mix',[{y:'2025Q2',v:[31.0,29.0,14.0,26.0]},{y:'2026Q2',v:[32.4,22.6,17.7,27.3]}],[{n:'Sentry subscriptions',k:'--series-1'},{n:'Brand exposure',k:'--series-2'},{n:'Trust API',k:'--series-4'},{n:'Pulse Advance',k:'--series-3'}],{legendId:'leg-mix',caption:'Quarterly revenue share (%)'});
     drawBars('c-mau',[{y:'2021',v:10.2},{y:'2022',v:12.1},{y:'2023',v:13.5},{y:'2024',v:14.6},{y:'2025',v:13.8}],{max:18,unit:'Millions of users',fmt:v=>v.toFixed(1)});
     drawBars('c-people',[{y:'YE 2024',v:248},{y:'YE 2025',v:219}],{max:300,unit:'Full-time employees',fmt:v=>Math.round(v)});

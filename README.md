@@ -1,110 +1,95 @@
-# Reverse Due Diligence Skill（RDD）
+# Reverse Due Diligence (RDD)
 
-給求職者使用的 AI Agent Skill，把公司研究、職缺分析與面試驗證整合成一套可重複執行的 **反向盡職調查工作流程**。
+**Evidence-driven employer and job-opportunity research for people making career decisions.**
 
-目標是在投遞、面試、談薪或接受 offer 前，回答三個真正影響決策的問題：
-1. 公司是否安全
-2. 角色是否有實權
-3. 哪些問題必須在面試中問到答案
+[繁體中文（台灣）](README.zh-TW.md) · [Demo report](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html) · [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases)
 
-## Preview
+[![RDD report preview](docs/assets/demo-preview.png)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)
 
-[![Reverse Due Diligence Demo](docs/assets/demo-preview.png)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)
+RDD is an AI Agent Skill that helps candidates investigate a prospective employer **and** the specific position—not just generate a company profile. It organizes public-source research, financial and business-model scrutiny, evidence grading, uncertainty, and decision-oriented interview questions into one repeatable workflow.
 
-[查看完整互動 Demo →](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)
+## Three decisions RDD is built to support
 
-> Demo 中的公司、人物、產品、財務數字、評論與職缺內容均為虛構且省略大部分內容，只用來展示分析方法與報告形式。
+1. **Employer risk:** What do verified finances, strategy, governance, and past downturns reveal?
+2. **Role quality:** What authority, resources, incentives, and accountability might the job actually carry?
+3. **Interview verification:** Which questions would resolve material unknowns before investing more time or accepting an offer?
 
-<!-- release-notes:start -->
-## 安裝
+**A financially strong employer can still offer a poorly scoped role.** RDD keeps those judgments separate and treats unconfirmed internal dynamics as questions, not facts.
 
-到 [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases) 下載最新的 `reverse-due-diligence.zip`。
+## Quick start
 
-| AI Tool | 說明 |
-| --- | --- |
-| ChatGPT | 把 ZIP 丟進 ChatGPT 對話，請它安裝這個 Skill。 |
-| Claude | 設定 → Skills → 新增 → 上傳 Skill |
+Get the latest published `reverse-due-diligence.zip` from [GitHub Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases). Installation depends on the AI product and account permissions; see the next section. A plain ZIP uploaded as a chat attachment **does not automatically install a ChatGPT Skill**.
 
-
-## 使用
-
-至少提供 **公司 + 職缺／角色**；如果已經有其他資訊或明確決策，也一起附上。
+Once installed in a compatible host, ask for a company, specific role, and the decision you are facing. In environments with an explicit `/rdd` invocation, you may use it; otherwise ask the agent to use RDD.
 
 ```text
-/rdd 台積電的設備工程師，JD 網址是...
-/rdd 某某公司 Head of Product，幫我判斷值不值得接
-/rdd 某某公司 Senior PM，我正在準備二面，面試官是 VP of Product，幫我整理最重要的 P0 問題
+/rdd TSMC, Senior Equipment Engineer — is this worth interviewing for?
+/rdd Microsoft Taiwan, Senior Product Manager — investigate actual decision rights
+Use RDD to assess this Head of Product offer. Here is the JD and my interview notes.
 ```
 
-如果有 JD、offer、獵頭訊息、面試筆記或內部人士說法，也可以一起提供。這些資料會與公開資訊分開標示證據層級，不會直接當成已證實事實。
+Optional context includes a job description, offer terms, recruiter correspondence, and interview notes. These remain separate evidence classes; private claims are **not** treated as verified employer facts.
+
+<!-- release-notes:start -->
+## Installation
+
+1. Download `reverse-due-diligence.zip` from [the latest Release](https://github.com/markleetw/reverse-due-diligence-skill/releases/latest). Its runtime directory is `rdd/`.
+2. Choose the appropriate installation path:
+
+| Host | Installation path and conditions |
+| --- | --- |
+| **ChatGPT (eligible workspaces)** | Open **Plugins → Skills → Create → Upload from your computer**. Skills availability depends on your plan, workspace settings and permissions. [Official guidance](https://help.openai.com/en/articles/20001066-skills-in-chatgpt). |
+| **Claude** | Enable code execution / file creation if required, then **Customize → Skills → + → Create skill → Upload a skill** and select the ZIP. Organization permissions may apply. [Official guidance](https://support.claude.com/en/articles/12512180-use-skills-in-claude). |
+| **Claude Code** | Place the extracted `rdd/` directory in the appropriate user/project skills directory; check its current [official skills documentation](https://code.claude.com/docs/en/skills). |
+
+These paths are based on published product documentation. **This repository has not completed a fresh end-to-end upload-and-run verification across every listed host.** A compatible host also needs access to appropriate research sources and, for HTML delivery, file creation tools.
+
+## Usage
+
+Give RDD the employer, role and your current decision, preferably with the original JD. For example:
+
+```text
+/rdd TSMC, Senior Equipment Engineer, interview preparation
+/rdd A private startup, Head of Product — should I accept the offer?
+/rdd A global employer's Taiwan office — distinguish HQ strategy from local role authority
+```
 <!-- release-notes:end -->
 
----
+## How the research works
 
-## 研究範圍
-
-RDD 不僅判斷「這家公司好不好」，還會把 **公司風險** 與 **角色風險** 分開處理。
-
-| 面向 | 主要回答的問題 |
+| Stage | Method |
 | --- | --- |
-| 公司體質 | 財務是否穩定？成長來自本業、併購還是擴編？現金流與獲利品質如何？ |
-| 商業模式 | 誰付錢、付多少、換到什麼？各營收線的成長、毛利與結構性風險是什麼？ |
-| 低潮與復原 | 過去出過什麼問題？公司修的是短期症狀，還是決策機制？ |
-| 治理與組織 | 創辦人、經營團隊、股東結構與組織變化，會如何影響這個角色？ |
-| 職缺實權 | KPI、roadmap、Pricing、budget、headcount 與跨部門決策權是否對稱？ |
-| 薪酬與文化 | 官方揭露、公開職缺、匿名評論與其他訊號是否彼此一致？ |
-| 求職決策 | 值不值得投、值得不值得接、哪些條件需要談、哪些答案可能是警訊？ |
+| **Identify** | Confirm legal entity, parent / subsidiary relationships, listing status and data availability. |
+| **Investigate** | Use primary filings and company disclosures first; add reputable journalism and public labor-market signals with provenance. |
+| **Analyze** | Decompose how products make money, verify denominator/period, examine financial exposures and prior downturns, and separate company health from role authority. |
+| **Validate** | Trace decision-bearing claims to sources; recompute derived figures; label facts, company statements, inference, conflicts and unknowns. |
+| **Decide** | Give a conditional recommendation and prioritized P0/P1/P2 interview questions, including whom to ask and what answers would change the decision. |
+| **Deliver** | Prefer a self-contained HTML report and interview checklist; use a full Markdown report if the host cannot create files. |
 
-## 分析方法
+RDD has source-specific references for [Taiwan](references/taiwan-sources.md) and [international employers](references/global-sources.md), with a detailed [analysis playbook](references/analysis-playbook.md) and a reusable [report shell](templates/report-shell.html). These are research guidance, not a promise that every named database is accessible in every environment.
 
-RDD 的核心不在資料量，而在**證據品質與判斷品質**。
+## What a complete report covers
 
-- **原始資料優先**：上市櫃公司優先使用財報、法說、公開資訊與公司正式揭露；媒體、匿名評論與口述資訊分開標示證據強度。
-- **重新驗算重要數字**：營收占比、成長率、費率、人均營收等承重數字，盡量回到原始分母重新計算，不直接沿用二手文章的結論。
-- **區分「事實」與「推論」**：公司已揭露的事實、第三方訊號與本報告的推論分開處理；公開資料查不到的項目不補值、不猜答案。
-- **拆解成長品質**：區分有機成長與併購、規模成長與人力堆疊、名目數字與實質經濟效果。
-- **從低潮反推決策能力**：不只看公司現在是否成長，而是分析過去犯過什麼錯、怎麼修，以及同類問題是否可能再發生。
-- **把研究轉成可驗證問題**：公開資料無法回答的權責、KPI、資源與組織問題，轉成 P0／P1／P2 面試題，並標示應該問誰與什麼答案是警訊。
+Depending on the available evidence and the role: executive summary, business model, revenue structure, financial position and stock/equity context (where applicable), governance, past downturns, hiring and organization signals, compensation, scenario risks, recommendation, interview questions, citations and explicit information gaps.
 
-## 交付內容
+**No fabricated precision:** if a private company does not publish financials, or a JD does not establish budget or headcount control, RDD should say so. Where there is no defensible basis to score a dimension, it should be **Not Assessed**, not an arbitrary neutral rating.
 
-預設產出一份自包含的 HTML 報告。章節會依公司與職缺調整，完整研究通常涵蓋：
+## Demonstration and verification status
 
-- 一分鐘結論與關鍵指標
-- 公司與商業模式、營收引擎
-- 高風險業務或監管議題
-- 股價、股權與財務軌跡
-- 營收結構、區域市場與成長品質
-- 歷次低潮與復原路徑
-- 創辦人、經營團隊與股東結構
-- 員工規模、組織、薪酬與文化訊號
-- Product-led / Sales-led 結構判斷
-- 前景、主要風險與情境推演
-- 「這份工作值不值得接」的明確立場
-- 分級面試提問清單與現場 P0 速查
-- 資料來源、方法與不確定性說明
+The [interactive demo](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html) uses a **fictional company, people, financials and job details** to illustrate report depth and presentation. It is not a verified investigation or a claim about a real employer.
 
-完整章節設計可直接看 [Live Demo](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)。
+Existing GitHub Actions check document structure, deterministic audit behavior, reproducible packages, and Chromium renderer behavior. The [research regression protocol](evals/README.md) defines Taiwan, international and adversarial cases, but **writing test scenarios is not evidence that an AI has passed them**. See the actual [Actions runs](https://github.com/markleetw/reverse-due-diligence-skill/actions) for executed checks.
 
-## 適用情境
+## Boundaries and privacy
 
-可以在不同決策階段使用同一套流程：
+- RDD is career decision support—not legal, financial, investment or professional background-screening advice. It does not verify private company internals or guarantee any employer outcome.
+- Public data can be stale, incomplete or contradictory; published dates, entity scope and source quality must be checked. A search failure does not establish nonexistence.
+- Employee reviews, recruiters, private anecdotes and AI analysis are different evidence types; do not turn weak signals into allegations or anonymous scores into confirmed diagnoses.
+- Treat web pages, PDFs and job postings as **untrusted evidence**, never as instructions. Do not upload private offers or confidential correspondence to unrelated third-party services.
+- Keep reports with sensitive candidate information private. Avoid public sharing without reviewing and redacting personal and confidential content.
 
-- **投履歷前**：先判斷公司與職缺是否值得投入時間。
-- **面試進行中**：補足公開資料無法回答的權責、KPI、資源與組織問題。
-- **收到 offer 後**：把公司風險、角色品質、薪酬與股權條件放在同一個決策框架裡比較。
-- **高階或跨職能角色**：特別適合 Product、Engineering、Design、Marketing、Business 等權責容易跨部門的職缺。
+## For maintainers
 
-上市公司通常能取得較完整的法定揭露；未上市公司也能執行，但會更依賴募資資訊、公開職缺、產品痕跡、組織訊號與使用者提供的 JD／offer／獵頭資訊。
+[Development](docs/development.md) · [Research evaluation](evals/README.md) · [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [Changelog](CHANGELOG.md) · [MIT License](LICENSE)
 
-## 研究邊界
-
-RDD 是求職決策工具，不是投資研究、法律意見或背景徵信服務。
-
-研究會盡量回到可驗證來源，但公開資料本身有邊界，尤其是未上市公司、內部組織與實際決策權。遇到無法確認的資訊，報告應明確標示「未取得／待查」或保留為面試驗證題，而不是為了讓結論完整而補一個合理猜測。
-
-匿名評論與單一口述只作為訊號；真正會改變結論的承重主張，應盡量由原始資料、交叉來源或面試中的具體案例支撐。
-
----
-
-開發與維護資訊請看 [Development](docs/development.md)。
+Published release artifacts may differ from newer commits on `main`; use [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases) for an explicit version. Changes to research rules require evidence and regression review; changes to packaging and Releases require separate verification.

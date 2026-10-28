@@ -1,0 +1,27 @@
+name: Bug report
+description: Report a reproducible behavior, research or packaging defect
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Use fictional or public data. Do not post private offers, secrets, or security exploit details here; see SECURITY.md."
+  - type: textarea
+    id: problem
+    attributes:
+      label: What went wrong?
+      description: Describe expected and actual behavior, including why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction and evidence
+      description: Include an anonymized prompt, commit/version, source date/URL and steps when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Verification status
+      description: Which CI, browser, live-research or manual tests were actually run? What is still unverified?

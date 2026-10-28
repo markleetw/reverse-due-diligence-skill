@@ -1,0 +1,23 @@
+name: Improvement proposal
+description: Propose a focused research, security, UX or engineering improvement
+title: "improvement: "
+body:
+  - type: textarea
+    id: gap
+    attributes:
+      label: Problem and evidence
+      description: What current behavior is insufficient? Provide a concrete case without private data.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Smallest useful change
+      description: Explain measurable benefit and how to preserve existing capability.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Proposed regression check
+      description: State how we would prove the change works and avoids regressions.

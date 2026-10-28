@@ -35,7 +35,7 @@ RDD（Reverse Due Diligence，反向盡職調查）將公開資料研究、財�
 | 使用環境 | 安裝方式與限制 |
 | --- | --- |
 | **ChatGPT（符合資格的工作區）** | **Plugins → Skills → Create → Upload from your computer**。能否使用 Skills 取決於方案、工作區設定與權限。請看 [OpenAI 官方說明](https://help.openai.com/zh-hant/articles/20001066-skills-in-chatgpt)。 |
-| **Claude** | 依需要啟用程式執行／檔案建立，再到 **Customize → Skills → + → Create skill → Upload a skill** 上傳 ZIP。團隊／企業帳號可能受管理員設定限制。請看 [Claude 官方說明](https://support.claude.com/zh-TW/articles/12512180-%E5%9C%A8-claude-%E4%B8%AD%E4%BD%BF%E7%94%A8%E8%83%BD%E8%83%BD)。 |
+| **Claude** | 依需要啟用程式執行／檔案建立，再到 **Customize → Skills → + → Create skill → Upload a skill** 上傳 ZIP。團隊／企業帳號可能受管理員設定限制。請看 [Claude 官方說明](https://support.claude.com/zh-TW/articles/12512180-%E5%9C%A8-claude-%E4%B8%AD%E4%BD%BF%E7%94%A8%E6%8A%80%E8%83%BD)。 |
 | **Claude Code** | 將 ZIP 解壓縮後的 `rdd/` 資料夾放在使用者或專案 Skills 目錄，並以 [Claude Code 官方文件](https://code.claude.com/docs/en/skills) 的當前路徑為準。 |
 
 以上安裝說明根據平台官方文件整理。**本專案尚未重新在所有平台逐一完成實際上傳、觸發及報告交付測試。**執行完整網頁研究也需要該環境具備適當的資料存取工具；產出 HTML 則需要支援建立檔案。

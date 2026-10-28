@@ -12,7 +12,7 @@ RDD is maintained through small, reviewable Pull Requests. **Do not equate a suc
 - `scripts/check_repo.py`: repository checks, negative tests and package reproducibility.
 - `scripts/browser_test.py`: Chromium render and dynamic-label security checks.
 - `scripts/release_notes.py`: versioned bilingual Release Notes from both Changelogs.
-- `evals/README.md`: human-reviewed research regression scenarios; initially NOT RUN.
+- `evals/README.md`: human-reviewed research regression scenarios, with dated status and known evidence limits.
 
 ## Local checks
 
@@ -37,4 +37,4 @@ Versioned historical Releases remain immutable. A failed release after Tag creat
 
 ## Evaluation
 
-Follow [`evals/README.md`](../evals/README.md). Report **NOT RUN** for unexecuted live AI research; `check_repo.py` and Browser QA only validate deterministic/repository functionality.
+Follow [`evals/README.md`](../evals/README.md). Use the dated results register: mark exact unexecuted fixtures **NOT RUN**, and distinguish private human-reviewed artifacts from publicly reproducible evidence. `check_repo.py` and Browser QA validate deterministic/repository behavior only.

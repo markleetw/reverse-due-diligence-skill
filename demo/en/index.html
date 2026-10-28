@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asterra Digital · Head of Product · RDD Demo</title>
+<!-- Synthetic demo based on the analytical depth and structure of a completed RDD report. All company facts are fictional. -->
+<style>
+:root{
+  color-scheme: light;
+  --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#f0efec;
+  --border:#e2e0da; --border-strong:#c9c6bd;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#7c7a74;
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100;
+  --good:#008300; --warn:#eda100; --serious:#eb6834; --critical:#e34948;
+  --grid:#e6e4de;
+}
+:root[data-theme="dark"], :root:where(:not([data-theme="light"])){}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#242422;
+    --border:#33332f; --border-strong:#4a4a45;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#96958c;
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
+    --good:#4caf50; --warn:#c98500; --serious:#d95926; --critical:#e66767;
+    --grid:#2e2e2b;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#242422;
+  --border:#33332f; --border-strong:#4a4a45;
+  --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#96958c;
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
+  --good:#4caf50; --warn:#c98500; --serious:#d95926; --critical:#e66767;
+  --grid:#2e2e2b;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--surface-0); color:var(--text-primary);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.75; font-size:15.5px; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 22px 100px}
+header.hero{padding:56px 0 30px;border-bottom:1px solid var(--border)}
+.kicker{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600}
+h1{font-size:clamp(28px,4.6vw,42px);line-height:1.2;margin:14px 0 10px;letter-spacing:-.02em}
+.sub{color:var(--text-secondary);font-size:16px;max-width:64ch;margin:0}
+.meta{margin-top:20px;font-size:13px;color:var(--text-muted)}
+h2{font-size:23px;margin:56px 0 6px;letter-spacing:-.01em;scroll-margin-top:20px}
+h2 .num{color:var(--text-muted);font-variant-numeric:tabular-nums;font-weight:500;margin-right:10px}
+h3{font-size:17px;margin:30px 0 8px}
+p{margin:12px 0}
+a{color:var(--series-1)}
+small{color:var(--text-muted)}
+.lead{color:var(--text-secondary)}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin:22px 0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin:26px 0}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:15px 16px}
+.tile .lab{font-size:11.5px;color:var(--text-muted);letter-spacing:.03em;font-weight:600}
+.tile .val{font-size:26px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:5px;line-height:1.15}
+.tile .note{font-size:12px;color:var(--text-secondary);margin-top:3px}
+.up{color:var(--good)} .down{color:var(--critical)}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+thead th{font-size:12px;color:var(--text-muted);letter-spacing:.04em;border-bottom:1px solid var(--border-strong);font-weight:650}
+tbody tr:hover{background:var(--surface-2)}
+tfoot td{font-size:12px;color:var(--text-muted);border:0;text-align:left}
+.fig{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:20px 20px 14px;margin:26px 0}
+.fig .ftitle{font-size:15px;font-weight:650;margin-bottom:2px}
+.fig .fsub{font-size:12.5px;color:var(--text-secondary);margin-bottom:14px}
+.fig figcaption{font-size:12px;color:var(--text-muted);margin-top:10px;border-top:1px solid var(--border);padding-top:9px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:2px 0 12px;font-size:12.5px;color:var(--text-secondary)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.grid-line{stroke:var(--grid);stroke-width:1}
+.axis-t{fill:var(--text-muted);font-size:11px;font-variant-numeric:tabular-nums}
+.lab-t{fill:var(--text-primary);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.lab-s{fill:var(--text-secondary);font-size:10.5px;font-variant-numeric:tabular-nums}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.two{grid-template-columns:1fr}}
+ul,ol{padding-left:22px;margin:12px 0}
+li{margin:7px 0}
+.flag{border-left:3px solid var(--border-strong);padding:4px 0 4px 16px;margin:18px 0;color:var(--text-secondary)}
+.flag.red{border-color:var(--critical)}
+.flag.amber{border-color:var(--warn)}
+.flag.green{border-color:var(--good)}
+.flag b{color:var(--text-primary)}
+.pill{display:inline-block;font-size:11px;font-weight:650;padding:2px 9px;border-radius:99px;border:1px solid var(--border-strong);color:var(--text-secondary);margin-right:6px;vertical-align:2px}
+.pill.g{border-color:var(--good);color:var(--good)}
+.pill.r{border-color:var(--critical);color:var(--critical)}
+.pill.a{border-color:var(--warn);color:var(--warn)}
+details{border:1px solid var(--border);border-radius:12px;padding:0;margin:14px 0;background:var(--surface-1)}
+details summary{cursor:pointer;padding:13px 18px;font-weight:600;font-size:14.5px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸ ";color:var(--text-muted)}
+details[open] summary::before{content:"▾ "}
+details .body{padding:0 18px 16px}
+.toc{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:16px 22px;margin:26px 0;font-size:14px}
+.toc ol{columns:2;column-gap:30px;margin:6px 0 0}
+@media(max-width:600px){.toc ol{columns:1}.themebtn{position:absolute;top:10px;right:10px}header.hero{padding-top:72px}}
+.toc a{text-decoration:none;color:var(--text-secondary)}
+.toc a:hover{color:var(--series-1)}
+#tt{position:fixed;pointer-events:none;opacity:0;transition:opacity .09s;background:var(--surface-1);border:1px solid var(--border-strong);
+   border-radius:9px;padding:8px 11px;font-size:12.5px;box-shadow:0 6px 22px rgba(0,0,0,.16);z-index:99;max-width:250px;line-height:1.5}
+#tt b{display:block;margin-bottom:3px;font-size:12px}
+.themebtn{position:fixed;top:14px;right:14px;z-index:50;background:var(--surface-1);border:1px solid var(--border);
+  border-radius:99px;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--text-secondary);font-family:inherit}
+.q{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0}
+.q .why{font-size:13px;color:var(--text-secondary);margin-top:6px}
+.q .qt{font-weight:600}
+.src{font-size:13px;color:var(--text-secondary)}
+.src li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--border);margin:40px 0}
+.verdict{background:var(--surface-1);border:1px solid var(--border-strong);border-radius:16px;padding:26px 28px;margin:26px 0}
+.scorebar{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13.5px}
+.scorebar .nm{width:120px;color:var(--text-secondary);flex:none}
+.scorebar .track{flex:1;height:9px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.scorebar .fillb{display:block;height:100%;border-radius:99px;background:var(--series-1)}
+.scorebar .sc{width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:650;flex:none}
+</style>
+</head>
+<body>
+<button class="themebtn" id="tbtn">◐ Light / Dark</button><div id="tt"></div><div class="wrap">
+<header class="hero">
+<div class="kicker">Reverse Due Diligence · Public Showcase · Entirely Fictional</div>
+<h1>Asterra Digital<br>Head of Product · Sentry</h1>
+<p class="sub">Verdict: worth interviewing. The real question is whether the Head has decision rights and resources commensurate with the accountability.</p>
+<p class="meta">Synthetic case · Information cutoff: Sep 30, 2026 · All people, companies, products, figures and sources are fictional.</p>
+</header><nav class="toc"><b>Contents</b><ol><li><a href="#s1">The decision in one minute</a></li><li><a href="#s2">Company and revenue model</a></li><li><a href="#s3">Who pays for what?</a></li><li><a href="#s4">Risk beyond revenue</a></li><li><a href="#s5">Listing and stock-market expectations</a></li><li><a href="#s6">Financial trajectory and narrative</a></li><li><a href="#s7">Group growth versus Sentry growth</a></li><li><a href="#s8">The downturn and what changed</a></li><li><a href="#s9">Founder and leadership roles</a></li><li><a href="#s10">Ownership and governance</a></li><li><a href="#s11">People, organization and compensation</a></li><li><a href="#s12">Culture and employee feedback</a></li><li><a href="#s13">Product-led or commercially driven?</a></li><li><a href="#s14">Scenarios and prioritized risks</a></li><li><a href="#s15">Is the role worth accepting?</a></li><li><a href="#s16">Interview questions</a></li><li><a href="#s17">Evidence, corrections and limitations</a></li></ol></nav><section><h2 id="s1"><span class="num">01</span>The decision in one minute</h2><div class="tiles"><div class="tile"><div class="lab">2025 REVENUE</div><div class="val">NT$1.19B</div><div class="note up">+31.5% YoY</div></div><div class="tile"><div class="lab">2026 H1 OPERATING MARGIN</div><div class="val">16.2%</div><div class="note up">6.8% last year</div></div><div class="tile"><div class="lab">2026 H1 OPERATING CASH FLOW</div><div class="val">NT$51M</div><div class="note ">52% conversion of NT$98M net profit</div></div><div class="tile"><div class="lab">SENTRY 2025 AVERAGE MAU</div><div class="val">13.8M</div><div class="note down">Down from 14.6M</div></div><div class="tile"><div class="lab">PULSE RECEIVABLES</div><div class="val">NT$465M</div><div class="note ">28% of total assets</div></div><div class="tile"><div class="lab">HEAD'S HIRING AUTHORITY</div><div class="val">Unknown</div><div class="note ">JD names ownership, not approvals</div></div></div>
+<div class="verdict"><b>Recommendation: pursue interviews, but verify authority and resources before accepting.</b><p>The fictional employer returned to profitability after an expansion setback. Its survival is not the main concern. Sentry remains a major consumer business, yet the fastest-growing businesses are enterprise APIs and merchant financing. A Head accountable for consumer outcomes without control of engineering allocation, monetization or hiring may have a title bigger than the actual mandate.</p></div>
+<div class="flag green"><b>Positive:</b> H1 2026 revenue was NT$680M and operating profit NT$110M; subscription revenue has overtaken brand exposure.</div>
+<div class="flag red"><b>Balance-sheet exposure:</b> Pulse generates 27.3% of quarterly revenue but has NT$465M in receivables, representing 28% of assets.</div>
+<div class="flag amber"><b>Role uncertainty:</b> P&amp;L rights, approved headcount, shared engineering allocation and dispute arbitration are not specified in the JD.</div>
+<p class="src"><span class="pill">Synthetic evidence</span> Fictional Q2 financial statements, annual report, investor presentation and Head of Product JD.</p></section>
+<section><h2 id="s2"><span class="num">02</span>Company and revenue model</h2><table><thead><tr><th>Entity</th><th>Fictional case profile</th></tr></thead><tbody><tr><td>Legal company</td><td>Asterra Digital Co., Ltd.; founded 2013 in Taipei</td></tr><tr><td>Listing</td><td>Fictional ticker ASTER, listed in 2023</td></tr><tr><td>Sentry</td><td>Consumer trust and account-protection app</td></tr><tr><td>Trust API</td><td>Enterprise identity and risk signals</td></tr><tr><td>Pulse Advance</td><td>Short-term working capital for merchants</td></tr></tbody></table>
+<div class="two"><div class="card"><h3>Consumer economics</h3><p>Subscriptions promise a trusted, low-distraction experience while brand advertising pays for exposure. These revenue sources create a real product-management trade-off.</p></div><div class="card"><h3>Enterprise and financing</h3><p>Trust API provides B2B services. Pulse requires capital and introduces credit risk. Both need engineering, security and data resources that Sentry may also depend on.</p></div></div>
+<div class="flag "><b>Implication for the Head:</b> Group growth does not prove that Sentry gains resources. The board may ask its new leader to defend a profitable core instead of expanding reach.</div></section>
+<section><h2 id="s3"><span class="num">03</span>Who pays for what?</h2><table><thead><tr><th>Q2 2026 business</th><th>NT$M</th><th>Share</th><th>Buyer / offering</th></tr></thead><tbody><tr><td>Sentry subscriptions</td><td>112</td><td>32.4%</td><td>Families buy enhanced protection and ad-free use</td></tr><tr><td>Brand exposure</td><td>78</td><td>22.6%</td><td>Advertisers buy trusted-context placements</td></tr><tr><td>Trust API</td><td>61</td><td>17.7%</td><td>Enterprises buy risk signals and verification</td></tr><tr><td>Pulse Advance</td><td>94</td><td>27.3%</td><td>Merchants pay financing and service charges</td></tr></tbody><tfoot><tr><td colspan="4">Total NT$345M. Revenue mix does not measure credit exposure.</td></tr></tfoot></table>
+<figure class="fig"><div class="ftitle">Sentry annual plans: households lower per-user cost</div><div class="fsub">Fictional prices in NT$, not actual products</div><div id="leg-plans" class="legend"></div><svg id="c-plans"></svg><figcaption>At five members, annual cost per person is about 61% of the individual plan.</figcaption></figure>
+<p>Subscription users pay for less disruption; advertisers pay to introduce messages. The Head must know who sets exposure guardrails, which surfaces cannot be commercialized, and who can overrule product principles.</p>
+<div class="flag amber"><b>Interview test:</b> Ask when Growth or Sales last requested additional exposure and Product resisted. Who made the final decision?</div></section>
+<section><h2 id="s4"><span class="num">04</span>Risk beyond revenue</h2><p class="lead">Pulse is intentionally included to demonstrate why revenue percentages can misrepresent capital and credit risk.</p>
+<div class="tiles"><div class="tile"><div class="lab">PULSE Q2 REVENUE</div><div class="val">NT$94M</div><div class="note ">27.3% of group revenue</div></div><div class="tile"><div class="lab">RECEIVABLES</div><div class="val">NT$465M</div><div class="note ">28% of total assets</div></div><div class="tile"><div class="lab">30+ DAYS PAST DUE</div><div class="val">12.1%</div><div class="note ">Up from 8.4%</div></div><div class="tile"><div class="lab">LOSS ALLOWANCE</div><div class="val">4.5%</div><div class="note ">Needs vintage-level analysis</div></div></div>
+<div class="card"><h3>Why this matters for a Consumer Head</h3><ul><li>Credit growth may divert capital from consumer headcount.</li><li>Pulse and Sentry compete for risk models, data-platform staff and security engineering.</li><li>Regulatory concerns can redirect management attention and slow roadmap decisions.</li></ul></div>
+<div class="flag red"><b>Do not infer:</b> 27% of revenue means only 27% financial risk. Revenue is a flow; outstanding loans and capital needs are stocks.</div>
+<div class="flag "><b>Regulatory limitation:</b> No legality judgment is made from this synthetic case. Real investigations require contracts, applicable law, regulator records and court decisions.</div></section>
+<section><h2 id="s5"><span class="num">05</span>Listing and stock-market expectations</h2><figure class="fig"><div class="ftitle">Stock-price milestones: from growth to profitability</div><div class="fsub">Fictional share prices</div><svg id="c-stock"></svg><figcaption>A change in investor expectations can change the Head's investment hurdles. Prices below are fictional.</figcaption></figure>
+<table><thead><tr><th>Event</th><th>NT$</th><th>Interpretation</th></tr></thead><tbody><tr><td>2023 listing day</td><td>188</td><td>High-growth consumer-trust narrative</td></tr><tr><td>2025 low</td><td>58</td><td>Expansion losses and capital needs discounted</td></tr><tr><td>2026 high</td><td>164</td><td>Rerating after margin recovery</td></tr><tr><td>Sep 30, 2026</td><td>128</td><td>Still below debut; profitability quality matters</td></tr></tbody></table>
+<p>New hires may be asked to justify each additional role, free feature and long-payback platform investment with more explicit evidence.</p></section>
+<section><h2 id="s6"><span class="num">06</span>Financial trajectory and narrative</h2><div class="two"><figure class="fig"><div class="ftitle">Revenue growth, 2021–2025</div><svg id="c-revenue"></svg><figcaption>Strong revenue growth does not establish the quality of the earnings mix.</figcaption></figure><figure class="fig"><div class="ftitle">EPS: losses return in 2024</div><svg id="c-eps"></svg><figcaption>Illustrates how revenue growth and profit may diverge.</figcaption></figure></div>
+<table><thead><tr><th>Period</th><th>Fictional investor language</th><th>Interpretation</th></tr></thead><tbody><tr><td>2022</td><td>User growth, overseas expansion</td><td>Scale before efficiency</td></tr><tr><td>2023</td><td>Trust ecosystem, platform</td><td>Business diversification</td></tr><tr><td>2024</td><td>Focus, efficiency, core markets</td><td>Expansion costs under scrutiny</td></tr><tr><td>2025</td><td>Operating margins, paid conversion</td><td>Finance-led performance indicators</td></tr><tr><td>2026 H1</td><td>AI efficiency, shared platform</td><td>Shared capacity supports multiple business units</td></tr></tbody></table>
+<div class="flag amber"><b>Role consequence:</b> The new Head must show why a consumer initiative deserves scarce engineering and data resources.</div></section>
+<section><h2 id="s7"><span class="num">07</span>Group growth versus Sentry growth</h2><figure class="fig"><div class="ftitle">Revenue mix: consumer remains the largest segment</div><div id="leg-mix" class="legend"></div><svg id="c-mix"></svg><figcaption>Sentry subscription share grew while brand exposure declined; enterprise and financing segments gained share.</figcaption></figure>
+<div class="two"><div class="card"><h3>Group perspective</h3><p>Improved consolidated margins support continuing interviews, not assuming that every product is healthy.</p></div><div class="card"><h3>Sentry perspective</h3><p>Average MAU declined from 14.6M to 13.8M while subscriptions grew. Paid conversion, cohort retention and ARPPU are needed to determine whether this represents healthy monetization.</p></div></div>
+<figure class="fig"><div class="ftitle">Sentry average monthly active users</div><div class="fsub">Millions of users; fictional</div><svg id="c-mau"></svg><figcaption>A falling audience combined with higher subscription revenue raises questions about paid conversion and retention.</figcaption></figure>
+<div class="flag "><b>Denominator check:</b> Group growth and the growth of the product you will actually own are different metrics. Separate controllable KPIs from consolidated figures.</div></section>
+<section><h2 id="s8"><span class="num">08</span>The downturn and what changed</h2><table><thead><tr><th>Layer</th><th>Fictional 2024 situation</th><th>Current assessment</th></tr></thead><tbody><tr><td>What happened?</td><td>Revenue rose, EPS turned negative, headcount expanded</td><td>Profit returned in 2025</td></tr><tr><td>Possible causes</td><td>Simultaneous consumer, enterprise and financing expansion</td><td>Company now emphasizes focus</td></tr><tr><td>Response</td><td>Two market projects closed, teams combined, headcount -12%</td><td>Expenses grew more slowly than revenue</td></tr><tr><td>Could it recur?</td><td>Depends on investment decisions and kill criteria</td><td>Not verified by public documents</td></tr></tbody></table>
+<div class="flag amber"><b>Avoid an unsupported conclusion:</b> Hiring restraint shows symptoms were controlled; it does not prove management changed its decision process.</div>
+<p><span class="pill">Interview question</span> Name an investment discontinued in the last year. What data caused the decision, who made it, and where were the resources reassigned?</p></section>
+<section><h2 id="s9"><span class="num">09</span>Founder and leadership roles</h2><table><thead><tr><th>Leader</th><th>Fictional background</th><th>Potential influence</th></tr></thead><tbody><tr><td>CEO / co-founder</td><td>Product and data</td><td>May shape Sentry strategy directly</td></tr><tr><td>COO</td><td>Commercialization and global markets</td><td>May sponsor advertising priorities</td></tr><tr><td>CTO</td><td>Infrastructure and machine learning</td><td>Allocates shared engineering</td></tr><tr><td>Pulse GM</td><td>Finance and risk</td><td>Competes for platform capacity</td></tr></tbody></table>
+<div class="flag "><b>Key question:</b> Who can override the roadmap, veto engineering capacity or change monetization guardrails? A reporting line alone cannot establish decision authority.</div></section>
+<section><h2 id="s10"><span class="num">10</span>Ownership and governance</h2><p>In the fictional case, founders hold 21% and North Harbor Capital increased its stake to 12% during 2025, securing one board seat. This could affect capital priorities, but does not establish product-level control.</p>
+<div class="two"><div class="card"><h3>Upside hypothesis</h3><p>A strategic investor could bring enterprise customers, disciplined capital allocation and B2B capabilities.</p></div><div class="card"><h3>Risk hypothesis</h3><p>A greater focus on EBITDA could raise the bar for long-term trust investments and free consumer features.</p></div></div>
+<div class="flag amber"><b>Evidence boundary:</b> A board seat does not prove an actual roadmap veto. Verify this hypothesis with recent decisions.</div></section>
+<section><h2 id="s11"><span class="num">11</span>People, organization and compensation</h2><figure class="fig"><div class="ftitle">Headcount fell while revenue grew</div><svg id="c-people"></svg><figcaption>From 248 employees at year-end 2024 to 219 at year-end 2025; efficiency and resource scarcity are both plausible interpretations.</figcaption></figure>
+<div class="tiles"><div class="tile"><div class="lab">FULL-TIME STAFF</div><div class="val">219</div><div class="note ">Year-end 2025</div></div><div class="tile"><div class="lab">PRODUCT + DESIGN</div><div class="val">~31</div><div class="note ">Group-wide claim, not Sentry-only</div></div><div class="tile"><div class="lab">HEAD SALARY RANGE</div><div class="val">Unknown</div><div class="note ">No verified role-level offer</div></div><div class="tile"><div class="lab">APPROVED NEW HIRES</div><div class="val">Unknown</div><div class="note ">JD only promises team building</div></div></div>
+<div class="flag red"><b>Compensation mistake:</b> A company-wide salary average cannot anchor Head-level compensation. Compare role, seniority, location and total compensation.</div>
+<div class="flag amber"><b>Hiring mistake:</b> “Build the team” is not evidence of funded headcount. Ask which roles are currently filled, backfills and approved net-new hires.</div></section>
+<section><h2 id="s12"><span class="num">12</span>Culture and employee feedback</h2><figure class="fig"><div class="ftitle">Anonymous review dimensions</div><div class="fsub">Weak and unverified evidence</div><svg id="c-culture"></svg><figcaption>Work-life balance appears stronger than advancement and communication in this fictional self-selected sample.</figcaption></figure>
+<div class="two"><div class="card"><h3>Repeated signals</h3><ul><li>Cross-business priorities reportedly change.</li><li>Promotion is said to depend on manager alignment.</li><li>Work-life balance gets relatively favorable comments.</li></ul></div><div class="card"><h3>Unsupported claims</h3><ul><li>Labeling the company “political.”</li><li>Using anonymous feedback to establish a Head's decision authority.</li><li>Concluding that product leadership is dysfunctional.</li></ul></div></div>
+<p>Turn weak signals into interview questions: who reset priorities in the last conflict, and what happened to existing commitments?</p></section>
+<section><h2 id="s13"><span class="num">13</span>Product-led or commercially driven?</h2><div class="two"><div class="card"><h3>Product-led signals</h3><ul><li>The CEO has product experience.</li><li>The JD names strategy and user value.</li><li>Subscriptions suggest products can monetize direct user value.</li></ul></div><div class="card"><h3>Finance-led signals</h3><ul><li>Investor messaging emphasizes margins and capital.</li><li>Enterprise and financing units lead growth.</li><li>The CTO allocates shared engineering capacity.</li></ul></div></div>
+<div class="flag amber"><b>Calibrated verdict:</b> The evidence cannot establish that the firm is simply product-led or sales-led. The Sentry Head may own product outcomes while negotiating key resources with other executives. Test this with a real decision example.</div></section>
+<section><h2 id="s14"><span class="num">14</span>Scenarios and prioritized risks</h2><p>These are sensitivity scenarios, not company forecasts. H1 2026 revenue is NT$680M in this fictional example.</p>
+<table><thead><tr><th>Case</th><th>H2 YoY</th><th>Full-year revenue</th><th>Implication</th></tr></thead><tbody><tr><td>Downside</td><td>+5%</td><td>NT$1.32B</td><td>Hiring becomes harder</td></tr><tr><td>Base</td><td>+15%</td><td>NT$1.38B</td><td>Clear payback gates for new projects</td></tr><tr><td>Upside</td><td>+25%</td><td>NT$1.44B</td><td>More consumer and B2B investment capacity</td></tr></tbody></table>
+<div class="card"><h3>Prioritized risks</h3><ol><li>Responsibility without corresponding decision rights.</li><li>Shared-platform priorities controlled by other business units.</li><li>Pulse credit exposure tying up capital and executive attention.</li><li>Declining Sentry MAU without enough cohort evidence.</li><li>Greater investor pressure on long-term trust investments.</li></ol></div></section>
+<section><h2 id="s15"><span class="num">15</span>Is the role worth accepting?</h2><div class="verdict"><b>Proceed to a second interview; do not mentally accept until key conditions are established.</b><p>The company looks viable in this synthetic example. The role is less certain: title, resource control, capital commitments and leadership approval pathways must be clarified.</p></div>
+<div class="scorebar"><div class="nm">Financial health</div><div class="track"><span class="fillb" style="width:78%"></span></div><div class="sc">7.8</div></div><p class="src">Confidence: High: financial disclosures support the score; loan vintages remain unknown.</p><div class="scorebar"><div class="nm">Growth outlook</div><div class="track"><span class="fillb" style="width:70%"></span></div><div class="sc">7.0</div></div><p class="src">Confidence: Medium: group growth differs from core-product outcomes.</p><div class="scorebar"><div class="nm">Opportunity</div><div class="track"><span class="fillb" style="width:86%"></span></div><div class="sc">8.6</div></div><p class="src">Confidence: High: subscriptions, trust, AI and international trade-offs are substantial.</p><div class="scorebar"><div class="nm">Decision rights</div><div class="track"><span class="fillb" style="width:52%"></span></div><div class="sc">5.2</div></div><p class="src">Confidence: Low: final approvals are not verified.</p><div class="scorebar"><div class="nm">Resources</div><div class="track"><span class="fillb" style="width:48%"></span></div><div class="sc">4.8</div></div><p class="src">Confidence: Low: dedicated capacity and approved hiring are unknown.</p><div class="scorebar"><div class="nm">Org health</div><div class="track"><span class="fillb" style="width:61%"></span></div><div class="sc">6.1</div></div><p class="src">Confidence: Low: employee reviews are weak signals.</p>
+<div class="flag green"><b>Reasons to explore:</b> Profitable recovery, an established consumer product and meaningful product challenges.</div>
+<div class="flag red"><b>Reasons to pause:</b> Without engineering control, monetization guardrails or an approved hiring budget, this is high accountability with limited control.</div></section>
+<section><h2 id="s16"><span class="num">16</span>Interview questions</h2><div class="card"><h3>P0 · Interview cheat sheet</h3><ol><li>What can this Head decide independently?</li><li>How many dedicated Sentry engineers, PMs and designers are guaranteed?</li><li>Who arbitrates Sentry versus Pulse platform priorities?</li><li>Which three KPIs define success after 12 months?</li><li>When did Product last reject short-term revenue to protect trust?</li></ol></div>
+<h3>P0 · Must resolve before accepting</h3>
+<div class="q"><div class="qt">1. Which decisions require CEO, COO or CTO sign-off?</div><div class="why">Why: an ownership claim is not a formal decision matrix. Red flag: only vague statements about collaboration.</div></div>
+<div class="q"><div class="qt">2. How much PM, Design and Engineering capacity is dedicated to Sentry?</div><div class="why">Why: group headcount is not usable capacity. Red flag: shared teams counted as guaranteed resources.</div></div>
+<div class="q"><div class="qt">3. Who sets cross-unit data-platform priorities?</div><div class="why">Why: platform allocation may be the actual bottleneck. Red flag: no escalation process.</div></div>
+<div class="q"><div class="qt">4. Who defines the Head's first-year KPIs, and which inputs can the Head control?</div><div class="why">Why: avoid accountability for outcomes controlled by another unit.</div></div>
+<div class="q"><div class="qt">5. Give a concrete case where Product protected user trust over short-term revenue.</div><div class="why">Why: the decision reveals who truly holds power.</div></div>
+<h3>P1 · Negotiation and expectations</h3>
+<div class="q"><div class="qt">6. What capital allocation gates changed after the 2024 downturn?</div><div class="why">Ask for a project that was actually stopped.</div></div>
+<div class="q"><div class="qt">7. Is the core KPI shifting from MAU to paid retention?</div><div class="why">Clarify whether the mandate is growth, retention or monetization.</div></div>
+<div class="q"><div class="qt">8. Who controls pricing and ad exposure limits?</div><div class="why">Clarify monetization authority.</div></div>
+<div class="q"><div class="qt">9. Can the Head reorganize teams or make net-new hires?</div><div class="why">Check funded mandate versus aspirational JD language.</div></div>
+<div class="q"><div class="qt">10. Is AI about staff efficiency or customer experience?</div><div class="why">Avoid an unbounded new KPI.</div></div>
+<div class="q"><div class="qt">11. Did North Harbor's board seat change investment criteria?</div><div class="why">Test governance implications.</div></div>
+<div class="q"><div class="qt">12. Why did the prior Head or interim owner leave the role?</div><div class="why">Distinguish a growth hire from role dysfunction.</div></div>
+<h3>P2 · If time permits</h3><ul><li>13. Which international consumer market merits new funding?</li><li>14. Has Trust API improved Sentry itself?</li><li>15. How is long-term trust damage from advertising measured?</li><li>16. What decisions regularly create CEO–Product disagreement?</li></ul>
+<h3>Verify independently instead of asking in interviews</h3><p>Historical financials, ownership, staffing disclosures, public product pricing and formal board membership.</p></section>
+<section><h2 id="s17"><span class="num">17</span>Evidence, corrections and limitations</h2><p>Decision-bearing claims must be traced to a specific evidence class. This is a fictional worked example; no source below describes a real company.</p>
+<table><thead><tr><th>Claim</th><th>Evidence class</th><th>Strength</th><th>Impact</th></tr></thead><tbody><tr><td>H1 operating margin 16.2%</td><td>Fictional regulatory filing</td><td>Strong in case</td><td>Survival is not the main blocker</td></tr><tr><td>Pulse receivables NT$465M</td><td>Fictional note to accounts</td><td>Strong in case</td><td>Revenue share understates risk</td></tr><tr><td>Head owns global strategy</td><td>Fictional JD</td><td>Employer claim</td><td>Responsibility, not proven authority</td></tr><tr><td>Cross-unit priorities shift</td><td>Fictional reviews</td><td>Weak signal</td><td>Interview verification only</td></tr><tr><td>Investor will demand EBITDA</td><td>Report inference</td><td>Unverified</td><td>Not a board directive</td></tr></tbody></table>
+<h3>Corrections recorded</h3><ul><li><b>Removed:</b> “Build the team” was incorrectly interpreted as eight approved new hires.</li><li><b>Downgraded:</b> Anonymous complaints became interview signals, not verified organizational facts.</li><li><b>Reframed:</b> Pulse's 27.3% revenue contribution no longer proxies capital exposure.</li></ul>
+<h3>Still unknown</h3><ul><li>Sentry's dedicated engineering capacity.</li><li>Final approval rights for P&amp;L, pricing, hiring and budgets.</li><li>Cohort retention and subscription unit economics.</li><li>Pulse loan vintages, losses and financing sources.</li><li>The actual pay package, equity and working expectations.</li></ul>
+<div class="flag amber"><b>Decision principle:</b> Unknowns are not defects to fill with guesses. Turn them into questions whose answers could change the career decision.</div>
+<p><small>This is a synthetic public demonstration. Every company, name, product, financial amount, report and reference is fictional. Not an assessment of a real employer or legal or investment advice.</small></p></section>
+</div>
+<script>
+(function(){
+const root=document.documentElement, btn=document.getElementById('tbtn');
+  btn.addEventListener('click',()=>{
+    const cur=root.getAttribute('data-theme');
+    const dark=cur?cur==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme',dark?'light':'dark');
+    setTimeout(drawAll,30);
+  });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>setTimeout(drawAll,30));
+
+  const tt=document.getElementById('tt');
+  function showTT(e,html){
+    // Only renderer-defined <b> formatting is supported. Source text stays text.
+    const match=/^<b>([\s\S]*?)<\/b>([\s\S]*)$/.exec(String(html));
+    if(match){
+      const heading=document.createElement('b');
+      heading.textContent=match[1];
+      tt.replaceChildren(heading,document.createTextNode(match[2]));
+    } else {
+      tt.textContent=String(html);
+    }
+    tt.style.opacity=1;moveTT(e);
+  }
+  function moveTT(e){
+    const p=12; let x=e.clientX+p, y=e.clientY+p;
+    const r=tt.getBoundingClientRect();
+    if(x+r.width>window.innerWidth-8) x=e.clientX-r.width-p;
+    if(y+r.height>window.innerHeight-8) y=e.clientY-r.height-p;
+    tt.style.left=x+'px'; tt.style.top=y+'px';
+  }
+  function hideTT(){tt.style.opacity=0;}
+  function bind(el,html){
+    el.style.cursor='default';
+    el.addEventListener('mouseenter',e=>showTT(e,html));
+    el.addEventListener('mousemove',moveTT);
+    el.addEventListener('mouseleave',hideTT);
+  }
+  const cs=()=>getComputedStyle(document.body);
+  const V=n=>cs().getPropertyValue(n).trim();
+  function appendLegend(leg,name,color){
+    const label=document.createElement('span'), swatch=document.createElement('i');
+    swatch.className='sw';
+    swatch.style.background=V(color);
+    label.append(swatch,document.createTextNode(String(name)));
+    leg.appendChild(label);
+  }
+  const NS='http://www.w3.org/2000/svg';
+  function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+  function svg(w,h){const s=E('svg',{viewBox:`0 0 ${w} ${h}`,role:'img'});return s;}
+  function txt(s,x,y,t,cls,anchor){const e=E('text',{x,y,class:cls||'axis-t'});if(anchor)e.setAttribute('text-anchor',anchor);e.textContent=t;s.appendChild(e);return e;}
+  function rrect(s,x,y,w,h,r,fill,extra){
+    // rounded top only (data end), anchored to baseline
+    r=Math.min(r,w/2,h);
+    const d=`M${x},${y+h} L${x},${y+r} Q${x},${y} ${x+r},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h} Z`;
+    const p=E('path',Object.assign({d,fill},extra||{})); s.appendChild(p); return p;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     繪圖函式庫 — 改資料陣列即可，不要重寫樣式；若環境有資料視覺化指南／Skill，先讀取。
+
+       drawBars(id, data, o)       直條圖         data:[{y,v,est?,note?}]
+       drawSignedBars(id, data, o) 正負值直條圖   data:[{y,v,note?}]
+       drawNodeLine(id, pts, o)    節點折線圖     pts:[{t,v,l,key?}]
+       drawGrouped(id, data, o)    分組直條圖     data:[{n,a,b}]  o.labels:[A,B]
+       drawStacked(id, rows, ser)  百分比堆疊橫條 rows:[{y,v:[..]}] ser:[{n,k}]
+       drawMini(id, data, o)       小倍數圖（放進 .two 並排）
+       drawScores(id, data, o)     橫條評分圖     data:[{n,v}]  o.max, o.lowBelow
+       drawRanges(id, data, o)     區間橫條圖     data:[{n,lo,hi,c,t}]
+
+     共通 o：max 上限、unit 單位字串、fmt 格式化函式、ticks 格線數
+     所有 mark 自動綁 tooltip；深淺色切換自動重繪。
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  const F = v => v.toLocaleString();
+  function axisY(s,ml,mr,W,mt,ph,max,ticks,fmt,unit){
+    for(let i=0;i<=ticks;i++){
+      const g=max*i/ticks, y=mt+ph-(g/max)*ph;
+      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line'}));
+      txt(s,ml-9,y+4,fmt(g),'axis-t','end');
+    }
+    if(unit) txt(s,ml-9,mt-16,unit,'axis-t','end');
+  }
+
+  function drawBars(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const fmt=o.fmt||F, max=o.max||Math.max(...data.map(d=>d.v))*1.25, ticks=o.ticks||4;
+    const W=780,H=o.height||290,ml=o.ml||52,mr=14,mt=26,mb=40, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s); const c1=V('--series-1');
+    axisY(s,ml,mr,W,mt,ph,max,ticks,fmt,o.unit);
+    const bw=pw/data.length, iw=Math.min(60,bw*0.6);
+    data.forEach((d,i)=>{
+      const x=ml+i*bw+(bw-iw)/2, h=(d.v/max)*ph, y=mt+ph-h;
+      const p=rrect(s,x,y,iw,h,4, d.est?'none':c1,
+                    d.est?{stroke:c1,'stroke-width':2,'stroke-dasharray':'5 4'}:{});
+      bind(p,`<b>${d.y}　${fmt(d.v)}${o.unit||''}</b>${d.note||(d.est?'Estimated, not a company forecast':'')}`);
+      txt(s,x+iw/2,y-8,fmt(d.v),'lab-t','middle');
+      txt(s,x+iw/2,H-14,d.y,'axis-t','middle');
+    });
+  }
+
+  function drawSignedBars(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const fmt=o.fmt||(v=>v.toFixed(2));
+    const vs=data.map(d=>d.v), min=o.min!==undefined?o.min:Math.min(0,...vs)*1.4, max=o.max||Math.max(...vs)*1.25;
+    const W=780,H=o.height||270,ml=52,mr=14,mt=26,mb=40, pw=W-ml-mr, ph=H-mt-mb, span=max-min;
+    const s=svg(W,H); host.appendChild(s);
+    const pos=V('--series-1'), neg=V('--critical'), zero=mt+ph-((0-min)/span)*ph;
+    const step=(max-min)/(o.ticks||6);
+    for(let g=min; g<=max+1e-9; g+=step){
+      const y=mt+ph-((g-min)/span)*ph, isZero=Math.abs(g)<1e-9;
+      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line',
+        'stroke-width':isZero?1.6:1, stroke:isZero?V('--border-strong'):undefined}));
+      txt(s,ml-9,y+4,g.toFixed(0),'axis-t','end');
+    }
+    if(o.unit) txt(s,ml-9,mt-16,o.unit,'axis-t','end');
+    const bw=pw/data.length, iw=Math.min(66,bw*0.5), rr=4;
+    data.forEach((d,i)=>{
+      const x=ml+i*bw+(bw-iw)/2, hv=Math.abs(d.v)/span*ph;
+      let p;
+      if(d.v>=0){ p=rrect(s,x,zero-hv,iw,hv,rr,pos); }
+      else{ const y=zero,w=iw,h=hv;
+        p=E('path',{d:`M${x},${y} L${x},${y+h-rr} Q${x},${y+h} ${x+rr},${y+h} L${x+w-rr},${y+h} Q${x+w},${y+h} ${x+w},${y+h-rr} L${x+w},${y} Z`,fill:neg});
+        s.appendChild(p); }
+      bind(p,`<b>${d.y}　${d.v>0?'+':''}${fmt(d.v)}${o.unit||''}</b>${d.note||''}`);
+      txt(s,x+iw/2, d.v>=0?zero-hv-8:zero+hv+16, (d.v>0?'+':'')+fmt(d.v),'lab-t','middle');
+      txt(s,x+iw/2,H-14,d.y,'axis-t','middle');
+    });
+  }
+
+  function drawNodeLine(id,pts,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const max=o.max||Math.max(...pts.map(p=>p.v))*1.12, ticks=o.ticks||4;
+    const W=780,H=o.height||300,ml=52,mr=o.mr||90,mt=30,mb=44, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s);
+    const c1=V('--series-1'), surf=V('--surface-1');
+    axisY(s,ml,mr,W,mt,ph,max,ticks,o.fmt||(v=>Math.round(v)),null);
+    const X=i=>ml+(i/(pts.length-1))*pw, Y=v=>mt+ph-(v/max)*ph;
+    let d=''; pts.forEach((p,i)=>{ d+=(i?' L':'M')+X(i)+','+Y(p.v); });
+    s.appendChild(E('path',{d,fill:'none',stroke:c1,'stroke-width':2,
+      'stroke-linejoin':'round','stroke-dasharray': o.solid?null:'6 5', opacity:o.solid?1:.55}));
+    pts.forEach((p,i)=>{
+      const cx=X(i), cy=Y(p.v);
+      const c=E('circle',{cx,cy,r:p.key?6:5,fill:c1,stroke:surf,'stroke-width':2});
+      s.appendChild(c); bind(c,`<b>${p.t} · ${o.prefix||''}${p.v}</b>${p.l||''}`);
+      if(p.key) txt(s, i===0?cx+10:cx, cy-14, (o.prefix||'')+p.v, 'lab-t', i===0?'start':'middle');
+      txt(s,cx,H-24,p.t,'axis-t','middle');
+    });
+    (o.notes||[]).forEach(n=>txt(s,W-mr+8,Y(n.at)+4,n.text,'lab-s','start'));
+  }
+
+  function drawGrouped(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const labels=o.labels||['A','B'], fmt=o.fmt||F;
+    const max=o.max||Math.max(...data.flatMap(d=>[d.a,d.b]))*1.2, ticks=o.ticks||4;
+    const W=780,H=o.height||280,ml=52,mr=14,mt=26,mb=44, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s);
+    const c1=V('--series-1'), c2=V('--series-2');
+    axisY(s,ml,mr,W,mt,ph,max,ticks,fmt,o.unit);
+    const gw=pw/data.length, iw=Math.min(56,gw*0.3), gap=6;
+    data.forEach((d,i)=>{
+      const cx=ml+i*gw+gw/2;
+      [[d.a,c1,-1,labels[0]],[d.b,c2,1,labels[1]]].forEach(([v,col,side,lbl])=>{
+        const x=side<0?cx-iw-gap/2:cx+gap/2, hh=(v/max)*ph, y=mt+ph-hh;
+        const p=rrect(s,x,y,iw,hh,4,col);
+        bind(p,`<b>${d.n}</b>${lbl}：${fmt(v)}${o.unit||''}`);
+        txt(s,x+iw/2,y-8,fmt(v),'lab-t','middle');
+      });
+      txt(s,cx,H-16,d.n,'axis-t','middle');
+    });
+  }
+
+  function drawStacked(id,rows,series,o){
+    o=o||{};
+    const leg=document.getElementById(o.legendId||('leg-'+id.replace(/^c-/,'')));
+    if(leg){ leg.replaceChildren(); series.forEach(m=>appendLegend(leg,m.n,m.k)); }
+    const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const W=780,H=o.height||(rows.length*76+52),ml=o.ml||92,mr=20,mt=14, pw=W-ml-mr, bh=48, gap=28;
+    const s=svg(W,H); host.appendChild(s);
+    rows.forEach((r,ri)=>{
+      const y=mt+ri*(bh+gap); let x=ml;
+      txt(s,ml-12,y+bh/2+5,r.y,'lab-t','end');
+      r.v.forEach((val,i)=>{
+        const w=(val/100)*pw-2, first=i===0, last=i===r.v.length-1, rr=4;
+        let d;
+        if(first) d=`M${x+rr},${y} L${x+w},${y} L${x+w},${y+bh} L${x+rr},${y+bh} Q${x},${y+bh} ${x},${y+bh-rr} L${x},${y+rr} Q${x},${y} ${x+rr},${y} Z`;
+        else if(last) d=`M${x},${y} L${x+w-rr},${y} Q${x+w},${y} ${x+w},${y+rr} L${x+w},${y+bh-rr} Q${x+w},${y+bh} ${x+w-rr},${y+bh} L${x},${y+bh} Z`;
+        else d=`M${x},${y} L${x+w},${y} L${x+w},${y+bh} L${x},${y+bh} Z`;
+        const p=E('path',{d,fill:V(series[i].k)}); s.appendChild(p);
+        bind(p,`<b>${r.y}</b>${series[i].n}：${val}%`);
+        // 淺色系色塊（黃）改用深色字，否則對比不足
+        if(w>34) txt(s,x+w/2,y+bh/2+5,val+'%','lab-t','middle')
+                  .setAttribute('fill', /yellow|--series-4/.test(series[i].k) ? '#0b0b0b' : '#ffffff');
+        x+=w+2;
+      });
+    });
+    if(o.caption) txt(s,ml,H-10,o.caption,'axis-t','start');
+  }
+
+  function drawMini(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const fmt=o.fmt||F, max=o.max||Math.max(...data.map(d=>d.v))*1.25, ticks=o.ticks||4;
+    const W=360,H=210,ml=40,mr=10,mt=24,mb=34, pw=W-ml-mr, ph=H-mt-mb;
+    const s=svg(W,H); host.appendChild(s); const c1=V('--series-1');
+    for(let i=0;i<=ticks;i++){ const g=max*i/ticks, y=mt+ph-(g/max)*ph;
+      s.appendChild(E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid-line'}));
+      txt(s,ml-8,y+4,fmt(g),'axis-t','end'); }
+    const bw=pw/data.length, iw=Math.min(42,bw*0.56);
+    data.forEach((d,i)=>{
+      const x=ml+i*bw+(bw-iw)/2, h=(d.v/max)*ph, y=mt+ph-h;
+      const p=rrect(s,x,y,iw,h,4,c1);
+      bind(p,`<b>${d.y}　${fmt(d.v)} ${o.unit||''}</b>${d.note||''}`);
+      txt(s,x+iw/2,y-7,fmt(d.v),'lab-t','middle');
+      txt(s,x+iw/2,H-12,d.y,'axis-t','middle');
+    });
+  }
+
+  function drawScores(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const max=o.max||5, low=o.lowBelow!==undefined?o.lowBelow:3, row=38, bh=20;
+    const W=780,H=data.length*row+42,ml=o.ml||92,mr=44,mt=8, pw=W-ml-mr;
+    const s=svg(W,H); host.appendChild(s);
+    const c1=V('--series-1'), warn=V('--critical');
+    for(let g=0;g<=max;g++){ const x=ml+(g/max)*pw;
+      s.appendChild(E('line',{x1:x,x2:x,y1:mt,y2:mt+data.length*row-14,class:'grid-line'}));
+      txt(s,x,H-12,g,'axis-t','middle'); }
+    data.forEach((d,i)=>{
+      const y=mt+i*row, w=(d.v/max)*pw, isLow=d.v<low, rr=4;
+      const p=E('path',{d:`M${ml},${y} L${ml+w-rr},${y} Q${ml+w},${y} ${ml+w},${y+rr} L${ml+w},${y+bh-rr} Q${ml+w},${y+bh} ${ml+w-rr},${y+bh} L${ml},${y+bh} Z`,
+                        fill:isLow?warn:c1});
+      s.appendChild(p);
+      bind(p,`<b>${d.n}　${d.v.toFixed(1)} / ${max.toFixed(1)}</b>${isLow?'Below midpoint':(d.note||'')}`);
+      txt(s,ml-12,y+bh/2+5,d.n,'lab-s','end');
+      txt(s,ml+w+8,y+bh/2+5,d.v.toFixed(1),'lab-t','start');
+    });
+  }
+
+  function drawRanges(id,data,o){
+    o=o||{}; const host=document.getElementById(id); if(!host) return; host.innerHTML='';
+    const max=o.max||Math.max(...data.map(d=>d.hi))*1.1, suffix=o.suffix||'%';
+    const row=44,bh=18;
+    const W=780,H=data.length*row+46,ml=o.ml||176,mr=54,mt=10, pw=W-ml-mr;
+    const s=svg(W,H); host.appendChild(s);
+    const step=max/(o.ticks||5);
+    for(let g=0;g<=max+1e-9;g+=step){ const x=ml+(g/max)*pw;
+      s.appendChild(E('line',{x1:x,x2:x,y1:mt,y2:mt+data.length*row-18,class:'grid-line'}));
+      txt(s,x,H-12,Math.round(g)+suffix,'axis-t','middle'); }
+    data.forEach((d,i)=>{
+      const y=mt+i*row, x1=ml+(d.lo/max)*pw, x2=ml+(d.hi/max)*pw, point=d.lo===d.hi;
+      const w=point?9:Math.max(x2-x1,9), xx=point?x1-4.5:x1, rr=4;
+      const p=E('path',{d:`M${xx+rr},${y} L${xx+w-rr},${y} Q${xx+w},${y} ${xx+w},${y+rr} L${xx+w},${y+bh-rr} Q${xx+w},${y+bh} ${xx+w-rr},${y+bh} L${xx+rr},${y+bh} Q${xx},${y+bh} ${xx},${y+bh-rr} L${xx},${y+rr} Q${xx},${y} ${xx+rr},${y} Z`,
+                        fill:V(d.c||'--series-1')});
+      s.appendChild(p);
+      const lbl=point?d.lo+suffix:d.lo+'–'+d.hi+suffix;
+      bind(p,`<b>${d.n}　${lbl}</b>${d.t||''}`);
+      txt(s,ml-14,y+bh/2+5,d.n,'lab-s','end');
+      txt(s,xx+w+9,y+bh/2+5,lbl,'lab-t','start');
+    });
+  }
+
+  function legend(id,items){
+    const leg=document.getElementById(id); if(!leg) return; leg.replaceChildren();
+    items.forEach(([n,k])=>appendLegend(leg,n,k));
+  }
+
+
+  /* RDD_REPORT_DATA_START */
+  function drawAll(){
+    drawGrouped('c-plans',[{n:'Individual',a:990,b:990},{n:'Couple',a:1590,b:795},{n:'Family of five',a:2990,b:598}],{max:3400,unit:'NT$/year',labels:['Total annual price','Cost per person'],fmt:v=>Math.round(v)});
+    legend('leg-plans',[['Total annual price','--series-1'],['Cost per person','--series-2']]);
+    drawNodeLine('c-stock',[{t:'2023 debut',v:188,key:1,l:'First close'},{t:'2025 low',v:58,key:1,l:'Post-expansion low'},{t:'2026 high',v:164,key:1,l:'Earnings rerating'},{t:'2026-09-30',v:128,key:1,l:'Latest fictional price'}],{max:220,mr:70,prefix:'NT$',height:300});
+    drawBars('c-revenue',[{y:'2021',v:312},{y:'2022',v:498},{y:'2023',v:760},{y:'2024',v:905},{y:'2025',v:1190}],{max:1500,unit:'NT$ millions',fmt:v=>Math.round(v)});
+    drawSignedBars('c-eps',[{y:'2021',v:-1.20},{y:'2022',v:-0.80},{y:'2023',v:0.20},{y:'2024',v:-0.50},{y:'2025',v:1.80}],{min:-2,max:2.5,ticks:5,unit:'NT$',fmt:v=>v.toFixed(2)});
+    drawStacked('c-mix',[{y:'2025Q2',v:[31.0,29.0,14.0,26.0]},{y:'2026Q2',v:[32.4,22.6,17.7,27.3]}],[{n:'Sentry subscriptions',k:'--series-1'},{n:'Brand exposure',k:'--series-2'},{n:'Trust API',k:'--series-4'},{n:'Pulse Advance',k:'--series-3'}],{legendId:'leg-mix',caption:'Quarterly revenue share (%)'});
+    drawBars('c-mau',[{y:'2021',v:10.2},{y:'2022',v:12.1},{y:'2023',v:13.5},{y:'2024',v:14.6},{y:'2025',v:13.8}],{max:18,unit:'Millions of users',fmt:v=>v.toFixed(1)});
+    drawBars('c-people',[{y:'YE 2024',v:248},{y:'YE 2025',v:219}],{max:300,unit:'Full-time employees',fmt:v=>Math.round(v)});
+    drawScores('c-culture',[{n:'Work-life balance',v:4.2},{n:'Advancement',v:2.5},{n:'Employee voice',v:3.1},{n:'Communication',v:2.9}],{max:5,lowBelow:3});
+  }
+  drawAll();
+  /* RDD_REPORT_DATA_END */
+
+})();
+</script>
+</body>
+</html>

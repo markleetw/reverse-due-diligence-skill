@@ -30,7 +30,6 @@ Use RDD to assess this Head of Product offer. Here is the JD and my interview no
 
 Optional context includes a job description, offer terms, recruiter correspondence, and interview notes. These remain separate evidence classes; private claims are **not** treated as verified employer facts.
 
-<!-- release-notes:start -->
 ## Installation
 
 1. Download `reverse-due-diligence.zip` from [the latest Release](https://github.com/markleetw/reverse-due-diligence-skill/releases/latest). Its runtime directory is `rdd/`.
@@ -53,7 +52,6 @@ Give RDD the employer, role and your current decision, preferably with the origi
 /rdd A private startup, Head of Product — should I accept the offer?
 /rdd A global employer's Taiwan office — distinguish HQ strategy from local role authority
 ```
-<!-- release-notes:end -->
 
 ## How the research works
 

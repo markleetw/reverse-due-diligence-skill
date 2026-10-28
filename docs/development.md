@@ -1,61 +1,40 @@
 # Development
 
-這份文件給維護 repo 的人看。
+RDD is maintained through small, reviewable Pull Requests. **Do not equate a successful CI run with verified real-world AI research quality.**
 
-## 結構
+## Structure
 
-```text
-.
-├── SKILL.md
-├── references/
-│   ├── analysis-playbook.md
-│   ├── report-template.md
-│   ├── taiwan-sources.md
-│   └── global-sources.md
-├── templates/
-│   └── report-shell.html
-├── scripts/
-│   ├── audit.py
-│   ├── package.py
-│   └── check_repo.py
-└── .github/workflows/
-    ├── ci.yml
-    ├── publish.yml
-    └── release.yml
-```
+- `SKILL.md`: workflow orchestration, triggers and delivery expectations.
+- `references/`: Taiwan/global sources, research evidence rules and report structure.
+- `templates/report-shell.html`: canonical self-contained report renderer.
+- `scripts/audit.py`: deterministic report assertions and renderer parity.
+- `scripts/package.py`: one deterministic package manifest and exact ZIP verifier.
+- `scripts/check_repo.py`: repository checks, negative tests and package reproducibility.
+- `scripts/browser_test.py`: Chromium render and dynamic-label security checks.
+- `scripts/release_notes.py`: versioned bilingual Release Notes from both Changelogs.
+- `evals/README.md`: human-reviewed research regression scenarios; initially NOT RUN.
 
-- `SKILL.md`：流程控制，只放「何時啟動」與「下一步做什麼」
-- `references/`：分析方法與證據規則的單一來源
-- `templates/`：報告樣板
-- `scripts/`：audit、package、repo checks
-
-## 本機檢查
+## Local checks
 
 ```bash
 python scripts/check_repo.py
+python scripts/browser_test.py  # requires Playwright + Chromium
+python scripts/package.py --output dist/reverse-due-diligence.zip
+python scripts/package.py --verify dist/reverse-due-diligence.zip --expected-version "$(cat VERSION)"
+python scripts/audit.py report.html audit-spec.json --renderer-template templates/report-shell.html
 ```
 
-## Audit
+## Release process (manual approval required)
 
-```bash
-python scripts/audit.py report.html audit-spec.json
-```
+1. Complete and review the relevant research/CI/Browser QA changes via PRs. Keep important user-facing behavior intact.
+2. Create a separate version-preparation PR: update `VERSION`, and move the relevant `Unreleased` entries into identical `## [X.Y.Z] - YYYY-MM-DD` sections in `CHANGELOG.md` and `CHANGELOG.zh-TW.md`. Check all links and documentation.
+3. Merge that PR only after CI. **Updating VERSION or pushing to main does not create a Tag or Release.**
+4. Optionally start **Release Candidate** from Actions to build a verified ZIP and checksum without publishing.
+5. After separate maintainer approval, explicitly dispatch **Release** with the *new* `vX.Y.Z` tag. The workflow rechecks source version, browser behavior, package bytes, bilingual notes, and existing Tags/Releases **before** creating a Tag.
+6. Verify the created Tag, Release Notes, ZIP, SHA-256 checksum and successful Actions run. Existing published Release assets are never overwritten by the normal workflow.
 
-audit spec 只放單次研究的舊值、canonical values 與算術檢查；不要把特定公司資料寫進通用 script。
+Versioned historical Releases remain immutable. A failed release after Tag creation may be retried only against the same exact source commit while no published Release exists; any other correction needs explicit maintainer review.
 
-## 發版
+## Evaluation
 
-更新 `VERSION` 後 push 到 `main`：
-
-```bash
-echo 0.2.0 > VERSION
-git add VERSION
-git commit -m "release: v0.2.0"
-git push
-```
-
-GitHub Actions 會自動驗證、建立 tag、打包 ZIP 並更新 GitHub Release。
-
-## 研究回歸評估
-
-核心研究行為的測試情境、人工 Rubric 與尚未驗證狀態，請見 [`evals/README.md`](../evals/README.md)。現有 CI／Browser QA 通過不代表真實研究品質已通過評估。
+Follow [`evals/README.md`](../evals/README.md). Report **NOT RUN** for unexecuted live AI research; `check_repo.py` and Browser QA only validate deterministic/repository functionality.

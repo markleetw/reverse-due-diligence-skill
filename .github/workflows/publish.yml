@@ -1,72 +1,37 @@
-name: Publish
+# Historical filename retained; this workflow no longer publishes a Release.
+name: Release Candidate
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - VERSION
   workflow_dispatch:
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 jobs:
-  tag:
+  candidate:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
+        uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-
       - name: Run repository checks
         run: python scripts/check_repo.py
-
-      - name: Validate version
-        id: version
-        shell: bash
+      - name: Build release-format ZIP
+        run: python scripts/package.py --output dist/reverse-due-diligence.zip
+      - name: Verify the actual ZIP
         run: |
-          VERSION="$(tr -d '[:space:]' < VERSION)"
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
-            echo "VERSION 格式不合法：$VERSION" >&2
-            exit 1
-          fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Require a new release tag
-        env:
-          TAG: ${{ steps.version.outputs.tag }}
-        shell: bash
+          python scripts/package.py --verify dist/reverse-due-diligence.zip --expected-version "$(tr -d '[:space:]' < VERSION)"
+      - name: Record checksum
         run: |
-          git fetch --tags --force
-          if git rev-parse "$TAG^{commit}" >/dev/null 2>&1; then
-            echo "$TAG 已存在。VERSION 必須升版；既有 tag 不可重新指向新的 source snapshot。" >&2
-            exit 1
-          fi
-
-      - name: Create release tag
-        env:
-          TAG: ${{ steps.version.outputs.tag }}
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" -m "Release $TAG" "$GITHUB_SHA"
-          git push origin "$TAG"
-
-      - name: Dispatch release workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ steps.version.outputs.tag }}
-        shell: bash
-        run: |
-          gh workflow run release.yml --ref main -f tag="$TAG"
+          (cd dist && sha256sum reverse-due-diligence.zip > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
+      - name: Upload candidate artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: rdd-release-candidate
+          path: |
+            dist/reverse-due-diligence.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error

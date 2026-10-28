@@ -1,132 +1,130 @@
 name: Release
 
+# Publishing requires an explicit maintainer workflow dispatch.
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
     inputs:
       tag:
-        description: "要重新建置／發布的既有 tag，例如 v0.1.0"
+        description: "New approved version tag, e.g. v0.3.0"
         required: true
         type: string
 
 permissions:
   contents: write
 
+concurrency:
+  group: rdd-release
+  cancel-in-progress: false
+
 jobs:
-  package:
+  release:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Resolve release tag
-        id: ref
-        shell: bash
-        run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            TAG="${{ github.ref_name }}"
-          else
-            TAG="${{ inputs.tag }}"
-          fi
-
-          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
-            echo "tag 格式不合法：$TAG" >&2
-            exit 1
-          fi
-
-          echo "ref=$TAG" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-
-      - name: Check out tagged source
-        uses: actions/checkout@v4
+      - name: Check out the explicitly dispatched source
+        uses: actions/checkout@v7
         with:
-          ref: ${{ steps.ref.outputs.ref }}
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - name: Verify VERSION matches tag
+      - name: Validate version, source and immutable release policy
+        id: validate
         env:
-          TAG: ${{ steps.ref.outputs.tag }}
+          TAG: ${{ inputs.tag }}
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          VERSION="$(tr -d '[:space:]' < VERSION)"
-          if [[ "v$VERSION" != "$TAG" ]]; then
-            echo "VERSION ($VERSION) 與 release tag ($TAG) 不一致。" >&2
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Only vMAJOR.MINOR.PATCH is accepted" >&2
             exit 1
           fi
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          if [[ "v$VERSION" != "$TAG" ]]; then
+            echo "VERSION does not match requested Tag: $VERSION / $TAG" >&2
+            exit 1
+          fi
+          git fetch --tags
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            TARGET="$(git rev-list -n 1 "refs/tags/$TAG")"
+            if [[ "$TARGET" != "$GITHUB_SHA" ]]; then
+              echo "Existing Tag points at a different source; refusing overwrite" >&2
+              exit 1
+            fi
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              echo "Release already exists; published assets are immutable" >&2
+              exit 1
+            fi
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Run repository checks
+      - name: Run repository and package tests
         run: python scripts/check_repo.py
 
-      - name: Build ZIP
+      - name: Install Chromium test dependencies
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Run renderer and XSS browser regression
+        run: python scripts/browser_test.py
+
+      - name: Build and verify release ZIP
         run: |
           mkdir -p dist
           python scripts/package.py --output dist/reverse-due-diligence.zip
+          python scripts/package.py --verify dist/reverse-due-diligence.zip --expected-version "$(tr -d '[:space:]' < VERSION)"
 
-      - name: Inspect package
-        run: |
-          python - <<'PY'
-          import zipfile
-          p = "dist/reverse-due-diligence.zip"
-          expected = {
-              "rdd/SKILL.md",
-              "rdd/references/analysis-playbook.md",
-              "rdd/references/global-sources.md",
-              "rdd/references/report-template.md",
-              "rdd/references/taiwan-sources.md",
-              "rdd/templates/report-shell.html",
-              "rdd/scripts/audit.py",
-          }
-          with zipfile.ZipFile(p) as z:
-              actual = set(z.namelist())
-          if actual != expected:
-              raise SystemExit(
-                  f"package contents mismatch\nexpected={sorted(expected)}\nactual={sorted(actual)}"
-              )
-          print("Package contents verified.")
-          PY
-
-      - name: Build release notes from tagged source
+      - name: Generate bilingual release notes and checksum
         env:
-          TAG: ${{ steps.ref.outputs.tag }}
+          TAG: ${{ inputs.tag }}
         shell: bash
         run: |
-          awk '
-            /<!-- release-notes:start -->/ { keep=1; next }
-            /<!-- release-notes:end -->/   { keep=0 }
-            keep
-          ' README.md > dist/release-content.md
+          set -euo pipefail
+          python scripts/release_notes.py --version "${TAG#v}" --output dist/release-notes.md
+          (cd dist && sha256sum reverse-due-diligence.zip > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
 
-          cp dist/release-content.md dist/release-notes.md
-
-      - name: Upload workflow artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload reviewed release artifacts
+        uses: actions/upload-artifact@v7
         with:
-          name: reverse-due-diligence-skill
-          path: dist/reverse-due-diligence.zip
+          name: rdd-release-artifacts
+          path: |
+            dist/reverse-due-diligence.zip
+            dist/SHA256SUMS.txt
+            dist/release-notes.md
           if-no-files-found: error
 
-      - name: Create or update GitHub Release
+      - name: Create new immutable Tag if necessary
         env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ steps.ref.outputs.tag }}
+          TAG: ${{ inputs.tag }}
+          TAG_EXISTS: ${{ steps.validate.outputs.tag_exists }}
         shell: bash
         run: |
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release delete-asset "$TAG" reverse-due-diligence.skill -y >/dev/null 2>&1 || true
-            gh release delete-asset "$TAG" SHA256SUMS.txt -y >/dev/null 2>&1 || true
-            gh release upload "$TAG" dist/reverse-due-diligence.zip --clobber
-            gh release edit "$TAG" \
-              --title "Reverse Due Diligence Skill $TAG" \
-              --notes-file dist/release-notes.md
-          else
-            gh release create "$TAG" \
-              dist/reverse-due-diligence.zip \
-              --verify-tag \
-              --title "Reverse Due Diligence Skill $TAG" \
-              --notes-file dist/release-notes.md
+          set -euo pipefail
+          if [[ "$TAG_EXISTS" == "true" ]]; then
+            echo "Resuming same-source, unpublished Tag"
+            exit 0
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/$TAG"
+
+      - name: Create new GitHub Release (no overwrite)
+        env:
+          TAG: ${{ inputs.tag }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create "$TAG" \
+            dist/reverse-due-diligence.zip \
+            dist/SHA256SUMS.txt \
+            --verify-tag \
+            --title "Reverse Due Diligence Skill $TAG" \
+            --notes-file dist/release-notes.md

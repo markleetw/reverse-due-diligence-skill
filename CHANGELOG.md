@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes are tracked here. `main` may include work that has not been packaged or released. The latest published release remains the source of truth for a given Tag.
+Notable changes are tracked here. `main` may include work that has not been packaged or released. The latest published release remains the source of truth for a given Tag. Keep this file synchronized with `CHANGELOG.zh-TW.md`. Before any new Release, move the relevant Unreleased entries under `## [X.Y.Z] - YYYY-MM-DD` in both languages; release notes are generated from those versioned sections.
 
 ## Unreleased
 

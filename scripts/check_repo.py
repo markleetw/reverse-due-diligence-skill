@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import py_compile
 import re
 import subprocess
@@ -11,6 +12,9 @@ import tempfile
 import zipfile
 import hashlib
 from pathlib import Path
+
+from package import verify_package
+from release_notes import extract_section, make_notes
 
 ROOT = Path(__file__).resolve().parents[1]
 ERRORS: list[str] = []
@@ -65,7 +69,7 @@ def check_template() -> None:
 
 
 def check_python() -> None:
-    for rel in ("scripts/audit.py", "scripts/check_repo.py", "scripts/package.py"):
+    for rel in ("scripts/audit.py", "scripts/check_repo.py", "scripts/package.py", "scripts/browser_test.py", "scripts/release_notes.py"):
         try:
             py_compile.compile(str(ROOT / rel), doraise=True)
             ok(f"Python compile: {rel}")
@@ -348,8 +352,8 @@ def check_public_docs() -> None:
 
     readme = path.read_text(encoding="utf-8")
     for marker in (
-        "<!-- release-notes:start -->",
-        "<!-- release-notes:end -->",
+        "README.zh-TW.md",
+        "evals/README.md",
         "ChatGPT",
         "Claude",
         "reverse-due-diligence.zip",
@@ -391,44 +395,66 @@ def file_sha256(path: Path) -> str:
 
 
 def check_package() -> None:
-    expected = {
-        "rdd/SKILL.md",
-        "rdd/references/analysis-playbook.md",
-        "rdd/references/global-sources.md",
-        "rdd/references/report-template.md",
-        "rdd/references/taiwan-sources.md",
-        "rdd/templates/report-shell.html",
-        "rdd/scripts/audit.py",
-    }
-    with tempfile.TemporaryDirectory() as temp_dir:
-        out1 = Path(temp_dir) / "a.skill"
-        out2 = Path(temp_dir) / "b.skill"
-
-        for out in (out1, out2):
+    with tempfile.TemporaryDirectory() as tmp:
+        output1 = Path(tmp) / "a.zip"
+        output2 = Path(tmp) / "b.zip"
+        for output in (output1, output2):
             proc = subprocess.run(
-                [sys.executable, str(ROOT / "scripts" / "package.py"), "--output", str(out)],
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
+                [sys.executable, str(ROOT / "scripts" / "package.py"),
+                 "--output", str(output)],
+                cwd=ROOT, capture_output=True, text=True,
             )
             if proc.returncode != 0:
                 fail("package build failed:\n" + proc.stdout + proc.stderr)
                 return
-
-        with zipfile.ZipFile(out1) as archive:
-            actual = set(archive.namelist())
-        if actual != expected:
-            fail(
-                "package contents mismatch: "
-                f"expected={sorted(expected)}, actual={sorted(actual)}"
-            )
+        try:
+            verify_package(output1)
+            verify_package(output2)
+        except (ValueError, zipfile.BadZipFile) as exc:
+            fail(f"package verification failed: {exc}")
             return
-
-        if file_sha256(out1) != file_sha256(out2):
+        if file_sha256(output1) != file_sha256(output2):
             fail("package build is not deterministic")
             return
 
-        ok("package build, contents and reproducibility")
+        # A real archive with an unlisted file must be rejected, not merely
+        # accepted because the minimum required files are present.
+        tampered = Path(tmp) / "tampered.zip"
+        shutil.copyfile(output1, tampered)
+        with zipfile.ZipFile(tampered, "a") as archive:
+            archive.writestr("rdd/unlisted.txt", "unexpected")
+        try:
+            verify_package(tampered)
+        except ValueError:
+            ok("package verifier rejects unexpected archived content")
+        else:
+            fail("package verifier accepted an unexpected archived file")
+            return
+        ok("package exact file bytes, embedded version and reproducibility")
+
+
+def check_release_notes() -> None:
+    example_en = "# Changelog\n## Unreleased\n- Future\n## [9.8.7] - 2099-01-01\n- Fixed evidence logic\n"
+    example_tw = "# 變更紀錄\n## Unreleased\n- 未發布\n## [9.8.7] - 2099-01-01\n- 修正研究規則\n"
+    try:
+        notes = make_notes("9.8.7", example_en, example_tw)
+        if "Fixed evidence logic" not in notes or "修正研究規則" not in notes:
+            raise ValueError("Bilingual content missing")
+        if "Future" in notes:
+            raise ValueError("Unreleased content leaked into release notes")
+        try:
+            extract_section(example_en, "9.8.6")
+        except ValueError:
+            pass
+        else:
+            raise ValueError("Missing version must fail closed")
+        for name in ("CHANGELOG.md", "CHANGELOG.zh-TW.md"):
+            if "## Unreleased" not in (ROOT / name).read_text(encoding="utf-8"):
+                raise ValueError(f"{name} is missing the Unreleased section")
+        ok("bilingual release notes extraction and missing-version gate")
+    except Exception as exc:
+        fail(f"release notes checks failed: {exc}")
+
 
 def main() -> int:
     check_frontmatter()
@@ -443,6 +469,7 @@ def main() -> int:
     check_example_spec_and_audit()
     check_public_docs()
     check_package()
+    check_release_notes()
 
     if ERRORS:
         print(f"\n{len(ERRORS)} check(s) failed.")

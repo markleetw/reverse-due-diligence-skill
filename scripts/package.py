@@ -2,7 +2,7 @@
 """Build and verify the deterministic RDD runtime ZIP.
 
 All distribution jobs share this manifest and verification logic. The ZIP has
-one top-level rdd/ directory; source, licenses and basic installation docs
+one top-level rdd/ directory; source, license and embedded version
 travel together. Development-only files remain outside the package.
 """
 from __future__ import annotations
@@ -20,8 +20,6 @@ FIXED_TIME = (1980, 1, 1, 0, 0, 0)
 INCLUDE_FILES = [
     Path("SKILL.md"),
     Path("LICENSE"),
-    Path("README.md"),
-    Path("README.zh-TW.md"),
     Path("VERSION"),
     Path("references/analysis-playbook.md"),
     Path("references/global-sources.md"),

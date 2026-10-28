@@ -25,6 +25,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Require the protected main branch and current main commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "Release must be dispatched from main" >&2
+            exit 1
+          fi
+          REMOTE_MAIN_SHA="$(git ls-remote origin refs/heads/main | cut -f1)"
+          if [[ -z "$REMOTE_MAIN_SHA" || "$REMOTE_MAIN_SHA" != "$GITHUB_SHA" ]]; then
+            echo "Release source must equal the current main HEAD" >&2
+            exit 1
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v7
         with:

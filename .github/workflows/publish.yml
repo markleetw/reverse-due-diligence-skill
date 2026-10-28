@@ -3,6 +3,11 @@ name: Release Candidate
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "New version tag, e.g. v0.3.0 (candidate only; never publishes)"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -13,17 +18,61 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Validate release-candidate source, version, and unused tag
+        env:
+          TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "Release Candidate must be dispatched from main" >&2
+            exit 1
+          fi
+          REMOTE_MAIN_SHA="$(git ls-remote origin refs/heads/main | cut -f1)"
+          if [[ -z "$REMOTE_MAIN_SHA" || "$REMOTE_MAIN_SHA" != "$GITHUB_SHA" ]]; then
+            echo "Candidate source must equal the current main HEAD" >&2
+            exit 1
+          fi
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Only vMAJOR.MINOR.PATCH is accepted" >&2
+            exit 1
+          fi
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          if [[ "v$VERSION" != "$TAG" ]]; then
+            echo "VERSION does not match requested candidate tag: $VERSION / $TAG" >&2
+            exit 1
+          fi
+          git fetch --tags --quiet
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            echo "Candidate tag already exists; use a new version" >&2
+            exit 1
+          fi
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Run repository checks
         run: python scripts/check_repo.py
+      - name: Install Chromium test dependencies
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Run renderer and XSS browser regression
+        run: python scripts/browser_test.py
       - name: Build release-format ZIP
         run: python scripts/package.py --output dist/reverse-due-diligence.zip
       - name: Verify the actual ZIP
         run: |
           python scripts/package.py --verify dist/reverse-due-diligence.zip --expected-version "$(tr -d '[:space:]' < VERSION)"
+      - name: Generate version-specific bilingual release notes
+        env:
+          TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/release_notes.py --version "${TAG#v}" --output dist/release-notes.md
       - name: Record checksum
         run: |
           (cd dist && sha256sum reverse-due-diligence.zip > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
@@ -34,4 +83,5 @@ jobs:
           path: |
             dist/reverse-due-diligence.zip
             dist/SHA256SUMS.txt
+            dist/release-notes.md
           if-no-files-found: error

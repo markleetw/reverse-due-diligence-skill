@@ -8,10 +8,15 @@ on:
       - "demo/index.html"
       - "templates/report-shell.html"
       - ".github/workflows/demo-preview.yml"
+  pull_request:
+    paths:
+      - "demo/index.html"
+      - "templates/report-shell.html"
+      - ".github/workflows/demo-preview.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   render:
@@ -70,14 +75,12 @@ jobs:
           print(f"Rendered {out} ({out.stat().st_size} bytes)")
           PY
 
-      - name: Commit preview
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/assets/demo-preview.png
-          if git diff --cached --quiet; then
-            echo "Preview unchanged."
-            exit 0
-          fi
-          git commit -m "docs: refresh demo preview"
-          git push
+      - name: Upload generated preview for PR review
+        uses: actions/upload-artifact@v4
+        with:
+          name: rdd-demo-preview
+          path: docs/assets/demo-preview.png
+          if-no-files-found: error
+
+      # A preview image in the repository changes only through a reviewed PR.
+      # This workflow deliberately never commits or pushes to main.

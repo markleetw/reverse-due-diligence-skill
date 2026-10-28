@@ -14,11 +14,20 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Run repository checks
         run: python scripts/check_repo.py
+      - name: Build the exact release-format ZIP
+        run: python scripts/package.py --output dist/reverse-due-diligence.zip
+      - name: Verify ZIP bytes, manifest, and VERSION
+        run: |
+          python scripts/package.py --verify dist/reverse-due-diligence.zip --expected-version "$(tr -d '[:space:]' < VERSION)"
+      - name: Upload verified CI package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rdd-ci-package
+          path: dist/reverse-due-diligence.zip
+          if-no-files-found: error

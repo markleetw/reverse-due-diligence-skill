@@ -51,6 +51,8 @@
 
 若執行環境提供資料視覺化指南或相關 Skill，動手前先讀；否則遵循本節既有的圖表規則。
 
+**外部文字輸出安全**：在把網頁、JD、評論或其他來源的字串放入報告前，依 HTML 與 JavaScript 的不同上下文做適當跳脫；圖表資料應以 JSON 序列化，不得直接拼接未跳脫的字串到 `<script>`。共用 renderer 會把 tooltip 與圖例中的動態標籤當成純文字處理；這不等於整份 HTML 已自動防止 XSS。
+
 **必做的品管**：
 
 - 若能執行 packaged script，定稿前執行 `scripts/audit.py REPORT.html AUDIT_SPEC.json --renderer-template templates/report-shell.html`；document envelope 或 renderer parity 任一失敗都先修正，不交付。

@@ -1,24 +1,32 @@
 # Changelog
 
-Notable changes are tracked here. `main` may include work that has not been packaged or released. The latest published release remains the source of truth for a given Tag. Keep this file synchronized with `CHANGELOG.zh-TW.md`. Before any new Release, move the relevant Unreleased entries under `## [X.Y.Z] - YYYY-MM-DD` in both languages; release notes are generated from those versioned sections.
+Notable changes are tracked here. `main` may include work that has not been packaged or released. GitHub Releases are authoritative for published Tags. Keep this file synchronized with `CHANGELOG.zh-TW.md`. Release Notes are generated only from dated, versioned sections.
 
 ## Unreleased
 
-### Research quality
+No changes since v1.0.0 have been recorded.
 
-- Hardened regulator-risk inference, source provenance and prompt-injection guardrails.
-- Introduced calibrated scoring confidence and **Not Assessed** for unsupported scores.
-- Corrected a Taiwanese pawnshop statutory interest benchmark and distinguished noncomparable rates and financing costs.
-- Extended deterministic auditing to assertions bound to extracted report values.
+## [1.0.0] - 2026-10-28
 
-### Security and evaluation
+### Research method and safety
 
-- Rendered chart tooltip and legend labels as inert text, with a malicious-label Chromium regression test.
-- Added a compact research regression rubric and scenarios, with explicit **NOT RUN** status for unexecuted AI evaluations.
+- Strengthened primary-source provenance, legal/regulatory inference, accounting-period and denominator checks, and separation of employer health from actual role decision rights.
+- Added calibrated scoring confidence and **Not Assessed** for dimensions without sufficient evidence; promoted conditional career recommendations and targeted P0/P1/P2 interview questions.
+- Corrected the Taiwan pawnshop statutory-rate benchmark (Article 11: 30% annual interest) and separated financing cash-flow costs from statutory/legal applicability.
+- Reinforced prompt-injection controls: external pages, job ads and attachments are untrusted evidence, never instructions to upload candidate data.
 
-### Open-source project documentation
+### Report delivery and regression
 
-- Adopted the MIT License and added English-first and Taiwan Traditional Chinese documentation, contribution/security guidance, and GitHub contribution templates.
+- Improved deterministic report audits for values extracted from the delivered HTML, arithmetic assertions, full-document envelope checks and canonical renderer parity.
+- Made untrusted chart tooltip/legend labels inert text and added Chromium XSS, theme, desktop and mobile checks.
+- Published full synthetic demos in Traditional Chinese and English, with matching screenshots and automated parity checks for both languages.
+- Added an eight-scenario human research evaluation rubric. Five representative Claude research runs were reviewed on 2026-10-28; findings, remaining coverage and limited reproducibility are documented in `evals/README.md`. These are not statistically representative model benchmarks.
+
+### Packaging, release governance and documentation
+
+- Published a deterministic nine-file Skill ZIP including the MIT license and internal VERSION.
+- Added protected-branch PR/CI gates and separated read-only Release Candidate checks from explicitly authorized, version-checked Release publishing.
+- Added bilingual install guidance, source/safety boundaries, contribution and security documentation.
 
 ## v0.2.0 — 2026-10-08
 

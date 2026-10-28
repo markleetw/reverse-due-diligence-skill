@@ -66,7 +66,7 @@ RDD（Reverse Due Diligence，反向盡職調查）將公開資料研究、財�
 
 [查看互動 Demo](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)。**Demo 中的公司、人物、產品、數字及職缺設定均為虛構**，只示範研究方法與報告介面，不代表已對真實企業完成查證。
 
-GitHub Actions 已有文件與程式結構、決定性數字稽核、ZIP 封裝及 Chromium 報告測試。另建立 [Research Regression Evaluation](evals/README.md)，涵蓋台灣企業、海外母公司、資料衝突、監管與安全情境；**測試規格存在不等於 AI 研究案例已實際通過**。已執行的檢查應以 [Actions 執行紀錄](https://github.com/markleetw/reverse-due-diligence-skill/actions) 為準。
+GitHub Actions 已有文件與程式結構、決定性數字稽核、ZIP 封裝及 Chromium 報告測試。另建立 [Research Regression Evaluation](evals/README.md)，涵蓋台灣企業、海外母公司、資料衝突、監管與安全情境；**測試規格存在不等於 AI 研究案例已實際通過**。 **2026-10-28 已人工驗收五份代表性 Claude 研究報告，包含修正與有限的操作紀錄檢視；不代表八個受控情境都逐一執行，私人報告原檔也未公開存入 Repository。** 結果與限制見[驗收紀錄](evals/README.md)。。已執行的檢查應以 [Actions 執行紀錄](https://github.com/markleetw/reverse-due-diligence-skill/actions) 為準。
 
 ## 使用限制與保密
 

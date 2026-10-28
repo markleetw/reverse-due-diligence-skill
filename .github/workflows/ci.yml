@@ -25,9 +25,5 @@ jobs:
       - name: Verify ZIP bytes, manifest, and VERSION
         run: |
           python scripts/package.py --verify dist/reverse-due-diligence.zip --expected-version "$(tr -d '[:space:]' < VERSION)"
-      - name: Upload verified CI package
-        uses: actions/upload-artifact@v7
-        with:
-          name: rdd-ci-package
-          path: dist/reverse-due-diligence.zip
-          if-no-files-found: error
+      # CI verifies the distributable but intentionally does not publish a ZIP
+      # artifact carrying the same VERSION as an already published Release.

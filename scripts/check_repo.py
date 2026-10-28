@@ -456,6 +456,37 @@ def check_release_notes() -> None:
         fail(f"release notes checks failed: {exc}")
 
 
+
+def check_release_lifecycle_guards() -> None:
+    """Catch release-gate regressions before the next version is prepared."""
+    release = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    candidate = (ROOT / ".github/workflows/publish.yml").read_text(encoding="utf-8")
+    ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+
+    checks = {
+        "Release requires main": (release, 'if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then'),
+        "Candidate requires main": (candidate, 'if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then'),
+        "Release checks main SHA": (release, '"$REMOTE_MAIN_SHA" != "$GITHUB_SHA"'),
+        "Candidate checks main SHA": (candidate, '"$REMOTE_MAIN_SHA" != "$GITHUB_SHA"'),
+        "Candidate takes a tag": (candidate, "TAG: ${{ inputs.tag }}"),
+        "Candidate checks VERSION": (candidate, 'if [[ "v$VERSION" != "$TAG" ]]; then'),
+        "Candidate rejects existing tags": (candidate, 'git show-ref --verify --quiet "refs/tags/$TAG"'),
+        "Candidate checks browser": (candidate, "python scripts/browser_test.py"),
+        "Candidate builds versioned notes": (candidate, 'release_notes.py --version "${TAG#v}"'),
+        "Candidate uploads notes": (candidate, "dist/release-notes.md"),
+        "Release builds versioned notes": (release, 'release_notes.py --version "${TAG#v}"'),
+    }
+    for name, (content, marker) in checks.items():
+        if marker not in content:
+            fail(f"release lifecycle guard missing: {name}")
+    if "gh release create" in candidate or "git push origin" in candidate:
+        fail("Release Candidate must never publish a Tag or Release")
+    if "actions/upload-artifact" in ci:
+        fail("CI must not expose an unreleased ZIP with a published VERSION")
+    if not any("release lifecycle guard" in e or "Release Candidate must" in e or
+               "unreleased ZIP" in e for e in ERRORS):
+        ok("release and candidate branch/version gates, notes and artifact isolation")
+
 def main() -> int:
     check_frontmatter()
     check_references()
@@ -470,6 +501,7 @@ def main() -> int:
     check_public_docs()
     check_package()
     check_release_notes()
+    check_release_lifecycle_guards()
 
     if ERRORS:
         print(f"\n{len(ERRORS)} check(s) failed.")

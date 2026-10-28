@@ -1,0 +1,50 @@
+name: Temporary English Screenshot Capture
+on:
+  pull_request:
+    paths:
+      - "demo/en/index.html"
+      - ".github/workflows/capture-en-preview.yml"
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install rendering dependencies
+        run: |
+          pip install playwright pillow
+          python -m playwright install chromium
+      - name: Capture image for one-time commit
+        run: |
+          python - <<'PY'
+          import base64
+          from io import BytesIO
+          from pathlib import Path
+          from PIL import Image
+          from playwright.sync_api import sync_playwright
+          source = Path("demo/en/index.html").resolve().as_uri()
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page(viewport={"width": 1440, "height": 1100}, device_scale_factor=2)
+              page.goto(source)
+              page.evaluate("document.documentElement.setAttribute('data-theme','light')")
+              page.wait_for_function("document.fonts.status === 'loaded'")
+              page.wait_for_timeout(300)
+              raw = page.screenshot(full_page=False)
+              browser.close()
+          img = Image.open(BytesIO(raw)).convert("RGB")
+          img = img.resize((1440, 1100), Image.Resampling.LANCZOS)
+          img = img.quantize(colors=256, method=Image.Quantize.MEDIANCUT)
+          data = BytesIO()
+          img.save(data, format="PNG", optimize=True)
+          encoded = base64.b64encode(data.getvalue()).decode("ascii")
+          print("RDD_EN_PNG_B64_BEGIN")
+          for i in range(0, len(encoded), 600):
+              print(encoded[i:i+600])
+          print("RDD_EN_PNG_B64_END")
+          print(f"image bytes: {len(data.getvalue())}")
+          PY

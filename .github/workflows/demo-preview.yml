@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - "demo/index.html"
+      - "demo/en/index.html"
       - "templates/report-shell.html"
       - ".github/workflows/demo-preview.yml"
   pull_request:
     paths:
       - "demo/index.html"
+      - "demo/en/index.html"
       - "templates/report-shell.html"
       - ".github/workflows/demo-preview.yml"
   workflow_dispatch:
@@ -43,43 +45,47 @@ jobs:
           from PIL import Image
           from playwright.sync_api import sync_playwright
 
-          url = Path("demo/index.html").resolve().as_uri()
-          tmp = Path("/tmp/demo-preview@2x.png")
-          out = Path("docs/assets/demo-preview.png")
-
+          targets = [
+              (Path("demo/index.html"), Path("docs/assets/demo-preview.png")),
+              (Path("demo/en/index.html"), Path("docs/assets/demo-preview-en.png")),
+          ]
           with sync_playwright() as p:
               browser = p.chromium.launch()
-              page = browser.new_page(
-                  viewport={"width": 1440, "height": 1100},
-                  device_scale_factor=2,
-              )
-              page.goto(url)
-              page.evaluate(
-                  "document.documentElement.setAttribute('data-theme','light')"
-              )
-              page.add_style_tag(content="""
-                body {
-                  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC",
-                               "Helvetica Neue", Arial, sans-serif !important;
-                  -webkit-font-smoothing: antialiased;
-                }
-              """)
-              page.wait_for_function("document.fonts.status === 'loaded'")
-              page.wait_for_timeout(300)
-              page.screenshot(path=str(tmp), full_page=False)
+              for source, out in targets:
+                  tmp = Path("/tmp") / (out.stem + "@2x.png")
+                  page = browser.new_page(
+                      viewport={"width": 1440, "height": 1100},
+                      device_scale_factor=2,
+                  )
+                  page.goto(source.resolve().as_uri())
+                  page.evaluate(
+                      "document.documentElement.setAttribute('data-theme','light')"
+                  )
+                  page.add_style_tag(content="""
+                    body {
+                      font-family: -apple-system, BlinkMacSystemFont, "PingFang TC",
+                                   "Helvetica Neue", Arial, sans-serif !important;
+                      -webkit-font-smoothing: antialiased;
+                    }
+                  """)
+                  page.wait_for_function("document.fonts.status === 'loaded'")
+                  page.wait_for_timeout(300)
+                  page.screenshot(path=str(tmp), full_page=False)
+                  page.close()
+                  img = Image.open(tmp).convert("RGB")
+                  img = img.resize((1440, 1100), Image.Resampling.LANCZOS)
+                  img.save(out, optimize=True)
+                  print(f"Rendered {out} ({out.stat().st_size} bytes)")
               browser.close()
-
-          img = Image.open(tmp).convert("RGB")
-          img = img.resize((1440, 1100), Image.Resampling.LANCZOS)
-          img.save(out, optimize=True)
-          print(f"Rendered {out} ({out.stat().st_size} bytes)")
           PY
 
       - name: Upload generated preview for PR review
         uses: actions/upload-artifact@v7
         with:
           name: rdd-demo-preview
-          path: docs/assets/demo-preview.png
+          path: |
+            docs/assets/demo-preview.png
+            docs/assets/demo-preview-en.png
           if-no-files-found: error
 
       # A preview image in the repository changes only through a reviewed PR.

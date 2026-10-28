@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 HTML_FILES = (
     ROOT / "templates" / "report-shell.html",
     ROOT / "demo" / "index.html",
+    ROOT / "demo" / "en" / "index.html",
 )
 DRAW_RE = re.compile(
     r"""\b(?:drawBars|drawSignedBars|drawNodeLine|drawGrouped|drawStacked|drawMini|drawScores|drawRanges)\(\s*['\"]([^'\"]+)['\"]"""
@@ -135,6 +136,8 @@ def browser_checks(path: Path) -> None:
                 fail(f"{path}: browser errors: {errors}")
 
             body_text = page.locator("body").inner_text()
+            if path.parent.name == "en" and re.search(r"[\u3400-\u9fff]", body_text):
+                fail(f"{path}: untranslated Chinese text in English visible content")
             for leaked in ("drawAll();", "drawBars(", "drawScores("):
                 if leaked in body_text:
                     fail(f"{path}: JavaScript leaked into rendered body: {leaked}")

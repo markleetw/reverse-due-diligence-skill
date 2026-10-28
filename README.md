@@ -2,9 +2,9 @@
 
 **Evidence-driven employer and job-opportunity research for people making career decisions.**
 
-[繁體中文（台灣）](README.zh-TW.md) · [Demo report](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html) · [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases)
+[繁體中文（台灣）](README.zh-TW.md) · [Demo report](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/en/index.html) · [Releases](https://github.com/markleetw/reverse-due-diligence-skill/releases)
 
-[![RDD report preview](docs/assets/demo-preview.png)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html)
+[![English synthetic RDD report preview](docs/assets/demo-preview-en.png)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/en/index.html)
 
 RDD is an AI Agent Skill that helps candidates investigate a prospective employer **and** the specific position—not just generate a company profile. It organizes public-source research, financial and business-model scrutiny, evidence grading, uncertainty, and decision-oriented interview questions into one repeatable workflow.
 
@@ -74,7 +74,7 @@ Depending on the available evidence and the role: executive summary, business mo
 
 ## Demonstration and verification status
 
-The [interactive demo](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/index.html) uses a **fictional company, people, financials and job details** to illustrate report depth and presentation. It is not a verified investigation or a claim about a real employer.
+The [interactive demo](https://htmlpreview.github.io/?https://raw.githubusercontent.com/markleetw/reverse-due-diligence-skill/main/demo/en/index.html) uses a **fictional company, people, financials and job details** to illustrate report depth and presentation. It is not a verified investigation or a claim about a real employer.
 
 Existing GitHub Actions check document structure, deterministic audit behavior, reproducible packages, and Chromium renderer behavior. The [research regression protocol](evals/README.md) defines Taiwan, international and adversarial cases, but **writing test scenarios is not evidence that an AI has passed them**. See the actual [Actions runs](https://github.com/markleetw/reverse-due-diligence-skill/actions) for executed checks.
 

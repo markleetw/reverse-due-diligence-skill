@@ -55,3 +55,7 @@ git push
 ```
 
 GitHub Actions 會自動驗證、建立 tag、打包 ZIP 並更新 GitHub Release。
+
+## 研究回歸評估
+
+核心研究行為的測試情境、人工 Rubric 與尚未驗證狀態，請見 [`evals/README.md`](../evals/README.md)。現有 CI／Browser QA 通過不代表真實研究品質已通過評估。

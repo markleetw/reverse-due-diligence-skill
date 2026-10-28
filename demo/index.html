@@ -302,7 +302,18 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>setTimeout(drawAll,30));
 
   const tt=document.getElementById('tt');
-  function showTT(e,html){tt.innerHTML=html;tt.style.opacity=1;moveTT(e);}
+  function showTT(e,html){
+    // Only renderer-defined <b> formatting is supported. Source text stays text.
+    const match=/^<b>([\s\S]*?)<\/b>([\s\S]*)$/.exec(String(html));
+    if(match){
+      const heading=document.createElement('b');
+      heading.textContent=match[1];
+      tt.replaceChildren(heading,document.createTextNode(match[2]));
+    } else {
+      tt.textContent=String(html);
+    }
+    tt.style.opacity=1;moveTT(e);
+  }
   function moveTT(e){
     const p=12; let x=e.clientX+p, y=e.clientY+p;
     const r=tt.getBoundingClientRect();
@@ -319,6 +330,13 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
   }
   const cs=()=>getComputedStyle(document.body);
   const V=n=>cs().getPropertyValue(n).trim();
+  function appendLegend(leg,name,color){
+    const label=document.createElement('span'), swatch=document.createElement('i');
+    swatch.className='sw';
+    swatch.style.background=V(color);
+    label.append(swatch,document.createTextNode(String(name)));
+    leg.appendChild(label);
+  }
   const NS='http://www.w3.org/2000/svg';
   function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
   function svg(w,h){const s=E('svg',{viewBox:`0 0 ${w} ${h}`,role:'img'});return s;}
@@ -447,8 +465,7 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
   function drawStacked(id,rows,series,o){
     o=o||{};
     const leg=document.getElementById(o.legendId||('leg-'+id.replace(/^c-/,'')));
-    if(leg){ leg.innerHTML=''; series.forEach(m=>{ const sp=document.createElement('span');
-      sp.innerHTML=`<i class="sw" style="background:${V(m.k)}"></i>${m.n}`; leg.appendChild(sp); }); }
+    if(leg){ leg.replaceChildren(); series.forEach(m=>appendLegend(leg,m.n,m.k)); }
     const host=document.getElementById(id); if(!host) return; host.innerHTML='';
     const W=780,H=o.height||(rows.length*76+52),ml=o.ml||92,mr=20,mt=14, pw=W-ml-mr, bh=48, gap=28;
     const s=svg(W,H); host.appendChild(s);
@@ -534,9 +551,8 @@ const root=document.documentElement, btn=document.getElementById('tbtn');
   }
 
   function legend(id,items){
-    const leg=document.getElementById(id); if(!leg) return; leg.innerHTML='';
-    items.forEach(([n,k])=>{ const sp=document.createElement('span');
-      sp.innerHTML=`<i class="sw" style="background:${V(k)}"></i>${n}`; leg.appendChild(sp); });
+    const leg=document.getElementById(id); if(!leg) return; leg.replaceChildren();
+    items.forEach(([n,k])=>appendLegend(leg,n,k));
   }
 
 

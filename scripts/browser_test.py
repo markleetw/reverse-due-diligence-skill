@@ -2,6 +2,7 @@
 """Browser smoke tests for the report shell and public demo."""
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -192,11 +193,58 @@ def browser_checks(path: Path) -> None:
     print(f"✓ browser smoke checks: {path.relative_to(ROOT)}")
 
 
+
+def security_checks() -> None:
+    """Untrusted chart text must never create executable tooltip/legend markup."""
+    source = (ROOT / "templates" / "report-shell.html").read_text(encoding="utf-8")
+    start_marker = "  /* RDD_REPORT_DATA_START */"
+    end_marker = "  /* RDD_REPORT_DATA_END */"
+    start = source.index(start_marker)
+    end = source.index(end_marker, start) + len(end_marker)
+    attack = '<img src=x onerror="window.__rdd_xss = true">'
+    data = (
+        start_marker + "\n"
+        "  function drawAll(){\n"
+        "    drawBars('c-demo',[{y:'Test',v:10,note:" + json.dumps(attack) + "}],{max:12});\n"
+        "    legend('leg-xss',[[" + json.dumps(attack) + ",'--series-1']]);\n"
+        "  }\n"
+        "  drawAll();\n"
+        + end_marker
+    )
+    fixture = (source[:start] + data + source[end:]).replace(
+        "<script>", '<div id="leg-xss"></div>\n<script>', 1
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        test_path = Path(tmp) / "xss-fixture.html"
+        test_path.write_text(fixture, encoding="utf-8")
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            try:
+                page = browser.new_page(viewport={"width": 1440, "height": 1000})
+                page.goto(test_path.resolve().as_uri())
+                page.locator("#c-demo svg path").first.dispatch_event(
+                    "mouseenter", {"clientX": 30, "clientY": 30}
+                )
+                if attack not in page.locator("#tt").inner_text():
+                    fail("Tooltip did not preserve untrusted label as readable text")
+                if attack not in page.locator("#leg-xss").inner_text():
+                    fail("Legend did not preserve untrusted label as readable text")
+                if page.locator("#tt img, #leg-xss img").count():
+                    fail("Untrusted chart text produced an HTML image element")
+                page.wait_for_timeout(100)
+                if page.evaluate("Boolean(window.__rdd_xss)"):
+                    fail("Untrusted chart text executed an event handler")
+                page.close()
+            finally:
+                browser.close()
+    print("✓ untrusted tooltip and legend labels remain inert text")
+
 def main() -> int:
     for path in HTML_FILES:
         static_checks(path)
     for path in HTML_FILES:
         browser_checks(path)
+    security_checks()
     print("\nAll browser QA checks passed.")
     return 0
 

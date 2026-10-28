@@ -11,7 +11,7 @@ This is a small, human-reviewed regression suite for the RDD Skill. Preserve its
 1. Record the commit SHA, model/host, research date and time zone, available web/browser/file tools, and the actual user prompt. If necessary, substitute a contemporary public JD without changing the scenario's purpose.
 2. For a live case, allow normal research and retain the completed report, working sources, and claim-level evidence. For an adversarial case, use only the explicitly fictional fixture; do not present its numbers as facts about real employers.
 3. Apply the rubric below. Mark each case **PASS / FAIL / BLOCKED / NOT RUN** and link the produced artifact and review notes. A result without an output artifact is NOT RUN.
-4. Record any findings as a minimal reproducible example. A change to SKILL.md or references requires targeted reruns of affected cases; a release candidate should include one Taiwan, one international, one insufficient/conflicting-information case, and an HTML/security check.
+4. Record any findings as a minimal reproducible example. A change to SKILL.md or references requires targeted reruns of affected cases; a release acceptance review for material research-method changes should cover one Taiwan, one international, one insufficient/conflicting-information case, and an HTML/security check.
 5. If browsing, local file creation, or browser automation is unavailable, report that limitation. A Markdown fallback is valid when the host cannot create HTML, but it is **not** evidence that HTML/browser QA passed.
 
 ## Scenario catalog

@@ -29,9 +29,8 @@ python scripts/audit.py report.html audit-spec.json --renderer-template template
 1. Complete and review the relevant research/CI/Browser QA changes via PRs. Keep important user-facing behavior intact.
 2. Create a separate version-preparation PR: update `VERSION`, and move the relevant `Unreleased` entries into identical `## [X.Y.Z] - YYYY-MM-DD` sections in `CHANGELOG.md` and `CHANGELOG.zh-TW.md`. Check all links and documentation.
 3. Merge that PR only after CI. **Updating VERSION or pushing to main does not create a Tag or Release.**
-4. Optionally start **Release Candidate** from Actions to build a verified ZIP and checksum without publishing.
-5. After separate maintainer approval, explicitly dispatch **Release** with the *new* `vX.Y.Z` tag. The workflow rechecks source version, browser behavior, package bytes, bilingual notes, and existing Tags/Releases **before** creating a Tag.
-6. Verify the created Tag, Release Notes, ZIP, SHA-256 checksum and successful Actions run. Existing published Release assets are never overwritten by the normal workflow.
+4. After explicit maintainer approval, dispatch **Release** once from `main` with the *new* `vX.Y.Z` tag. The workflow checks the source commit and VERSION, runs repository and Chromium tests, verifies the ZIP and checksum, and builds bilingual notes **before** creating a Tag or publishing.
+5. Verify the created Tag, Release Notes, ZIP, SHA-256 checksum and successful Actions run. Existing published Release assets are never overwritten by the normal workflow.
 
 Versioned historical Releases remain immutable. A failed release after Tag creation may be retried only against the same exact source commit while no published Release exists; any other correction needs explicit maintainer review.
 
